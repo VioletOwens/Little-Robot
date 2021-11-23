@@ -1,0 +1,5 @@
+keywords.txt
+help.txt
+open.txt
+hide.txt
+greetings.txt

@@ -1,0 +1,25 @@
+hello|Common greetings
+hey|Common greetings
+hi|Common greetings
+heya|Common greetings
+hiya|Common greetings
+heyo|Common greetings
+
+
+good morning|Timed greetings
+good afternoon|Timed greetings
+good evening|Timed greetings
+
+
+nice to meet you|Kind greeting
+its nice to meet you|Kind greeting
+
+whats up|Status checkers
+
+how do you do?|Status checkers
+
+how are you doing|Status checkers
+
+whats your status|Status checkers
+
+how are you?|Status checkers

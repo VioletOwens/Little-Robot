@@ -1,0 +1,30 @@
+//greetings.txt
+hello
+hey
+hi
+heya
+hiya
+heyo
+good morning
+good afternoon
+good evening
+whats up
+nice to meet you
+its nice to meet you
+whats up
+how do you do?
+how are you doing
+whats your status
+how are you?
+//insults.txt
+you suck
+u suck
+no one likes you
+i hate u
+i hate you
+die
+u should die
+you should die
+kys
+kill yourself
+kill urself
