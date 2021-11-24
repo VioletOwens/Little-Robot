@@ -60,12 +60,8 @@ public class Brain {
 		}
 		
 		
-		//what if i worked backwards word by word with the input (with the knowledge the output would be
-		//backward too?)
-		
-		
-		String sentenceStructureString = identifySentenceStructure(UI.toLowerCase());
-		String reponse = responseCenter(sentenceStructureString);
+		identifySentenceStructure(UI.toLowerCase());
+		//String sentenceStructureString;
 		
 		 int counter = 0;
 		for(int y=0; y<longSentenceStructArr.length;y++) {
@@ -79,7 +75,9 @@ public class Brain {
 			shortSentenceStructArr[x]=longSentenceStructArr[x];
 			System.out.println("shortSentenceStructArr of " + x + " is:" + shortSentenceStructArr[x]);
 		}
-
+		String response = responseCenter(shortSentenceStructArr);
+		
+		System.out.println("Response formed, that being:" + response);
 		//types of words:greetings, question words, queeries (lol) like hows ur current status,
 		//filler,
 		
@@ -108,14 +106,17 @@ public class Brain {
 		//goes line to line checking if string matches line, if not move on to next until end of file
 		
 	}
-	
-	private static void greetingsTxt(String trigger, String UI) {
-		
-	}
+
 	
 	
 	private static void keywordOrganizer() {
-
+		//reads through file first to get number of lines,
+		//then make array of exact size, assigning each line to array index
+		//then make simple sorting algorithm to sort in order of these variables:
+		//first, 
+		
+		
+		
 		File file = new File (keywordFileName); 
 		Scanner s = null ;
 		String newFile = "";
@@ -208,6 +209,7 @@ public class Brain {
 		String sentenceStructure = str;
 		String category = "";
 		String tempString="";
+		int tempInt=0;
 		String tempFileName = "";
 		Boolean found = false;
 		
@@ -224,13 +226,18 @@ public class Brain {
 						tempString =str;
 						
 						while(tempString!="") {
-							System.out.println("tempLine is:" + tempString);
+							System.out.println("tempString is:" + tempString);
 							if(tempString!=""&&(tempString.equals(line))) {
 								found = true;
 								break;
 							}else if(tempString.contains(" ")){//replace last word in string to "" if last word exists
-								tempString = tempString.replace(tempString.split(" ")[tempString.split(" ").length-1], "")
-										.strip();
+								//can use length of removed word to substring tempString into smaller string, only
+								//removing the end of the string.
+								//the below string subtracts the length of the string by the length of the word,
+								//effectively always removing last word and 
+								//tempString.lenth()-tempString.split(" ")[tempString.split(" ").length-1].length()
+								tempInt=tempString.length()-tempString.split(" ")[tempString.split(" ").length-1].length();
+								tempString = tempString.substring(0,tempInt-1);
 							}else {//case of last word, which has alrdy been tested
 								tempString = "";
 							}
@@ -287,17 +294,16 @@ public class Brain {
 							while(str.contains(newLine)&&(g = genFileReader.read()) != -1&&g!=13) {
 								category = (String)(category + (char)g);//read the category
 							}//watch here for what effect the change to this will ahve on category
-							str = str.replace(tempString, "");
-							str = identifySentenceStructure(str);
+							str = str.replace(tempString, "").trim();
+							longSentenceStructArr=appendToArray(longSentenceStructArr,category);
 							if(str.replace(" ","")=="") {
 							genFileReader.close();
+							System.out.println("str stopping, string:" + str);
 							break;//stops while before breaking into while conditions
 							}else {
-								System.out.println("identifySentenceStructure done, string:" + sentenceStructure);
-								longSentenceStructArr=appendToArray(longSentenceStructArr,category);
-								//note, order in which code reads words is order in which it responds to them
+								System.out.println("str continuing, string:" + str);
+								str = identifySentenceStructure(str);
 								genFileReader.close();
-								return str;
 							}
 							
 							}
@@ -319,7 +325,7 @@ public class Brain {
 	}//end of method
 	
 	
-	private static String responseCenter(String sentenceStructureStringArr) {
+	private static String responseCenter(String[] sentStructArr) {
 		
 		
 		
