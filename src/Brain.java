@@ -60,8 +60,10 @@ public class Brain {
 		}
 		
 		
-		identifySentenceStructure(UI.toLowerCase());
+		//identifySentenceStructure(UI.toLowerCase()); //main line here undo when rdy
 		//String sentenceStructureString;
+		keywordOrganizer();
+		
 		
 		 int counter = 0;
 		for(int y=0; y<longSentenceStructArr.length;y++) {
@@ -113,48 +115,79 @@ public class Brain {
 		//reads through file first to get number of lines,
 		//then make array of exact size, assigning each line to array index
 		//then make simple sorting algorithm to sort in order of these variables:
-		//first, 
+		//first, organize the arrays in order of first character in UI,
+		//then longest string (cant decide between word count or string length but latter easier)
+		//so we try length of string
 		
-		
+		//making array of array of strings, the outer array with names of file
+		//and inner arrays are list of strings 
 		
 		File file = new File (keywordFileName); 
-		Scanner s = null ;
+		Scanner firstScanner = null;
+		Scanner secondScanner = null;
 		String newFile = "";
 		String newLine = "";
 		String keywordCategory = "";
+		String[][] stringArr;
+		String[] tempArr;
+		int[] intArr;
+		int firstCounter = 0;
+		int secondCounter = 0;
 		
 		
 		try  { 
-			s =  new  Scanner (file);
+			firstScanner =  new  Scanner (file);
 
 			// Read the file line by line 
-			while  (s.hasNextLine())  { 
-				String line = s.nextLine();  	// We keep the line on a String 
-				System.out.println(line);       // We print the line 
+			while  (firstScanner.hasNextLine())  { 
+
+				String line = firstScanner.nextLine();  	// We keep the line on a String 
+				if(line.contains("//")) firstCounter++;
+				System.out.println(firstCounter + " " + line);       // We print the line 
 				
 				//if(line)
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
 			}
+			firstScanner.close();
+			intArr = new int[firstCounter];
+			secondScanner = new Scanner(file);
+			firstCounter = 0;
+			while  (secondScanner.hasNextLine())  { 
+
+
+				String line = secondScanner.nextLine();  	// We keep the line on a String 
+				if(line.contains("//")&&firstCounter>1){//at new file, reset counter and increase secondCounter
+					intArr[secondCounter] = firstCounter;
+					secondCounter++;
+					firstCounter=0;
+				}else if(line.replace(" ", "")==""||!secondScanner.hasNextLine()){
+					firstCounter++;
+					intArr[secondCounter] = firstCounter;
+					break;
+				}
+				firstCounter++;
+				System.out.println(firstCounter + " " + line);       // We print the line 
+			}
+			stringArr = new String[intArr.length][];
+
+			for(int x = 0; x<intArr.length;x++) {
+				tempArr = new String[intArr[x]];
+				stringArr[x]= tempArr;
+			}//stringArr set up to be perfect for file input.
+			
+			
+			//string array contains [filename #] [# of lines]
+			
+			
+			
+			
 
 		}  catch (Exception ex)  { 
 			System.out.println("Message:" + ex.getMessage()); 
 		}  finally  { 
 			// Close the file whether the reading was successful or not 
 			try  { 
-				if (s!=null) 
-					s.close (); 
+				if (firstScanner!=null) firstScanner.close (); 
+				if (secondScanner!=null) secondScanner.close();
 			}  catch(Exception ex2)  { 
 				System.out.println( "Message 2:"  + ex2 . getMessage()); 
 			} 
@@ -209,6 +242,7 @@ public class Brain {
 		String sentenceStructure = str;
 		String category = "";
 		String tempString="";
+		Boolean reverse = false;
 		int tempInt=0;
 		String tempFileName = "";
 		Boolean found = false;
@@ -233,16 +267,25 @@ public class Brain {
 							}else if(tempString.contains(" ")){//replace last word in string to "" if last word exists
 								//can use length of removed word to substring tempString into smaller string, only
 								//removing the end of the string.
-								//the below string subtracts the length of the string by the length of the word,
-								//effectively always removing last word and 
-								//tempString.lenth()-tempString.split(" ")[tempString.split(" ").length-1].length()
-								tempInt=tempString.length()-tempString.split(" ")[tempString.split(" ").length-1].length();
-								tempString = tempString.substring(0,tempInt-1);
+								//the below int subtracts the length of the total string length by the length of the word,
+								if(reverse) {//used to remove first word
+									tempInt=Math.abs(tempString.length()-tempString.split(" ")[0].length()-tempString.length());
+									tempString = tempString.substring(tempInt,tempString.length()).trim();
+								}
+								else {//used to remove last word
+									tempInt=tempString.length()-tempString.split(" ")[tempString.split(" ").length-1].length();
+									tempString = tempString.substring(0,tempInt-1);
+								}
+							}else if(str.contains(" ")){//last word in tempString, but not in str
+								//need to set tempString= to itself-first word, so
+								//tempString=str.replaceFirst(tempString, "").strip();
+								tempString=str;
+								reverse=!reverse;
 							}else {//case of last word, which has alrdy been tested
-								tempString = "";
+								tempString="";
 							}
 						}
-						System.out.println("just out of while, tempLine is:" + tempString);
+						System.out.println("just out of while, tempString is:" + tempString);
 
 						line="";
 					}
@@ -271,21 +314,6 @@ public class Brain {
 							newLine = (String)(newLine + (char)g);
 							//can also exclude case where after "|" doesnt need to be read?
 						}
-						else if(newLine!=""&&g!=124){
-							if(newLine.contains("|")&&str.contains(newLine.substring(0, newLine.indexOf("|")))) {//the substring= keyword/phrase
-								category=newLine.substring(newLine.indexOf("|")+1, newLine.length());
-								sentenceStructure=sentenceStructure.replace(newLine.substring(0, newLine.indexOf("|")), category);
-								str=str.replace(newLine.substring(0, newLine.indexOf("|")), "");
-							//swaps between category and setnence structure
-							//setnece structure contains mix between category and str
-							//slowly turn sentence structure into only categorys
-							
-							//str shrinks, category swaps to whatever category the string is,
-							//and sentenceStructure swaps the string in str with the category
-							//which ultimately forms the simple response structure we need in response center
-							
-							} 
-						}//end of elseif
 						if((str.contains(newLine)&&g==124)||g==124) {//if we get to | and str doesnt contain newLine,
 							while(!str.contains(newLine)&&(g = genFileReader.read()) != -1&&g!=13){
 								//SKIP THROUGH WHOLE CATEGORY!!
@@ -317,8 +345,9 @@ public class Brain {
 					genFileReader.close();
 				}
 			} catch (IOException e) {
-				System.out.println("I assume no stream");
-				e.printStackTrace();
+				System.out.println("ERROR: NO STREAM!! (Gone one too many times"
+						+ " through recurssion without closing stream and read is attempted)");
+				//e.printStackTrace();
 			}
 			        
 	        return str;
@@ -331,9 +360,7 @@ public class Brain {
 		
 		return "";
 	}
-	
-	//identifySentenceStructure
-	//responseCenter
+
 	//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java
 	
 	private static String[] appendToArray(String[] arr, String str) {
