@@ -1,30 +1,29 @@
 //greetings.txt
+its nice to meet you
+how are you doing
+whats your status
+nice to meet you
+how do you do?
+good afternoon
+how are you?
+good morning
+good evening
+whats up
 hello
-hey
-hi
 heya
 hiya
 heyo
-good morning
-good afternoon
-good evening
-whats up
-nice to meet you
-its nice to meet you
-whats up
-how do you do?
-how are you doing
-whats your status
-how are you?
+hey
+hi
 //insults.txt
-you suck
-u suck
-no one likes you
-i hate u
-i hate you
-die
-u should die
 you should die
-kys
+you suck
+no one likes you
 kill yourself
+u should die
 kill urself
+i hate you
+i hate u
+u suck
+die
+kys
