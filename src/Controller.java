@@ -25,9 +25,13 @@ public class Controller {
 	@FXML
 	private Button clearButton;
 	
-	private Stage stage;
-	private Scene scene;
-	private Parent root;
+	@FXML
+	private Button Category_Manager;
+	@FXML
+	private Button testButton;
+	@FXML
+	private Button Calculator;
+	
 	
 	 @FXML
 	  private void handleKeyPressed(KeyEvent ke) throws FileNotFoundException{
@@ -45,9 +49,18 @@ public class Controller {
 		label.setText("");	
 	}
 	
+	public void calculator(ActionEvent event) throws IOException{
+		System.out.println("Calculator button pressed");
+	}
 	
+	public void categoryManager(ActionEvent event) throws IOException{
+		System.out.println("categorymanager button pressed");
+	}
 	
-	
+	public void testButton(ActionEvent event) throws IOException{
+		System.out.println("testButton button pressed");
+	}
+
 	
 	/**useful links below
 	 *https://stackoverflow.com/questions/15452768/consume-javafx-keytyped-event-from-textfield

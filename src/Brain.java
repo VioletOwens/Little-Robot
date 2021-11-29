@@ -274,6 +274,7 @@ public class Brain {
 		    //need to mainly make a category list that corresponds with the subsequent
 		    //necessary response. Each category/phrase should have at least 1 response
 		    //doing all this via the extra window to open and create
+		    //call this interface category manager
 		      
 		      
 		    //can add automatic detection system that detects if keywords contains a filename
