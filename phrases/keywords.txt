@@ -1,29 +1,27 @@
-//greetings.txt
-its nice to meet you
-how are you doing
-whats your status
-nice to meet you
-how do you do?
-good afternoon
-how are you?
-good morning
-good evening
-whats up
-hello
-heya
-hiya
-heyo
-hey
-hi
-//insults.txt
-you should die
-you suck
-no one likes you
-kill yourself
-u should die
-kill urself
-i hate you
-i hate u
-u suck
-die
-kys
+no one likes you//insults.txt
+you should die//insults.txt
+kill yourself//insults.txt
+u should die//insults.txt
+kill urself//insults.txt
+i hate you//insults.txt
+you suck//insults.txt
+i hate u//insults.txt
+u suck//insults.txt
+die//insults.txt
+kys//insults.txt
+how are you doing//greetings.txt
+how do you do?//greetings.txt
+how are you?//greetings.txt
+hello//greetings.txt
+heya//greetings.txt
+hiya//greetings.txt
+heyo//greetings.txt
+hey//greetings.txt
+hi//greetings.txt
+its nice to meet you//greetings.txt
+whats your status//greetings.txt
+nice to meet you//greetings.txt
+good afternoon//greetings.txt
+good morning//greetings.txt
+good evening//greetings.txt
+whats up//greetings.txt
