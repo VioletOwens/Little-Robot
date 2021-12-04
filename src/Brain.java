@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -8,7 +7,7 @@ import java.util.Scanner;
 /**
  * @author Violet Owens
  */
-public class Brain {
+public class Brain{
 	
 	 private String userInput; 
 	 final String fileListFileName = "filelist.txt";
@@ -16,6 +15,7 @@ public class Brain {
 	final static String directory = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\";
 	static String[] longSentenceStructArr = null;
 	static String[] shortSentenceStructArr=null;
+	static String[] commandArray = {"Action"};
 	Brain(String userInput) throws FileNotFoundException {
 		this.userInput = userInput;		
 		interpretInput(userInput);
@@ -287,12 +287,10 @@ public class Brain {
 		String line = "";
 		String category = "";
 		String tempString="";
-		Boolean reverse = false;
 		File file = new File (keywordFileName); 
 		int tempInt=0;
 		String tempFileName = "";
 		Boolean found = false;
-
 		try {
 		Scanner scannerOne = new  Scanner (file);
 		// Read the file line by line 
@@ -332,8 +330,25 @@ public class Brain {
 					line = line.substring(0,line.indexOf("|"));
 					if(str.contains(line)) {//if line can be found in string, get category
 						str = str.replace(line, "").trim();
-					}
-					longSentenceStructArr=appendToArray(longSentenceStructArr,category);
+						found=false;
+						for(int h=0;h<commandArray.length;h++) {//checking for command words
+							if(category.contains(commandArray[h])) {
+								found=true;
+								tempString=commandArray[h];
+								switch (tempString){
+								case "Action":
+									actionCommand(category.substring(
+											category.indexOf("(")+1,category.indexOf(")")));
+									break;
+									
+								}//out of switch case
+								break;
+							}
+						}//out of for loop
+						if(!found) {//only append category if it IS NOT a command phrase
+							longSentenceStructArr=appendToArray(longSentenceStructArr,category);
+						}
+					}//out of if str.contains(line)
 					if(str.replace(" ","")=="") {//if we run out of words
 						break;
 					}else {
@@ -351,6 +366,17 @@ public class Brain {
 	        return str;
 	}//end of method
 	
+	private static void actionCommand(String str) throws IOException {
+		Controller controller = new Controller();//used to allow calls to controller methods
+		System.out.println("actionCommand method called, str:" + str);
+		switch (str){
+		case "controlPanelOpen":
+			controller.openControlPanel();
+			break;
+		}
+		
+	}
+
 	private static String responseCenter(String[] sentStructArr) {
 		
 		return "";

@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -9,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -16,7 +18,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class Controller {
+public class Controller{
 	
 	@FXML 
 	private TextField textField;
@@ -24,27 +26,31 @@ public class Controller {
 	private Label label;
 	@FXML
 	private Button clearButton;
-	
 	@FXML
 	private Button Category_Manager;
 	@FXML
 	private Button testButton;
 	@FXML
 	private Button Calculator;
-	
-	
-	 @FXML
+	@FXML
+	private ChoiceBox<String> currentStatusComboBox;
+	@FXML
+	private ChoiceBox<String> UICategoryComboBox;
+	@FXML
+	private ChoiceBox<String> responseCategoryComboBox;
+
+	private Stage stage;
+	private Scene scene;
+	private Parent root;
+	@FXML
 	  private void handleKeyPressed(KeyEvent ke) throws FileNotFoundException{
-//	    System.out.println("The text in the textBox is:" + textField.getText()); //good for debugging
+//System.out.println("The text in the textBox is:" + textField.getText()); //good for debugging
 	    if(ke.getCode()==KeyCode.ENTER) {
 	    	System.out.println(textField.getText());
 	    	new Brain(textField.getText());
 	    }
 	  }
 
-	
-	
-	
 	public void clearAction(ActionEvent event) throws IOException{
 		label.setText("");	
 	}
@@ -60,19 +66,27 @@ public class Controller {
 	public void testButton(ActionEvent event) throws IOException{
 		System.out.println("testButton button pressed");
 	}
-
 	
+	public void openControlPanel() throws IOException{
+		Parent root = FXMLLoader.load(getClass().getResource("/ControlPanel.fxml"));
+		Stage stage = new Stage();
+		Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+	}
+	
+	public void openCategoryManagerPanel(ActionEvent event) throws IOException{
+		Parent root = FXMLLoader.load(getClass().getResource("/CategoryManagerPanel.fxml"));
+		Stage stage = new Stage();
+		Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+	}
+
 	/**useful links below
 	 *https://stackoverflow.com/questions/15452768/consume-javafx-keytyped-event-from-textfield
 	 * useful for preventing typing for some reason
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
+	 *guy below also helps us out a lot :)
+	 * https://www.youtube.com/watch?v=9XJicRt_FaI&ab_channel=BroCode
 	 */
-	
-	
-	
 }

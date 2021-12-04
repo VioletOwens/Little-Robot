@@ -11,13 +11,10 @@ import javafx.stage.Stage;
 		   public void start(Stage stage) throws Exception {
 				try {
 				URL fxmlResource = getClass().getResource("/Main.fxml");//formerly "/Main.fxml"
-				//URL fxmlURL = getClass().getResource("/Little Robot/fxmls/Main.fxml");
 				Parent root = FXMLLoader.load(fxmlResource);
-				//Parent root = FXMLLoader.load(getClass().getResource("C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\fxmls\\Main.fxml"));
 		        Scene scene = new Scene(root);
 		        stage.setScene(scene);
 		        stage.show();
-				
 				} catch(Exception e) {
 		    	e.printStackTrace();
 		    }

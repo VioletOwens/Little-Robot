@@ -9,7 +9,7 @@
       <AnchorPane prefHeight="300.0" prefWidth="380.0">
          <children>
             <Button layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#calculator" prefHeight="96.0" prefWidth="96.0" text="Calculator" />
-            <Button layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#categoryManager" prefHeight="96.0" prefWidth="96.0" text="Category Manager" textAlignment="CENTER" wrapText="true" />
+            <Button layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCategoryManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Category Manager" textAlignment="CENTER" wrapText="true" />
             <Button layoutX="240.0" layoutY="24.0" mnemonicParsing="false" onAction="#testButton" prefHeight="96.0" prefWidth="96.0" text="testButton" />
          </children>
       </AnchorPane>
