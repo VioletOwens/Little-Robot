@@ -1,1 +1,2 @@
-wahoo
+sadness|Negative Emotion
+wahoo|Unknown

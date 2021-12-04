@@ -1,0 +1,4 @@
+control panel|Action(controlPanelOpen)
+controlpanel|Action(controlPanelOpen)
+open control panel|Action(controlPanelOpen)
+open controlpanel|Action(controlPanelOpen)

@@ -16,37 +16,10 @@ public class Brain {
 	final static String directory = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\";
 	static String[] longSentenceStructArr = null;
 	static String[] shortSentenceStructArr=null;
-	//private static int numOfCategories = 0;//number of categories
 	Brain(String userInput) throws FileNotFoundException {
 		this.userInput = userInput;		
 		interpretInput(userInput);
 	}
-	
-	
-	//when special keywords are called, group up info in array containing special
-	//keyword
-	
-//a file of filenames for ordering and storing file names...?
-	//could order in an index sort of fashion?
-	//different ways to organize said files can be organized in other files containing groups of file names 
-	//an example would be: FileListAdject.txt (contains list of adjectives) this itself can be put into lists for
-	//complicated flags
-	
-	//need to conquer cases of editing file line, reading file, appending file, checks file for info,
-	//deleting line from file, and deleting file
-	
-	
-	//can organize into language(containing all .txt names of relevant .txts about language and sentence structure)
-	
-	//can do the word recognition by checking first:
-	//send off genFileCleaner(to organize strings longest to shortest)
-	//
-	//copying string beginning of string to end,
-	//then check:beginning of string to end-1 word
-	//then check:beginning of string to end-2 words
-	//until there are no words left. if none are found, progress beginning of string by 1 word
-	//if one is found, replace that part with category and add -> to end (unless no words left)
-	//resulting string should contain in order the categories we need to comprehend
 	
 	private static void interpretInput(String UI) throws FileNotFoundException {//attempts to comprehend the user input
 		//check if each string input is equal to anything from keyword list
@@ -59,9 +32,12 @@ public class Brain {
 		longSentenceStructArr = new String[UIWords.length + 1];//need to make this
 		keywordOrganizer(UI);//organizes keyword list into suitable matching
 		identifySentenceStructure(UI);//comprehending the string
-		//String sentenceStructureString;
-		
-		
+		organizeSentStructArr();//used to reduce clutter in this method
+		String response = responseCenter(shortSentenceStructArr);
+		System.out.println("Response formed, that being:" + response);
+	}
+	
+	private static void organizeSentStructArr() {
 		int counter = 0;
 		for(int y=0; y<longSentenceStructArr.length;y++) {
 			if(longSentenceStructArr[y]==null) {
@@ -73,29 +49,9 @@ public class Brain {
 		for(int x=0;x<shortSentenceStructArr.length;x++) {
 			shortSentenceStructArr[x]=longSentenceStructArr[x];
 			System.out.println("shortSentenceStructArr of " + x + " is:" + shortSentenceStructArr[x]);
-		}
-		String response = responseCenter(shortSentenceStructArr);
-		
-		System.out.println("Response formed, that being:" + response);
-		//types of words:greetings, question words, queeries (lol) like hows ur current status,
-		//filler,
-		
-		//when special keywords are called, group up info in array containing special	
-		
-	//in file.txt, can have flag at end of line of trigger to signal collection of rest of info
-	//so that we can collect information in the commands/triggers (eg. open [insert file name] need
-	//to know info of file name to open a file!)
-	//need to also make flag reader in file below (just after it replaces str? and before it assigns final
-	//category to shortSentenceStructArr, since goal is for category to
-	//also include the additional info)
-	//these flag lines need to be put first with the pre-runner in keywords.txt because the flags are critical 
+		}		
 	}
-	
-	//private static void errorAttributer() {//infers any errors in userInput	
-	//}
 		
-	
-	
 	private static void keywordOrganizer(String UI) {
 		//reads through file first to get number of lines,
 		//then make array of exact size, assigning each line to array index
@@ -110,187 +66,84 @@ public class Brain {
 		File file = new File (keywordFileName); 
 		Scanner firstScanner = null;
 		Scanner secondScanner = null;
-		Scanner thirdScanner = null;
 		Boolean hadToSort = false;
-		String tempString = "";
 		String wholeFile= "";
-		String[][] stringArr = null;
-		String categoryListStr="";
-		String[] categoryListArr;
 		String[] tempArr;
-		int[] intArr;
 		int firstCounter = 0;
-		int secondCounter = 0;
-		
-		
 		try  { 
 			firstScanner =  new  Scanner (file);
 
 			// Read the file line by line 
 			while  (firstScanner.hasNextLine())  { 
-
-				String line = firstScanner.nextLine();  	 
-				if(!categoryListStr.contains(line.substring(line.lastIndexOf("/")+1, line.length())
-						.replace(".txt", ""))){
-					categoryListStr = categoryListStr.concat(line.substring(line.lastIndexOf("/")+1, line.length())
-						.replace(".txt", "") + " ");
+					firstScanner.nextLine();  	 
 					firstCounter++;
-				}
 			}
 			firstScanner.close();
-			categoryListArr = categoryListStr.trim().split(" ");
-			System.out.println(categoryListStr);
-			for(int x = 0; x<categoryListArr.length;x++) {
-				System.out.println("categoryListArr[" + x + "]=" + categoryListArr[x]);
-			}
-			
-			//just edited below. need to double check it
-			intArr = new int[firstCounter];
-			secondCounter= 0;//replace this with firstCounter
-			for(int x=0; x<categoryListArr.length;x++) {
 			secondScanner = new Scanner(file);
-			while  (secondScanner.hasNextLine())  { 
-				String line = secondScanner.nextLine();  	
-				if(line.contains(categoryListArr[x])){//counts number of lines in each category
-					//intArr[x] ;
-					secondCounter++;
-				}else{
-					//break;
-				}
-				//System.out.println(firstCounter + " " + line);       
+			tempArr = new String[firstCounter];
+			firstCounter=0;
+			while(secondScanner.hasNextLine()) {//simply add all lines to array of perfect size
+				tempArr[firstCounter]=secondScanner.nextLine();
+				firstCounter++;
 			}
-			intArr[x] = secondCounter;
-			secondCounter = 0;
-			secondScanner.close();
-			}
-			//left off here.
-			
-			
-			
-			//no point in separating the two groups, or any groups. need to find
-			//total number of lines and simply add them all together into an array while 
-			//maintaining the .txt at end to signal where keyword leads to
-			//once all are added, we can sort the entire array like normal,
-			//then rewrite consequential array in order back to keywords.txt
-			
-			
-			
-			stringArr = new String[intArr.length][];
-			
-			System.out.println("intArr.length=" + intArr.length);
-			
-			for(int xy = 0; xy<intArr.length;xy++) {
-				tempArr = new String[intArr[xy]];
-				stringArr[xy]= tempArr;
-				System.out.println("stringArr[" + xy + "].length=" + stringArr[xy].length);
-			}//stringArr set up to be perfect for file input.
-			//string array contains [filename #] [# of lines]
-			secondScanner.close();
-
-			//secondcounter is category # firstCounter is line#
-			for(int x=0; x<stringArr.length;x++) {
-				firstCounter = 0;
-				secondCounter = 0;
-				thirdScanner = new Scanner(file);
-			while(thirdScanner.hasNextLine()) {//goes through assigning stringArr with file
-				String line = thirdScanner.nextLine();
-				if(line.contains(categoryListArr[x])) {
-					stringArr[x][firstCounter]=line;
-					firstCounter++;
-				}
-			}
-			thirdScanner.close();
-			}
-			
-			System.out.println("stringArr content is:");
-			for(int x=0; x<stringArr.length;x++) {
-				for(int y=0; y<stringArr[x].length;y++) {
-					System.out.println("stringArr[" + x + "]["+ y +"]=" + stringArr[x][y]);
-				}
-			}
-			
-			
-			//sorting stringArr content now
-			
-			//tempString = stringArr[0][1];
-			//nextString = stringArr[0][2];
-			
-			//have while that checks if full runthrough is true, full runthrough only triggers
-			//true if it can make it through full stringArr without swapping
-			
-			//in order, we only care about the char at 0 of UI matching,
-			//then the length of the string
-			String currentString;
-			String nextString;
+			/*
+			for(int xy=0; xy<tempArr.length;xy++) {
+				System.out.println("before: tempArr[" + xy + "]=" + tempArr[xy]);
+			} //great for troubleshooting
+			*/
+			firstCounter=0;
 			hadToSort=true;
-			while(hadToSort) {
-			hadToSort = false;
-			for(int x=0; x<stringArr.length;x++) {
-				for(int y=1; y<stringArr[x].length;y++) {//starts at 1, since 0 is filename
-					if(!(y+1>=stringArr[x].length)) {//if we havent reached last index
-						currentString = stringArr[x][y];
-						nextString = stringArr[x][y+1];
-						if((stringArr[x][y].charAt(0)==UI.charAt(0))
-								&&stringArr[x][y+1].charAt(0)==UI.charAt(0)
-								&&stringArr[x][y+1].substring(0, stringArr[x][y+1].indexOf("/")).length()
-								>stringArr[x][y].substring(0, stringArr[x][y].indexOf("/")).length()) {
-							//if both contain char, swap by length
-							tempString = stringArr[x][y];
-							stringArr[x][y] = stringArr[x][y+1];
-							stringArr[x][y+1] = tempString;
-							hadToSort = true;
-							
-						}else if(stringArr[x][y].charAt(0)!=UI.charAt(0)
-								&& stringArr[x][y+1].charAt(0)==UI.charAt(0)) {
-							//if next array only matches with char, swap
-							tempString = stringArr[x][y];
-							stringArr[x][y] = stringArr[x][y+1];
-							stringArr[x][y+1] = tempString;
-							hadToSort = true;
-							
-							
-							
-						}else if(stringArr[x][y].charAt(0)!=UI.charAt(0)
-								&&stringArr[x][y+1].charAt(0)!=UI.charAt(0)
-								&&stringArr[x][y+1].substring(0, stringArr[x][y+1].indexOf("/")).length()
-								>stringArr[x][y].substring(0, stringArr[x][y].indexOf("/")).length()){
-							//if neither match first char, order by length
-							tempString = stringArr[x][y];
-							stringArr[x][y] = stringArr[x][y+1];
-							stringArr[x][y+1] = tempString;
-							hadToSort = true;
-							
-						}
-					}else {//case where last index is reached
-												
-					}
-				}//end of first for
-			}//end of second for
-			}//end of while (hadtosort)
-
-			
-			System.out.println("After sorting, stringArr contents:");
-			for(int x = 0; x<stringArr.length; x++) {
-				for(int y =0; y<stringArr[x].length; y++) {
-					System.out.println("string Arr[" + x + "][" 
-							+ y + "]=" + stringArr[x][y]);
-					if(!(x+1==stringArr.length&&y+1==stringArr[x].length)) {
-						wholeFile=wholeFile.concat(stringArr[x][y]+"\n");
+			String currentString="";
+			String nextString="";
+			while  (hadToSort)  { //will be sorting while for tempArr
+				hadToSort=false;
+				for(int x=0; x<tempArr.length;x++) {
+				currentString=tempArr[x];
+				if(!(x+1==tempArr.length)) {//to make sure we arent at end of array
+					nextString=tempArr[x+1];
+				if(currentString.charAt(0)==UI.charAt(0)
+					&&nextString.charAt(0)==UI.charAt(0)
+					&&currentString.substring(0,currentString.lastIndexOf("/")).length()
+					<nextString.substring(0,nextString.lastIndexOf("/")).length()) {
+					//next line and this line have same first char, sort by length
+					tempArr[x]=nextString;
+					tempArr[x+1]=currentString;
+					hadToSort=true;
+				}else if(currentString.charAt(0)!=UI.charAt(0)
+						&&nextString.charAt(0)!=UI.charAt(0)
+						&&currentString.substring(0,currentString.lastIndexOf("/")).length()
+						<nextString.substring(0,nextString.lastIndexOf("/")).length()) {
+					//if nextline and this line dont have same first char, sort by length
+					tempArr[x]=nextString;
+					tempArr[x+1]=currentString;
+					hadToSort=true;
+				}else if(currentString.charAt(0)!=UI.charAt(0)
+						&&nextString.charAt(0)==UI.charAt(0)) {
+					//if nextline has the first char but this line doesnt, swap.
+					tempArr[x]=nextString;
+					tempArr[x+1]=currentString;
+					hadToSort=true;
+				}
+				}//end of if checking if at end of array
+				}//end of for
+			}//end of while
+			/*
+			for(int u=0; u<tempArr.length;u++) {
+				System.out.println("after: tempArr[" + u + "]=" + tempArr[u]);
+			} //great for troubleshooting
+			*/			
+			//System.out.println("After sorting, tempArr contents:");
+			for(int x = 0; x<tempArr.length; x++) {
+					if(!(x+1==tempArr.length)) {
+						wholeFile=wholeFile.concat(tempArr[x]+"\n");
 					}else{//doesn't append last line with a newLine.
-						wholeFile=wholeFile.concat(stringArr[x][y]);
+						wholeFile=wholeFile.concat(tempArr[x]);
 					}
 				}
-			}
-			System.out.println("wholeFile is:" + wholeFile);
-			
 			//stringArr completely sorted, now can reassign it to the file
 		      FileWriter output = new FileWriter(directory + "keywords.txt");
 		      output.write(wholeFile);
 		      output.close();
-			
-			//replaces the information in the file with string inputted into write.
-			//finishes sorting keywords here.
-		      
 		      
 		    //need to mainly make a category list that corresponds with the subsequent
 		    //necessary response. Each category/phrase should have at least 1 response
@@ -309,126 +162,168 @@ public class Brain {
 
 
 
-		
+		      if (firstScanner!=null) firstScanner.close (); 
+		      if (secondScanner!=null) secondScanner.close();
 		}  catch (Exception ex)  { 
 			ex.printStackTrace();
-			//System.out.println("Message:" + ex.getMessage()); 
-		}  finally  { 
-			try  { 
-				if (firstScanner!=null) firstScanner.close (); 
-				if (secondScanner!=null) secondScanner.close();
-			}  catch(Exception ex2)  { 
-				ex2.printStackTrace();
-				//System.out.println( "Message 2:"  + ex2 . getMessage()); 
-			} 
-		}
+			}
 	}
 	
-	private static void generalOrganizer(String fileName) {
-		
+	private static void generalOrganizer(String fileName, String UI) {
 		if(!fileName.contains(".txt")){//if it doesnt include .txt, append it at end.
 			fileName = fileName + ".txt";
 		}
+		File file = new File (directory + fileName); 
+		String[] stringArr;
+		String wholeFile="";
+		String currentLine = "";
+		String nextLine = "";
+		Boolean didWeSort = false;
+		int counterOne=0;
+		Scanner scannerOne = null ;
+		Scanner preempScanner = null;
+
 		
-		File file = new File (fileName); 
-		Scanner s = null ;
-		String newFile = "";
-		String newLine = "";
 		try  { 
-			s =  new  Scanner (file);
-
-			// Read the file line by line 
-			while  (s.hasNextLine())  { 
-				
-				
-				
-				
-				
-				String line = s.nextLine();  	// We keep the line on a String 
-				System.out.println(line);       // We print the line 
+			preempScanner = new Scanner(file);
+			while(preempScanner.hasNextLine()) {//while to preemptively clean file and count lines
+				String line = preempScanner.nextLine();
+				if(line.length()<1) {
+					//skip line if first char isnt digit or letter (empty)
+				}else {
+				if(!line.contains("|")) {
+					//if the line doesnt contains | 
+					line = line.concat("|Unknown");
+				}else if(line.substring(0, line.indexOf("|")).length()
+						==line.length()) {
+					//since line contains |, there must not be text past it
+					line = line.concat("Unknown");					
+				}
+				counterOne++;
+				if(preempScanner.hasNextLine()) {//mechanism to build wholeFile
+				wholeFile=wholeFile+line+"\n";
+				}else {
+					wholeFile=wholeFile+line;
+				}
 			}
+			}//end of while
+		    FileWriter output = new FileWriter(directory + fileName);
+		    output.write(wholeFile);
+		    output.close();
+		      
+			stringArr = new String[counterOne];			
+			scannerOne =  new  Scanner (file);
+			counterOne=0;
+			while  (scannerOne.hasNextLine())  { 
+				stringArr[counterOne]=scannerOne.nextLine();
+				counterOne++;
+			}
+			//below, stringArr content is sorted in this order: exact copy, 
+			//same first char (as UI) second by length, different first char second by length
+			counterOne=0;
+			didWeSort=true;
+			while(didWeSort) {
+				didWeSort=false;
+				for(int x=0; x<stringArr.length;x++) {
+				currentLine = stringArr[x];
+				if(!(x+1==stringArr.length)) {
+					nextLine = stringArr[x+1];
 
+				if(currentLine.substring(0,currentLine.indexOf("|")).equals(UI)) {
+					//if very first is matching word, leave it alone!
+				}
+				else if(nextLine.substring(0,nextLine.indexOf("|")).equals(UI)) {
+					stringArr[x]=nextLine;
+					stringArr[x+1]=currentLine;
+					didWeSort=true;
+				}else if(nextLine.charAt(0)==UI.charAt(0)
+						&&currentLine.charAt(0)==UI.charAt(0)
+						&&nextLine.substring(0,nextLine.indexOf("|")).length()
+						>currentLine.substring(0,currentLine.indexOf("|")).length()) {
+					stringArr[x]=nextLine;
+					stringArr[x+1]=currentLine;	
+					didWeSort=true;
+				}else if(nextLine.charAt(0)!=UI.charAt(0)
+						&&currentLine.charAt(0)!=UI.charAt(0)
+						&&nextLine.substring(0,nextLine.indexOf("|")).length()
+						>currentLine.substring(0,currentLine.indexOf("|")).length()) {
+					stringArr[x]=nextLine;
+					stringArr[x+1]=currentLine;
+					didWeSort=true;
+				}else if(nextLine.charAt(0)==UI.charAt(0)
+						&&currentLine.charAt(0)!=UI.charAt(0)) {
+					stringArr[x]=nextLine;
+					stringArr[x+1]=currentLine;
+					didWeSort=true;
+				}
+				
+			}//end of if testing if at last index of array
+			}//end of for of stringArr.length
+			}//end of if checking if were at end of array
+			wholeFile = "";
+			for(int x=0; x<stringArr.length;x++) {
+				if(x+1!=stringArr.length) {
+					wholeFile = wholeFile + stringArr[x] + "\n";
+				}
+				else {
+					wholeFile = wholeFile + stringArr[x];
+				}
+			}
+		    FileWriter outputTwo = new FileWriter(directory + fileName);
+		    outputTwo.write(wholeFile);
+		    outputTwo.close();
+		      
+
+			if (scannerOne!=null) scannerOne.close(); 
 		}  catch (Exception ex)  { 
-			System.out.println("Message:" + ex.getMessage()); 
-		}  finally  { 
-			// Close the file whether the reading was successful or not 
-			try  { 
-				if (s!=null) 
-					s.close (); 
-			}  catch(Exception ex2)  { 
-				System.out.println( "Message 2:"  + ex2 . getMessage()); 
-			} 
-		}
+			ex.getMessage();
+		} 
+		
 	}
-	
-	
-	
+		
 	private static String identifySentenceStructure(String userInput) throws FileNotFoundException {
 		String str = userInput.replace(",", " ").replace("  ", " ").strip();//string priming
-		System.out.println("Input at first in identifySentenceStructure(str) is:" + str);
-		//String wholeFile = "";
+		//System.out.println("Input at first in identifySentenceStructure(str) is:" + str);
 		String line = "";
-		String newLine = "";
-		//String sentenceStructure = str;
 		String category = "";
 		String tempString="";
 		Boolean reverse = false;
 		File file = new File (keywordFileName); 
-		int counter=0;
 		int tempInt=0;
 		String tempFileName = "";
 		Boolean found = false;
-		
-		
+
 		try {
 		Scanner scannerOne = new  Scanner (file);
-
 		// Read the file line by line 
-		System.out.println("Scanner activated:");
 		while  (scannerOne.hasNextLine()&&!found)  { 
-			line = scannerOne.nextLine();  	 
-			if(line.contains("//")) {//finds fileName
-				counter++;
-				tempFileName = line.replace("/", "");
-				//line = line.replace("/","");
-			}else if(str.contains(line)) {//if ui contains line
-				tempString =str;
-				
-				while(tempString!="") {
-					System.out.println("tempString is:" + tempString);
-					if(tempString!=""&&(tempString.equals(line))) {
-						found = true;
-						break;
-					}else if(tempString.contains(" ")){//replace last word in string to "" if last word exists
-						//can use length of removed word to substring tempString into smaller string, only
-						//removing the end of the string.
-						//the below int subtracts the length of the total string length by the length of the word,
-						if(reverse) {//used to remove first word
-							tempInt=Math.abs(tempString.length()-tempString.split(" ")[0].length()-tempString.length());
-							tempString = tempString.substring(tempInt,tempString.length()).trim();
-						}
-						else {//used to remove last word
-							tempInt=tempString.length()-tempString.split(" ")[tempString.split(" ").length-1].length();
-							tempString = tempString.substring(0,tempInt-1);
-						}
-					}else if(str.contains(" ")){//last word in tempString, but not in str
-						//need to set tempString= to itself-first word, so
-						//tempString=str.replaceFirst(tempString, "").strip();
-						tempString=str;
-						reverse=!reverse;
-					}else {//case of last word, which has alrdy been tested
-						tempString="";
-					}
-			}
-			System.out.println(counter + " " + line);    
-		}
-		}
+			line = scannerOne.nextLine(); 
+			tempFileName=line.substring(line.lastIndexOf("/")+1,line.length());
+			line=line.substring(0,line.indexOf("/"));
+			tempString=str;
+			/*
+			System.out.println("looking for match in keyword.txt. "
+					+ "tempString is:" + tempString
+					+" while corresponding line is:" + line);//very useful for troubleshooting
+					*/
+			while(tempString!=""&&tempString.contains(line)) {
+				if(tempString!=""&&(tempString.equals(line))) {
+					found = true;
+					break;
+				}else if(tempString.contains(" ")){//used to remove last word
+						tempInt=tempString.length()-tempString.split(" ")[tempString.split(" ").length-1].length();
+						tempString = tempString.substring(0,tempInt-1);
+				}
+				else {//case of last word, which has alrdy been tested
+					tempString="";
+				}
+		}//end of tempString while
+		}//end of outer while
 		scannerOne.close();
 		line = "";
-		
-				System.out.println("out of first while");
-				
-				if(found) {
+				//System.out.println("Out of first while (keyword identified)");
+				if(found) {//tempFileName contains destination of word and tempString is the word
+					generalOrganizer(tempFileName,tempString);//used to organize most files
 					file = new File(directory + tempFileName);
 				Scanner scannerTwo = new  Scanner (file);
 				while  (scannerTwo.hasNextLine()&&str.trim()!="")  { 
@@ -437,13 +332,12 @@ public class Brain {
 					line = line.substring(0,line.indexOf("|"));
 					if(str.contains(line)) {//if line can be found in string, get category
 						str = str.replace(line, "").trim();
-						//line = line.replace("/","");
 					}
 					longSentenceStructArr=appendToArray(longSentenceStructArr,category);
 					if(str.replace(" ","")=="") {//if we run out of words
 						break;
 					}else {
-						//keywordOrganizer(str);
+						keywordOrganizer(str);//organize keywords.txt around new str
 						str = identifySentenceStructure(str);
 					}
 				}
@@ -452,20 +346,15 @@ public class Brain {
 			} catch (IOException e) {
 				System.out.println("ERROR: NO STREAM!! (Gone one too many times"
 						+ " through recurssion without closing stream and read is attempted)");
-				//e.printStackTrace();
+				//e.printStackTrace();//useful for troubleshooting
 			}
-			      
-			        
 	        return str;
 	}//end of method
-	
 	
 	private static String responseCenter(String[] sentStructArr) {
 		
 		return "";
 	}
-
-	//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java
 	
 	private static String[] appendToArray(String[] arr, String str) {
 		for(int x=0;x<arr.length;x++) {
@@ -476,5 +365,17 @@ public class Brain {
 		}
 		return arr;
 	}
-	
-}
+
+	//private static void errorAttributer() {//infers any errors in userInput	
+	//}
+	//types of words:greetings, question words, queeries (lol) like hows ur current status,
+	//filler,		
+	//when special keywords are called, group up info in array containing special	
+//in file.txt, can have flag at end of line of trigger to signal collection of rest of info
+//so that we can collect information in the commands/triggers (eg. open [insert file name] need
+//to know info of file name to open a file!)
+//need to also make flag reader in file below (just after it replaces str? and before it assigns final
+//category to shortSentenceStructArr, since goal is for category to
+//also include the additional info)
+
+}//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java

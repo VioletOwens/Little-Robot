@@ -1,25 +1,16 @@
 hello|Common greetings
-hey|Common greetings
-hi|Common greetings
+how are you doing|Status checkers
+how do you do|Status checkers
+how are you|Status checkers
 heya|Common greetings
 hiya|Common greetings
 heyo|Common greetings
-
-
-good morning|Timed greetings
-good afternoon|Timed greetings
-good evening|Timed greetings
-
-
-nice to meet you|Kind greeting
+hey|Common greetings
+hi|Common greetings
 its nice to meet you|Kind greeting
-
-whats up|Status checkers
-
-how do you do?|Status checkers
-
-how are you doing|Status checkers
-
 whats your status|Status checkers
-
-how are you?|Status checkers
+nice to meet you|Kind greeting
+good afternoon|Timed greetings
+good morning|Timed greetings
+good evening|Timed greetings
+whats up|Status checkers

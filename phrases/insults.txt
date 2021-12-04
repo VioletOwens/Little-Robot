@@ -1,11 +1,11 @@
-you suck|Common insult
-u suck|Common insult
-no one likes you|Common insult
-i hate u|Common insult
-i hate you|Common insult
 die|Death
-u should die|Death
+no one likes you|Common insult
 you should die|Death
-kys|Death
 kill yourself|Death
+u should die|Death
 kill urself|Death
+i hate you|Common insult
+you suck|Common insult
+i hate u|Common insult
+u suck|Common insult
+kys|Death
