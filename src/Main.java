@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 		        Scene scene = new Scene(root);
 		        stage.setScene(scene);
 		        stage.show();
+		        
 				} catch(Exception e) {
 		    	e.printStackTrace();
 		    }

@@ -17,9 +17,9 @@ u should die//insults.txt
 how are you//greetings.txt
 kill urself//insults.txt
 i hate you//insults.txt
+whats up//greetings.txt
 you suck//insults.txt
 i hate u//insults.txt
-whats up//greetings.txt
 sadness//emotions.txt
 u suck//insults.txt
 hello//greetings.txt

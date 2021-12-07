@@ -359,9 +359,9 @@ public class Brain{
 				scannerTwo.close();
 				}
 			} catch (IOException e) {
-				System.out.println("ERROR: NO STREAM!! (Gone one too many times"
-						+ " through recurssion without closing stream and read is attempted)");
-				//e.printStackTrace();//useful for troubleshooting
+				//System.out.println("ERROR: NO STREAM!! (Gone one too many times"
+				//		+ " through recurssion without closing stream and read is attempted)");
+				e.printStackTrace();//useful for troubleshooting
 			}
 	        return str;
 	}//end of method
