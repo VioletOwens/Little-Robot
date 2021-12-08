@@ -1,3 +1,4 @@
+cp|Action(controlPanelOpen)
 control panel|Action(controlPanelOpen)
 controlpanel|Action(controlPanelOpen)
 open control panel|Action(controlPanelOpen)

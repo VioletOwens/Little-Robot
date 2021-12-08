@@ -1,10 +1,14 @@
 control panel//commands.txt
 controlpanel//commands.txt
+cp//commands.txt
+you are as much as you need to be//positivephrases.txt
+you should be deleted//insults.txt
 its nice to meet you//greetings.txt
 open control panel//commands.txt
 how are you doing//greetings.txt
 whats your status//greetings.txt
 open controlpanel//commands.txt
+i am proud of you//positivephrases.txt
 no one likes you//insults.txt
 nice to meet you//greetings.txt
 you should die//insults.txt
@@ -16,17 +20,33 @@ good evening//greetings.txt
 u should die//insults.txt
 how are you//greetings.txt
 kill urself//insults.txt
+you do well//positivephrases.txt
+you do good//positivephrases.txt
 i hate you//insults.txt
+doing good//emotions.txt
+doing well//emotions.txt
+happiness//emotions.txt
+you smell//insults.txt
 whats up//greetings.txt
 you suck//insults.txt
 i hate u//insults.txt
+jealousy//emotions.txt
 sadness//emotions.txt
+fearful//emotions.txt
+jealous//emotions.txt
 u suck//insults.txt
 hello//greetings.txt
+anger//emotions.txt
+happy//emotions.txt
+wahoo//emotions.txt
 heya//greetings.txt
 hiya//greetings.txt
 heyo//greetings.txt
+fear//emotions.txt
+love//emotions.txt
+hate//emotions.txt
 hey//greetings.txt
 die//insults.txt
 kys//insults.txt
+sad//emotions.txt
 hi//greetings.txt

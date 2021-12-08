@@ -16,6 +16,8 @@ public class Brain{
 	static String[] longSentenceStructArr = null;
 	static String[] shortSentenceStructArr=null;
 	static String[] commandArray = {"Action"};
+    static String[] statusList = {"Any","Normal", "WILD!"};
+    static String[] listOfCategories= {""};
 	Brain(String userInput) throws FileNotFoundException {
 		this.userInput = userInput;		
 		interpretInput(userInput);
@@ -392,6 +394,113 @@ public class Brain{
 		return arr;
 	}
 
+	public static String[] removeNullInArray(String[] arr) {
+		int numberOfNull=0;
+		String[] nullessArr;
+		for(int x=0;x<arr.length; x++) {
+			if(arr[x]==null||arr[x].equals("")) {
+				numberOfNull++;
+			}
+		}
+		if(numberOfNull==0) {
+			return arr;
+		}else if(arr.length-numberOfNull<=1) {
+			nullessArr = new String[1];
+		}else {
+			nullessArr = new String[arr.length-numberOfNull];
+		}
+		for(int x=0, y=0;x<arr.length;x++) {
+			if(arr[x]!=null&&!arr[x].equals("")) {
+				nullessArr[y]=arr[x];
+				y++;
+			}
+		}
+		return nullessArr;
+	}
+	
+	public static String toWholeFile(String[] arr, int startingIndex) {
+		String wholeFile = "";
+		
+		for(int x=startingIndex; x<arr.length;x++) {
+			if(!arr[x].equals("")&&!(arr[x].contains("]")||arr[x].contains("["))) {
+			if(x<=0) {
+				wholeFile="[" + arr[x] + "]";
+			}else {
+				wholeFile = wholeFile + "\n"+ "[" + arr[x] + "]";
+			}
+		}else {
+			if(x<=0) {
+				wholeFile=arr[x];
+			}else {
+				wholeFile = wholeFile + "\n"+ arr[x];
+			}
+		}
+		}
+		return wholeFile;
+	}
+	
+	public static void appendToFile(String fileName, String str){
+		File file = new File (directory + fileName); 
+		FileWriter output = null;
+		Scanner scanner = null;
+		try {
+			scanner = new  Scanner (file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String tempString = "";
+		String wholeFile = "";
+        while(scanner.hasNextLine()) {
+        	tempString = scanner.nextLine();
+        	if(wholeFile.equals("")) {
+        		wholeFile = tempString;
+        	}else {
+            	wholeFile = wholeFile + "\n" + tempString;
+        	}
+        	if(!scanner.hasNextLine()) {
+        		wholeFile = tempString + "\n" + str;
+        	}
+        }
+	    try {
+			output = new FileWriter(directory + fileName);
+		    output.write(wholeFile);
+		    output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void removeFromFile(String fileName, String str) {
+		File file = new File (directory + fileName); 
+		Scanner scanner = null;
+		 FileWriter output = null;
+
+		try {
+			scanner = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String tempString = "";
+		String wholeFile = "";
+        while(scanner.hasNextLine()) {
+        	if(!tempString.equals(str)) {
+        	tempString = scanner.nextLine();
+        	if(wholeFile.equals("")) {
+        		wholeFile = tempString;
+        	}else {
+            	wholeFile = wholeFile + "\n" + tempString;
+        	}
+        	}
+        }
+	    try {
+			output = new FileWriter(directory + fileName);
+		    output.write(wholeFile);
+		    output.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	//private static void errorAttributer() {//infers any errors in userInput	
 	//}
 	//types of words:greetings, question words, queeries (lol) like hows ur current status,

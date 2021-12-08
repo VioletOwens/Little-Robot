@@ -15,17 +15,17 @@
             <ComboBox fx:id="UICategoryComboBox" layoutX="147.0" layoutY="59.0" prefWidth="150.0" promptText="User-Input category" />
             <ComboBox fx:id="currentStatusComboBox" layoutX="147.0" layoutY="127.0" prefWidth="150.0" promptText="Current status" />
             <ComboBox fx:id="responseCategoryComboBox" layoutX="147.0" layoutY="188.0" prefWidth="150.0" promptText="Response category" />
-            <Button layoutX="72.0" layoutY="275.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="ADD">
+            <Button fx:id="AddCategoryManagerPanelBtn" layoutX="72.0" layoutY="275.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="ADD">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button layoutX="206.0" layoutY="275.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="REMOVE">
+            <Button fx:id="RemoveCategoryManagerPanelBtn" layoutX="206.0" layoutY="275.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="REMOVE">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Label layoutX="36.0" layoutY="59.0" prefHeight="25.0" prefWidth="75.0" text="If user says ">
+            <Label layoutX="31.0" layoutY="59.0" prefHeight="25.0" prefWidth="96.0" text="If user inputs a ">
                <font>
                   <Font size="14.0" />
                </font>
@@ -35,7 +35,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Label layoutX="36.0" layoutY="189.0" prefHeight="25.0" prefWidth="96.0" text="respond with">
+            <Label layoutX="36.0" layoutY="189.0" prefHeight="25.0" prefWidth="96.0" text="respond with a">
                <font>
                   <Font size="14.0" />
                </font>
@@ -61,7 +61,7 @@
       </AnchorPane>
       <VBox layoutX="314.0" layoutY="27.0" prefHeight="293.0" prefWidth="226.0">
          <children>
-            <Label alignment="TOP_LEFT" prefHeight="294.0" prefWidth="226.0" text="[CATEGORY LIST HERE]">
+            <Label fx:id="listOfCategoryLabel" alignment="TOP_LEFT" prefHeight="294.0" prefWidth="226.0" text="[CATEGORY LIST HERE]">
                <font>
                   <Font size="14.0" />
                </font>
@@ -70,7 +70,7 @@
       </VBox>
       <VBox layoutY="367.0" prefHeight="192.0" prefWidth="521.0">
          <children>
-            <Label alignment="TOP_LEFT" prefHeight="195.0" prefWidth="521.0" text="[CONNECTED CATEGORIES HERE]">
+            <Label fx:id="connectedCategoryLabel" alignment="TOP_LEFT" prefHeight="195.0" prefWidth="521.0" text="[CONNECTED CATEGORIES HERE]">
                <font>
                   <Font size="14.0" />
                </font>

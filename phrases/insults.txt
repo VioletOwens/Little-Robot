@@ -1,11 +1,13 @@
-you suck|Common insult
-you should die|Death
-no one likes you|Common insult
-kill yourself|Death
-u should die|Death
-kill urself|Death
-i hate you|Common insult
-i hate u|Common insult
-u suck|Common insult
-die|Death
-kys|Death
+you suck|Common Insult
+you should die|Death Threat
+no one likes you|Common Insult
+kill yourself|Death Threat
+u should die|Death Threat
+kill urself|Death Threat
+i hate you|Common Insult
+i hate u|Common Insult
+u suck|Common Insult
+die|Death Threat
+kys|Death Threat
+you smell|Common Insult
+you should be deleted|Death Threat
