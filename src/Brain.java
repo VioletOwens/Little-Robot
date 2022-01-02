@@ -415,6 +415,9 @@ public class Brain{
 				y++;
 			}
 		}
+		if(nullessArr.length<2&&nullessArr[0]==null) {
+			nullessArr[0] = "";
+		}
 		return nullessArr;
 	}
 	
@@ -450,6 +453,15 @@ public class Brain{
 		}
 		String tempString = "";
 		String wholeFile = "";
+		if(!scanner.hasNextLine()) {
+			try {
+				output = new FileWriter(directory + fileName);
+			    output.write(str);
+			    output.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else {
         while(scanner.hasNextLine()) {
         	tempString = scanner.nextLine();
         	if(wholeFile.equals("")) {
@@ -469,6 +481,7 @@ public class Brain{
 			e.printStackTrace();
 		}
 	}
+	}
 	
 	public static void removeFromFile(String fileName, String str) {
 		File file = new File (directory + fileName); 
@@ -483,8 +496,8 @@ public class Brain{
 		String tempString = "";
 		String wholeFile = "";
         while(scanner.hasNextLine()) {
-        	if(!tempString.equals(str)) {
         	tempString = scanner.nextLine();
+        	if(!tempString.equals(str)) {
         	if(wholeFile.equals("")) {
         		wholeFile = tempString;
         	}else {
@@ -500,7 +513,67 @@ public class Brain{
 			e.printStackTrace();
 		}
 	}
+
+	public static String replaceLast(String UI, String searchFor, String replaceWith) {
+		if(UI.contains(searchFor)) {
+		UI = UI.substring(0,UI.lastIndexOf(searchFor)) + replaceWith
+				+ UI.substring(UI.lastIndexOf(searchFor) + searchFor.length(), UI.length());}
+		return UI;
+	}
 	
+	public static int count(String str, char targetChar) {
+		int counter = 0;
+		for(int x=0; x<str.length();x++) {
+			if(str.charAt(x)==targetChar){
+				counter++;
+			}
+		}
+		return counter;
+	}
+	public static Boolean flexibleBracketTest(String str) {
+		//objective of this method is to test whether the format is correct and ready to read
+		if((!str.contains("[")&&!str.contains("]"))
+				||!str.replace(str.substring(firstIndexOfChar(str,'['),str.lastIndexOf("]")+1)
+				, "").equals("")) {
+			//if removing substring between [] makes str != "" then return false 
+			//need to implement above thing
+			return false;
+		}
+		//this may need an error boolean to measure if errors occur?
+		Boolean openBracket = false;
+		Boolean closeBracket = false;
+		
+		String tempString = str;
+		tempString = replaceLast(tempString,"]","");
+		tempString = replaceFirstChar(tempString,'[',"");
+		for(int x=0; x<tempString.length();x++) {
+			if(tempString.charAt(x)=='['&&!closeBracket) {
+				//case of [
+				openBracket=true;
+			}else if(tempString.charAt(x)=='['&&closeBracket) {
+				//case of ][<-
+				openBracket=true;
+				break;
+			}
+			if(tempString.charAt(x)==']'&&!openBracket) {
+				//case of ->][
+				closeBracket=true;
+				break;
+			}else if(tempString.charAt(x)==']'&&openBracket) {
+				//case of []<-
+				openBracket = false;
+				closeBracket =false;
+			}
+			
+		}
+		
+		if(openBracket!=closeBracket) {
+			//true if passed the test, false if not or no brackets
+			return false;
+		}else {
+			return true;
+		}
+	}
 	//private static void errorAttributer() {//infers any errors in userInput	
 	//}
 	//types of words:greetings, question words, queeries (lol) like hows ur current status,
@@ -512,5 +585,29 @@ public class Brain{
 //need to also make flag reader in file below (just after it replaces str? and before it assigns final
 //category to shortSentenceStructArr, since goal is for category to
 //also include the additional info)
+
+	public static String replaceFirstChar(String str, char target, String replacement) {
+		for(int x=0;x<str.length();x++) {
+			if(str.charAt(x)==target) {
+				if(x==0) {
+					return replacement + str.substring(1, str.length());
+				}else {
+					return str.substring(0, x-1) + replacement + str.substring(x+1
+							,str.length());
+				}
+			}
+		}
+		return str;
+	}
+	
+	public static int firstIndexOfChar(String str, char target) {
+		for(int x=0;x<str.length();x++) {
+			if(str.charAt(x)==target) {
+				return x;
+			}
+		}
+		return -1;
+	}
+	
 
 }//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java

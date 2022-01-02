@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
-
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,11 +13,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -27,18 +22,23 @@ import javafx.stage.Stage;
 
 public class Controller implements Initializable{
 	
+	//Main program
 	@FXML 
 	private TextField mainTextField;
 	@FXML
 	private Label label;
 	@FXML
 	private Button clearButton;
+	
+	//Control Panel
 	@FXML
 	private Button Category_Manager;
 	@FXML
 	private Button testButton;
 	@FXML
 	private Button Calculator;
+	
+	//CategoryManagerPanel
 	@FXML
 	private ComboBox<String> UICategoryComboBox;
 	@FXML
@@ -53,11 +53,30 @@ public class Controller implements Initializable{
 	private Button AddCategoryManagerPanelBtn;
 	@FXML
 	private Button RemoveCategoryManagerPanelBtn;
-
+	@FXML
+	private Button MoreCategoryManagerPanelBtn;
+	
+	//CustomCategoryManagerPanel
+	@FXML
+	private ComboBox<String> customCategoryManagerPanelStatusComboBox;
+	@FXML
+	private TextField customCategoryManagerPanelUITextField;
+	@FXML
+	private TextField customCategoryManagerPanelResponseTextField;
+	@FXML
+	private TextField customCategoryManagerPanelSearchTextField;
+	@FXML
+	private Button customCategoryManagerPanelAddBtn;
+	@FXML
+	private Button customCategoryManagerPanelRemoveBtn;
+	@FXML
+	private Label customCategoryManagerCustomGroupLabel;
+	
+	/*
 	private Stage stage;
 	private Scene scene;
 	private Parent root;
-	/*
+	
 	@FXML
 	  private void handleKeyPressed(KeyEvent ke) throws FileNotFoundException{
 		System.out.println("source of text is:" + ke.getSource());
@@ -86,6 +105,68 @@ public class Controller implements Initializable{
 		System.out.println("testButton button pressed");
 	}
 	
+	public void customCategoryManagerPanelAddBtnMethod(ActionEvent event) throws IOException{
+		if(customCategoryManagerPanelUITextField.getText().length()!=0&&
+				customCategoryManagerPanelResponseTextField.getText().length()!=0
+				&&customCategoryManagerPanelStatusComboBox.getValue()!=null){
+		String UI = customCategoryManagerPanelUITextField.getText();
+		String categoryGroup = "";
+		String response = customCategoryManagerPanelResponseTextField.getText();
+		if(Brain.count(UI, '[')!=Brain.count(UI, ']')
+				||Brain.count(response, '[')!=Brain.count(response, ']')) {
+			System.out.println("Invalid inputs, try again!");
+		}else {
+			if(!Brain.flexibleBracketTest(UI)) {
+				UI = "[" + UI + "]";
+				customCategoryManagerPanelUITextField.setText(UI);
+			}
+			if(!Brain.flexibleBracketTest(response)) {
+				response = "[" + response + "]";
+				customCategoryManagerPanelResponseTextField.setText(response);
+			}
+			categoryGroup = UI + 
+				"["	+ customCategoryManagerPanelStatusComboBox.getValue() + "]"
+			+ response;
+    		System.out.println("the categoryGroup is:" + categoryGroup);
+    		if(customCategoryManagerCustomGroupLabel.getText().contains(categoryGroup)) {
+    			System.out.println("This has already been added, try again!");
+    		}else {
+    			customCategoryManagerCustomGroupLabel.setText(customCategoryManagerCustomGroupLabel.getText()+"\n"
+            			+ categoryGroup);
+				Brain.appendToFile("customcategorygrouping.txt",categoryGroup);
+				//doesnt append to empty files
+    		}
+		}//end of else
+		}//end of if(
+	}
+	
+	public void customCategoryManagerPanelRemoveBtnMethod(ActionEvent event) throws IOException{
+		if(customCategoryManagerPanelUITextField.getText().length()!=0&&
+				customCategoryManagerPanelResponseTextField.getText().length()!=0
+				&&customCategoryManagerPanelStatusComboBox.getValue()!=null){
+		String[] tempStringArr = customCategoryManagerCustomGroupLabel.getText().split("\n");
+		String UI = customCategoryManagerPanelUITextField.getText();
+		String response = customCategoryManagerPanelResponseTextField.getText();
+		String categoryGroup = UI + 
+				"["	+ customCategoryManagerPanelStatusComboBox.getValue() + "]"
+			+ response;	
+	
+		
+    		if(customCategoryManagerCustomGroupLabel.getText().contains(categoryGroup)) {
+		for(int x=0; x<tempStringArr.length;x++) {
+			if(tempStringArr[x].equals(categoryGroup)) {
+				tempStringArr[x]=null;
+				Brain.removeFromFile("customcategorygrouping.txt",categoryGroup);
+				break;
+			}
+		}
+		tempStringArr = Brain.removeNullInArray(tempStringArr);
+		categoryGroup = Brain.toWholeFile(tempStringArr,0);
+		customCategoryManagerCustomGroupLabel.setText(categoryGroup);
+		}
+		}
+	}
+
 	public void openControlPanel() throws IOException{
 		Parent root = FXMLLoader.load(getClass().getResource("/ControlPanel.fxml"));
 		Stage stage = new Stage();
@@ -148,6 +229,7 @@ public class Controller implements Initializable{
         for(int x=0; x<fileNameList.length;x++) {
         	if(fileNameList[x]!=null) {//making sure that fileNameList is never null
         	file = new File (Brain.directory+fileNameList[x]);
+        	if(scanner!=null) scanner.close();
     		scanner = new Scanner(file);
     		//now search through file in while
     		//need to be able to find exactly amount of lines in all files to set perfect length
@@ -230,7 +312,6 @@ public class Controller implements Initializable{
         //first checking if keywordPhraseFileNameList contains anything that keywords needs
         //then going to check if keywords contains anything we dont know (cant tell in first
         //check)
-        //reusing categoryList here as the extra for things we want to add to keywords.txt
         for(int x=0;x<keywordPhraseFileNameList.length; x++) {
         	if(!keywordSuperString.contains(keywordPhraseFileNameList[x])) {
     			keywordSuperString =keywordSuperString + 
@@ -264,7 +345,17 @@ public class Controller implements Initializable{
   	      outputToFile.close();//applying second contribution to keywords.txt (removing oddities)
 	}
 
-
+	public void openCustomCategoryManagerPanel() throws IOException{
+		System.out.println("openCustomCategoryManagerPanel is called");
+		
+		Parent root = FXMLLoader.load(getClass().getResource("/CustomCategoryManagerPanel.fxml"));
+		Stage stage = new Stage();
+		Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+		
+	}
+	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {//this is ran every time a window is opened
         if(this.mainTextField!=null) {
@@ -293,7 +384,7 @@ public class Controller implements Initializable{
         }
         if(this.connectedCategoryLabel!=null) {
     		File file = new File (Brain.directory + "categorygrouping.txt"); 
-   		    FileWriter output = null;
+   		    //FileWriter output = null;
         	Scanner scanner = null;
     		try {
     			scanner = new  Scanner (file);
@@ -311,11 +402,8 @@ public class Controller implements Initializable{
             	}
             }
             connectedCategoryLabel.setText(wholeFile);
-            
-            
-        }
+        }//end of if(connectedCategoryLabel)
         if(this.AddCategoryManagerPanelBtn!=null) {
-        	
         	AddCategoryManagerPanelBtn.setOnAction(e->{
         		String categoryGroup = "[" + UICategoryComboBox.getValue() + "]" +
 		    			"[" + currentStatusComboBox.getValue() + "]" + 
@@ -347,6 +435,33 @@ public class Controller implements Initializable{
         		connectedCategoryLabel.setText(currentInput);
         	});
         }
+        if(MoreCategoryManagerPanelBtn!=null) {//the method does this better
+        }
+        if(customCategoryManagerPanelStatusComboBox!=null) {
+        	customCategoryManagerPanelStatusComboBox.getItems().addAll(Brain.statusList);
+        }
+        if(customCategoryManagerCustomGroupLabel!=null) {
+    		File file = new File (Brain.directory + "customcategorygrouping.txt"); 
+        	Scanner scanner = null;
+    		try {
+    			scanner = new  Scanner (file);
+    		} catch (FileNotFoundException e) {
+    			e.printStackTrace();
+    		}
+    		String tempString = "";
+    		String wholeFile = "";
+            while(scanner.hasNextLine()) {
+            	tempString = scanner.nextLine();
+            	if(wholeFile.equals("")) {
+            		wholeFile = tempString;
+            	}else {
+                	wholeFile = wholeFile + "\n" + tempString;
+            	}
+            }
+            customCategoryManagerCustomGroupLabel.setText(wholeFile);
+        }
+        
+        
 	}//end of initialize
 
 

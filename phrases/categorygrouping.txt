@@ -1,2 +1,2 @@
-[Death Threat][Any][Death Threat]
-[Common Insult][Any][Common Insult]
+[Common Greetings][Any][Pleasant Greetings]
+[null][null][null]
