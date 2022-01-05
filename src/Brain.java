@@ -421,7 +421,7 @@ public class Brain{
 		return nullessArr;
 	}
 	
-	public static String toWholeFile(String[] arr, int startingIndex) {
+	public static String stringArrToString(String[] arr, int startingIndex) {
 		String wholeFile = "";
 		
 		for(int x=startingIndex; x<arr.length;x++) {
@@ -466,17 +466,17 @@ public class Brain{
         	tempString = scanner.nextLine();
         	if(wholeFile.equals("")) {
         		wholeFile = tempString;
-        	}else {
+        	}else if(scanner.hasNextLine()){
             	wholeFile = wholeFile + "\n" + tempString;
-        	}
-        	if(!scanner.hasNextLine()) {
-        		wholeFile = tempString + "\n" + str;
+        	}else {
+        		wholeFile = wholeFile + "\n" + tempString + "\n" + str;
         	}
         }
 	    try {
 			output = new FileWriter(directory + fileName);
 		    output.write(wholeFile);
 		    output.close();
+		    scanner.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -608,6 +608,47 @@ public class Brain{
 		}
 		return -1;
 	}
+
 	
+	public static String getWholeFileToString(String filename) {
+		File file = new File (Brain.directory + filename); 
+    	Scanner scanner = null;
+		try {
+			scanner = new  Scanner (file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String tempString = "";
+		String wholeFile = "";
+        while(scanner.hasNextLine()) {
+        	tempString = scanner.nextLine();
+        	if(wholeFile.equals("")) {
+        		wholeFile = tempString;
+        	}else {
+            	wholeFile = wholeFile + "\n" + tempString;
+        	}
+        }
+		return wholeFile;
+	}
+	
+	public static String[] sortCustomGroupList(String target, String[] arr) {
+    	//test whole file arr against what is in search bar to know what to display
+		//return string arr of files to be displayed
+		String[] newArr = new String[arr.length];
+		int counter = 0;
+		for(int i=0; i<arr.length;i++) {
+			if(arr[i].contains(target)) {
+				newArr[counter]=arr[i];
+				counter++;
+			}
+		}
+		newArr = removeNullInArray(newArr);
+		return newArr;
+	}
+	
+	public static int countNumberOfMatchingChars(String str1, String str2) {
+		
+		return 0;
+	}
 
 }//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java

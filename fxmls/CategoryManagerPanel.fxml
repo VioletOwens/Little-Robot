@@ -15,12 +15,12 @@
             <ComboBox fx:id="UICategoryComboBox" layoutX="147.0" layoutY="59.0" prefWidth="150.0" promptText="User-Input category" />
             <ComboBox fx:id="currentStatusComboBox" layoutX="147.0" layoutY="127.0" prefWidth="150.0" promptText="Current status" />
             <ComboBox fx:id="responseCategoryComboBox" layoutX="147.0" layoutY="188.0" prefWidth="150.0" promptText="Response category" />
-            <Button fx:id="AddCategoryManagerPanelBtn" layoutX="42.0" layoutY="275.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="ADD">
+            <Button fx:id="AddCategoryManagerPanelBtn" layoutX="36.0" layoutY="249.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="ADD">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="RemoveCategoryManagerPanelBtn" layoutX="133.0" layoutY="275.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="REMOVE">
+            <Button fx:id="RemoveCategoryManagerPanelBtn" layoutX="121.0" layoutY="249.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="REMOVE">
                <font>
                   <Font size="14.0" />
                </font>
@@ -57,7 +57,7 @@
             </Label>
             <Slider layoutX="15.0" layoutY="322.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="14.0" prefWidth="311.0" />
             <Slider layoutX="313.0" layoutY="-5.0" orientation="VERTICAL" prefHeight="340.0" prefWidth="14.0" />
-            <Button fx:id="MoreCategoryManagerPanelBtn" layoutX="222.0" layoutY="275.0" mnemonicParsing="false" onAction="#openCustomCategoryManagerPanel" prefHeight="40.0" prefWidth="75.0" text="MORE">
+            <Button fx:id="CategoryModeManagerPanelBtn" layoutX="212.0" layoutY="244.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="96.0" text="CATEGORY MODE" wrapText="true">
                <font>
                   <Font size="14.0" />
                </font>

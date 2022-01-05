@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -15,6 +18,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -27,14 +31,12 @@ public class Controller implements Initializable{
 	private TextField mainTextField;
 	@FXML
 	private Label label;
-	@FXML
-	private Button clearButton;
 	
 	//Control Panel
 	@FXML
 	private Button Category_Manager;
 	@FXML
-	private Button testButton;
+	private Button customCategoryManagerButton;
 	@FXML
 	private Button Calculator;
 	
@@ -54,7 +56,7 @@ public class Controller implements Initializable{
 	@FXML
 	private Button RemoveCategoryManagerPanelBtn;
 	@FXML
-	private Button MoreCategoryManagerPanelBtn;
+	private Button CategoryModeManagerPanelBtn;
 	
 	//CustomCategoryManagerPanel
 	@FXML
@@ -71,27 +73,10 @@ public class Controller implements Initializable{
 	private Button customCategoryManagerPanelRemoveBtn;
 	@FXML
 	private Label customCategoryManagerCustomGroupLabel;
-	
-	/*
-	private Stage stage;
-	private Scene scene;
-	private Parent root;
-	
 	@FXML
-	  private void handleKeyPressed(KeyEvent ke) throws FileNotFoundException{
-		System.out.println("source of text is:" + ke.getSource());
-	    if(ke.getCode()==KeyCode.ENTER) {
-	    	System.out.println(textField.getText());
-	    	new Brain(textField.getText());
-	    }
-	  }
-	  */
+	private ListView<String> customCategoryManagerCustomGroupListView;
 
 	  
-
-	public void clearAction(ActionEvent event) throws IOException{
-		label.setText("");	
-	}
 	
 	public void calculator(ActionEvent event) throws IOException{
 		System.out.println("Calculator button pressed");
@@ -117,24 +102,23 @@ public class Controller implements Initializable{
 			System.out.println("Invalid inputs, try again!");
 		}else {
 			if(!Brain.flexibleBracketTest(UI)) {
+				//tests whether the string has brackets in the correct format around it
 				UI = "[" + UI + "]";
 				customCategoryManagerPanelUITextField.setText(UI);
 			}
 			if(!Brain.flexibleBracketTest(response)) {
+				//tests whether the string has brackets in the correct format around it
 				response = "[" + response + "]";
 				customCategoryManagerPanelResponseTextField.setText(response);
 			}
 			categoryGroup = UI + 
 				"["	+ customCategoryManagerPanelStatusComboBox.getValue() + "]"
 			+ response;
-    		System.out.println("the categoryGroup is:" + categoryGroup);
-    		if(customCategoryManagerCustomGroupLabel.getText().contains(categoryGroup)) {
+    		if(customCategoryManagerCustomGroupListView.getItems().contains(categoryGroup)) {
     			System.out.println("This has already been added, try again!");
     		}else {
-    			customCategoryManagerCustomGroupLabel.setText(customCategoryManagerCustomGroupLabel.getText()+"\n"
-            			+ categoryGroup);
+    			customCategoryManagerCustomGroupListView.getItems().add(categoryGroup);
 				Brain.appendToFile("customcategorygrouping.txt",categoryGroup);
-				//doesnt append to empty files
     		}
 		}//end of else
 		}//end of if(
@@ -144,28 +128,23 @@ public class Controller implements Initializable{
 		if(customCategoryManagerPanelUITextField.getText().length()!=0&&
 				customCategoryManagerPanelResponseTextField.getText().length()!=0
 				&&customCategoryManagerPanelStatusComboBox.getValue()!=null){
-		String[] tempStringArr = customCategoryManagerCustomGroupLabel.getText().split("\n");
 		String UI = customCategoryManagerPanelUITextField.getText();
 		String response = customCategoryManagerPanelResponseTextField.getText();
+		if(!Brain.flexibleBracketTest(UI)) {
+			UI = "[" + UI + "]";
+			customCategoryManagerPanelUITextField.setText(UI);
+		}
+		if(!Brain.flexibleBracketTest(response)) {
+			response = "[" + response + "]";
+			customCategoryManagerPanelResponseTextField.setText(response);
+		}
 		String categoryGroup = UI + 
 				"["	+ customCategoryManagerPanelStatusComboBox.getValue() + "]"
 			+ response;	
-	
-		
-    		if(customCategoryManagerCustomGroupLabel.getText().contains(categoryGroup)) {
-		for(int x=0; x<tempStringArr.length;x++) {
-			if(tempStringArr[x].equals(categoryGroup)) {
-				tempStringArr[x]=null;
-				Brain.removeFromFile("customcategorygrouping.txt",categoryGroup);
-				break;
-			}
-		}
-		tempStringArr = Brain.removeNullInArray(tempStringArr);
-		categoryGroup = Brain.toWholeFile(tempStringArr,0);
-		customCategoryManagerCustomGroupLabel.setText(categoryGroup);
+		customCategoryManagerCustomGroupListView.getItems().remove(categoryGroup);
+		Brain.removeFromFile("customcategorygrouping.txt",categoryGroup);
 		}
 		}
-	}
 
 	public void openControlPanel() throws IOException{
 		Parent root = FXMLLoader.load(getClass().getResource("/ControlPanel.fxml"));
@@ -379,7 +358,7 @@ public class Controller implements Initializable{
         }
         if(this.listOfCategoryLabel!=null) {
         	if(!Brain.listOfCategories.equals(new String[]{""})) {
-            	listOfCategoryLabel.setText(Brain.toWholeFile(Brain.listOfCategories,0));
+            	listOfCategoryLabel.setText(Brain.stringArrToString(Brain.listOfCategories,0));
         	}
         }
         if(this.connectedCategoryLabel!=null) {
@@ -431,11 +410,12 @@ public class Controller implements Initializable{
         			}
         		}
         		tempStringArr = Brain.removeNullInArray(tempStringArr);
-        		currentInput = Brain.toWholeFile(tempStringArr,0);
+        		currentInput = Brain.stringArrToString(tempStringArr,0);
         		connectedCategoryLabel.setText(currentInput);
         	});
         }
-        if(MoreCategoryManagerPanelBtn!=null) {//the method does this better
+        if(CategoryModeManagerPanelBtn!=null) {
+        	
         }
         if(customCategoryManagerPanelStatusComboBox!=null) {
         	customCategoryManagerPanelStatusComboBox.getItems().addAll(Brain.statusList);
@@ -459,6 +439,35 @@ public class Controller implements Initializable{
             	}
             }
             customCategoryManagerCustomGroupLabel.setText(wholeFile);
+        }
+        if(customCategoryManagerCustomGroupListView!=null) {
+        	String wholeFileString =
+            		Brain.getWholeFileToString("customcategorygrouping.txt");
+            ObservableList<String> listOfString = FXCollections.
+            		observableArrayList(wholeFileString.split("\n"));
+            customCategoryManagerCustomGroupListView.setItems(listOfString);       	
+        }
+        
+        if(customCategoryManagerPanelSearchTextField!=null) {
+        	customCategoryManagerPanelSearchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+            	@Override
+        		public void handle(KeyEvent k) {
+                	String wholeFileString =
+            		Brain.getWholeFileToString("customcategorygrouping.txt");
+                if(customCategoryManagerPanelSearchTextField.getText().equals("")) {
+                	ObservableList<String> unsortedList = FXCollections.observableArrayList(
+                			wholeFileString.split("\n"));
+                    customCategoryManagerCustomGroupListView.setItems(unsortedList); 
+                }else if(k.getCode().isDigitKey()||k.getCode().isLetterKey()||
+                		k.getCode().isWhitespaceKey()){
+                        ObservableList<String> sortedList = FXCollections.observableArrayList(
+    						Brain.sortCustomGroupList(customCategoryManagerPanelSearchTextField
+        								.getText(),wholeFileString.split("\n")));
+                        customCategoryManagerCustomGroupListView.setItems(sortedList);  
+                    }
+                
+                }
+            	});
         }
         
         

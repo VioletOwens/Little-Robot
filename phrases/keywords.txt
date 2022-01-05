@@ -36,15 +36,15 @@ fearful//emotions.txt
 jealous//emotions.txt
 u suck//insults.txt
 hello//greetings.txt
-anger//emotions.txt
 happy//emotions.txt
+anger//emotions.txt
 wahoo//emotions.txt
 heya//greetings.txt
 hiya//greetings.txt
 heyo//greetings.txt
+hate//emotions.txt
 fear//emotions.txt
 love//emotions.txt
-hate//emotions.txt
 hey//greetings.txt
 die//insults.txt
 kys//insults.txt
