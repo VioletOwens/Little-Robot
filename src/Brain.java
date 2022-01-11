@@ -14,11 +14,17 @@ public class Brain{
 	 final static String keywordFileName = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\keywords.txt";
 	final static String directory = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\";
 	static String[] longSentenceStructArr = null;
-	static String[] shortSentenceStructArr=null;
+	static String[] shortSentenceStructArr = null;
 	static String[] commandArray = {"Action"};
-    static String[] statusList = {"Any","Normal", "WILD!"};
-    static String[] listOfCategories= {""};
+    static String[] listOfStatuses = {"Any","Normal", "WILD!"};
+    static String[] listOfCategories = {""};
+    static String[] listOfPhrases = {""};
+    static String[] listOfFiles = {""};
+    static String[] listOfFileNames = {""};
+    static String[] listOfPhraseFileNameCombo = {""};
+    static String[] filesToExcludeFromSearches = {""};
 	Brain(String userInput) throws FileNotFoundException {
+		updateLists();
 		this.userInput = userInput;		
 		interpretInput(userInput);
 	}
@@ -172,6 +178,7 @@ public class Brain{
 	}
 	
 	private static void generalOrganizer(String fileName, String UI) {
+		//used to organize most files and clean up any messes, if any.
 		if(!fileName.contains(".txt")){//if it doesnt include .txt, append it at end.
 			fileName = fileName + ".txt";
 		}
@@ -355,6 +362,7 @@ public class Brain{
 						break;
 					}else {
 						keywordOrganizer(str);//organize keywords.txt around new str
+						//Recursion until entire string is understood
 						str = identifySentenceStructure(str);
 					}
 				}
@@ -530,6 +538,7 @@ public class Brain{
 		}
 		return counter;
 	}
+	
 	public static Boolean flexibleBracketTest(String str) {
 		//objective of this method is to test whether the format is correct and ready to read
 		if((!str.contains("[")&&!str.contains("]"))
@@ -574,17 +583,6 @@ public class Brain{
 			return true;
 		}
 	}
-	//private static void errorAttributer() {//infers any errors in userInput	
-	//}
-	//types of words:greetings, question words, queeries (lol) like hows ur current status,
-	//filler,		
-	//when special keywords are called, group up info in array containing special	
-//in file.txt, can have flag at end of line of trigger to signal collection of rest of info
-//so that we can collect information in the commands/triggers (eg. open [insert file name] need
-//to know info of file name to open a file!)
-//need to also make flag reader in file below (just after it replaces str? and before it assigns final
-//category to shortSentenceStructArr, since goal is for category to
-//also include the additional info)
 
 	public static String replaceFirstChar(String str, char target, String replacement) {
 		for(int x=0;x<str.length();x++) {
@@ -646,9 +644,201 @@ public class Brain{
 		return newArr;
 	}
 	
-	public static int countNumberOfMatchingChars(String str1, String str2) {
-		
-		return 0;
-	}
 
+
+	public static void updateLists() throws FileNotFoundException {
+		 //currentStatusComboBox.getItems().addAll(statusList);
+		String[] categoryList = null;
+		String[] phraseList = null;
+		String[] phraseFileNameList = null;
+		String[] fileNameList = null;
+		String [] excludedFileNameList = {"keywords.txt","filelist.txt","categorygrouping.txt",
+				"categorylist.txt","customcategorygrouping.txt","commands.txt"};
+		String tempString = "";
+		Boolean validFile=false;
+		File file;
+		Scanner sc;
+		int counter=0;
+
+        //need to search every phrase .txt file for categories list (for categoryManager)
+		//need to search for every phrase and record it in phrase list (for categoryManager)
+		//need to search for every status and record it in status list (for categoryManager)
+		//may as well include the corresponding phrase-category (for ???)
+		//may as well include the corresponding phrase-fileName (for keywords.txt)
+		//may as well fix end of file, or append "unknown" if needed
+		//
+        File dir = new File(directory);
+        String[] children = dir.list();
+        if (children == null)System.out.println("THE PHRASE FILES ARE GONE!!!");
+        	//finding fileNameList length
+        	for(int x=0, z=0; x<children.length;x++) {
+        		validFile=true;//ensuring all the files added are valid
+        		for(int y=0;y<excludedFileNameList.length;y++) {
+        			if(excludedFileNameList[y].equals(children[x])) {
+        				validFile=false;
+        				break;
+        			}
+        		}
+        		if(validFile) z++;
+        		if(x==children.length-1) {
+        			fileNameList = new String[z];
+        		}
+        	}
+        	
+        	//Assigning fileNameList
+        	for(int x=0, z=0; x<children.length;x++) {
+        		validFile=true;//ensuring all the files added are valid
+        		for(int y=0;y<excludedFileNameList.length;y++) {
+        			if(excludedFileNameList[y].equals(children[x])) {
+        				validFile=false;
+        				break;
+        			}
+        		}
+        		if(validFile) {
+        			fileNameList[z] = children[x];
+        			z++;
+        		}
+        	}
+        	//fileNameList is filled with valid file names
+        	//counting the number of total lines in all files & number of total categories
+
+        	for(int x=0, y=0, z=0; x<fileNameList.length;x++) {
+        		y = y + countLinesInFile(fileNameList[x]);
+        		z = z + toWholeFileCategory(fileNameList[x]).split("\n").length;
+        		if(x==fileNameList.length-1) {//triggers at the end of the final for run
+                	phraseList = new String[y];
+            		phraseFileNameList = new String[y];
+            		categoryList = new String[z];
+        		}
+        	}
+        	
+            for(int x=0, z=0 , i=0; x<fileNameList.length;x++) {
+        	   file = new File(directory + fileNameList[x]);
+					sc = new Scanner(file);
+
+				while(sc.hasNextLine()) {//first find phrase and fileName
+					tempString=sc.nextLine();
+		    		System.out.println("tempString is: " + tempString);
+					phraseList[z] = tempString.substring(0, tempString.indexOf('|'));
+					phraseFileNameList[z]=tempString.substring(0, tempString.indexOf('|'))
+							+ "//" + fileNameList[x];
+					z++;
+				}
+				//now finding the categories in this file
+				for(int y=0;y<toWholeFileCategory(fileNameList[x]).split("\n").length;y++, i++) {
+					categoryList[i]=toWholeFileCategory(fileNameList[x]).split("\n")[y];
+				}
+           }
+            listOfPhrases = phraseList;
+            listOfPhraseFileNameCombo = phraseFileNameList;
+    		listOfCategories = categoryList;
+    		listOfFileNames=children;
+        }
+	
+	public static int countLinesInFile(String fileName) throws FileNotFoundException {
+
+		int counter = 0;
+		File file = new File(directory + fileName);
+		Scanner sc = new Scanner(file);
+		while(sc.hasNextLine()) {
+			sc.nextLine();
+			counter++;
+		}
+		sc.close();
+		return counter;
+	}
+	
+	public static String toWholeFileCategory(String fileName) throws FileNotFoundException {
+		String superStringCategory= "";
+		String category = "";
+		String line = "";
+		File file = new File(directory + fileName);
+		Scanner sc = new Scanner(file);
+		while(sc.hasNextLine()) {
+			line=sc.nextLine();
+			category = line.substring(line.indexOf('|')+1, line.length());
+			
+			if(sc.hasNextLine()&&!superStringCategory.contains(category)) {
+			superStringCategory=superStringCategory.concat(category)+"\n";
+			
+			}else if(!superStringCategory.contains(category)){
+				superStringCategory=superStringCategory.concat(category);
+			}
+		}
+		sc.close();
+		return superStringCategory;
+	}
+	
+	/*
+	 * phrase fixer for files below
+	 * 
+        file = new File (Brain.keywordFileName);
+    	scanner.close();
+		scanner =  new  Scanner (file);
+		tempString="";
+		counterOne=0;
+        while(scanner.hasNextLine()) {
+        	tempString = scanner.nextLine();
+        	if(scanner.hasNextLine()) {
+            	keywordSuperString = keywordSuperString.concat(tempString) + "\n";
+        	}
+        	else {
+            	keywordSuperString = keywordSuperString.concat(tempString);
+        	}
+        	counterOne++;
+        }
+        scanner.close();
+        
+        //first checking if keywordPhraseFileNameList contains anything that keywords needs
+        //then going to check if keywords contains anything we dont know (cant tell in first
+        //check)
+        for(int x=0;x<keywordPhraseFileNameList.length; x++) {
+        	if(!keywordSuperString.contains(keywordPhraseFileNameList[x])) {
+    			keywordSuperString =keywordSuperString + 
+    					"\n" + keywordPhraseFileNameList[x];
+        	}
+        }        
+	      outputToFile = new FileWriter(Brain.keywordFileName);
+	      outputToFile.write(keywordSuperString);
+	      outputToFile.close();//applying first contribution to keywords.txt
+	        file = new File (Brain.keywordFileName);
+			scanner =  new  Scanner (file);
+			tempString="";
+			keywordSuperString="";//remaking file without oddities 
+        	while(scanner.hasNextLine()) {
+        		tempString = scanner.nextLine();
+                for(int x=0; x<keywordPhraseFileNameList.length;x++) {
+                	if(keywordPhraseFileNameList[x].equals(tempString)) {
+                		if(!keywordSuperString.equals("")) {
+                    		keywordSuperString=keywordSuperString+"\n"+
+                    				keywordPhraseFileNameList[x];
+                    		break;
+                		}else {
+                			keywordSuperString=keywordPhraseFileNameList[x];
+                			break;
+                		}
+                	}	
+                }
+        	}
+            	outputToFile = new FileWriter(Brain.keywordFileName);
+  	      outputToFile.write(keywordSuperString);
+  	      outputToFile.close();//applying second contribution to keywords.txt (removing oddities)
+	 * 
+	 * 
+	 * 
+	 */
+	
+	//private static void errorAttributer() {//infers any errors in userInput	
+	//}
+	//types of words:greetings, question words, queeries (lol) like hows ur current status,
+	//filler,		
+	//when special keywords are called, group up info in array containing special	
+//in file.txt, can have flag at end of line of trigger to signal collection of rest of info
+//so that we can collect information in the commands/triggers (eg. open [insert file name] need
+//to know info of file name to open a file!)
+//need to also make flag reader in file below (just after it replaces str? and before it assigns final
+//category to shortSentenceStructArr, since goal is for category to
+//also include the additional info)
+
+	
 }//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java
