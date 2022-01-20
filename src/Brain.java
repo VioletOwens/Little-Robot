@@ -3,15 +3,15 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
-
+	
 /**
  * @author Violet Owens
  */
 public class Brain{
 	
-	 private String userInput; 
-	 final String fileListFileName = "filelist.txt";
-	 final static String keywordFileName = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\keywords.txt";
+	private String userInput; 
+	final String fileListFileName = "filelist.txt";
+	final static String keywordFileName = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\keywords.txt";
 	final static String directory = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\";
 	static String[] longSentenceStructArr = null;
 	static String[] shortSentenceStructArr = null;
@@ -19,11 +19,14 @@ public class Brain{
     static String[] listOfStatuses = {"Any","Normal", "WILD!"};
     static String[] listOfCategories = {""};
     static String[] listOfPhrases = {""};
+    static String[][] listOfCategoriesAndTheirPhrases = {{""}};
     static String[] listOfFiles = {""};
     static String[] listOfFileNames = {""};
     static String[] listOfPhraseFileNameCombo = {""};
+    static String[] listOfCategoryFileNameCombo = {""};
+    static String[] filesToIncludeInSearches = {""};//not currently set up
     static String[] filesToExcludeFromSearches = {""};
-	Brain(String userInput) throws FileNotFoundException {
+	Brain(String userInput) throws IOException {
 		updateLists();
 		this.userInput = userInput;		
 		interpretInput(userInput);
@@ -42,7 +45,7 @@ public class Brain{
 		identifySentenceStructure(UI);//comprehending the string
 		organizeSentStructArr();//used to reduce clutter in this method
 		String response = responseCenter(shortSentenceStructArr);
-		System.out.println("Response formed, that being:" + response);
+		if(!response.equals(""))System.out.println("Response formed, that being:" + response);
 	}
 	
 	private static void organizeSentStructArr() {
@@ -56,7 +59,7 @@ public class Brain{
 		shortSentenceStructArr = new String[counter];
 		for(int x=0;x<shortSentenceStructArr.length;x++) {
 			shortSentenceStructArr[x]=longSentenceStructArr[x];
-			System.out.println("shortSentenceStructArr of " + x + " is:" + shortSentenceStructArr[x]);
+			//System.out.println("shortSentenceStructArr of " + x + " is:" + shortSentenceStructArr[x]);
 		}		
 	}
 		
@@ -386,7 +389,7 @@ public class Brain{
 		}
 		
 	}
-
+	
 	private static String responseCenter(String[] sentStructArr) {
 		
 		return "";
@@ -401,7 +404,7 @@ public class Brain{
 		}
 		return arr;
 	}
-
+	
 	public static String[] removeNullInArray(String[] arr) {
 		int numberOfNull=0;
 		String[] nullessArr;
@@ -451,7 +454,10 @@ public class Brain{
 	}
 	
 	public static void appendToFile(String fileName, String str){
-		File file = new File (directory + fileName); 
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
+		File file = new File (fileName); 
 		FileWriter output = null;
 		Scanner scanner = null;
 		try {
@@ -463,7 +469,7 @@ public class Brain{
 		String wholeFile = "";
 		if(!scanner.hasNextLine()) {
 			try {
-				output = new FileWriter(directory + fileName);
+				output = new FileWriter(fileName);
 			    output.write(str);
 			    output.close();
 			} catch (IOException e) {
@@ -472,16 +478,19 @@ public class Brain{
 		}else {
         while(scanner.hasNextLine()) {
         	tempString = scanner.nextLine();
-        	if(wholeFile.equals("")) {
+        	if(wholeFile.equals("")&&scanner.hasNextLine()) {
         		wholeFile = tempString;
-        	}else if(scanner.hasNextLine()){
+        	}else if(wholeFile.equals("")&&!scanner.hasNextLine()) {
+        		wholeFile = tempString + "\n" + str;
+        	}
+        	else if(scanner.hasNextLine()){
             	wholeFile = wholeFile + "\n" + tempString;
         	}else {
         		wholeFile = wholeFile + "\n" + tempString + "\n" + str;
         	}
         }
 	    try {
-			output = new FileWriter(directory + fileName);
+			output = new FileWriter(fileName);
 		    output.write(wholeFile);
 		    output.close();
 		    scanner.close();
@@ -492,7 +501,10 @@ public class Brain{
 	}
 	
 	public static void removeFromFile(String fileName, String str) {
-		File file = new File (directory + fileName); 
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
+		File file = new File (fileName); 
 		Scanner scanner = null;
 		 FileWriter output = null;
 
@@ -514,14 +526,14 @@ public class Brain{
         	}
         }
 	    try {
-			output = new FileWriter(directory + fileName);
+			output = new FileWriter(fileName);
 		    output.write(wholeFile);
 		    output.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public static String replaceLast(String UI, String searchFor, String replaceWith) {
 		if(UI.contains(searchFor)) {
 		UI = UI.substring(0,UI.lastIndexOf(searchFor)) + replaceWith
@@ -529,7 +541,7 @@ public class Brain{
 		return UI;
 	}
 	
-	public static int count(String str, char targetChar) {
+	public static int countChars(String str, char targetChar) {
 		int counter = 0;
 		for(int x=0; x<str.length();x++) {
 			if(str.charAt(x)==targetChar){
@@ -539,51 +551,21 @@ public class Brain{
 		return counter;
 	}
 	
-	public static Boolean flexibleBracketTest(String str) {
-		//objective of this method is to test whether the format is correct and ready to read
+	public static Boolean isSurroundedByBrackets(String str) {
+		//objective of this method is to test whether the format is correct and ready to read,
+		//that is to have a pair of '[' and ']' surrounding the whole string
 		if((!str.contains("[")&&!str.contains("]"))
 				||!str.replace(str.substring(firstIndexOfChar(str,'['),str.lastIndexOf("]")+1)
 				, "").equals("")) {
 			//if removing substring between [] makes str != "" then return false 
-			//need to implement above thing
+			//basically vetting bad cases of "hello + [stuff]" and things with no brackets
 			return false;
-		}
-		//this may need an error boolean to measure if errors occur?
-		Boolean openBracket = false;
-		Boolean closeBracket = false;
-		
-		String tempString = str;
-		tempString = replaceLast(tempString,"]","");
-		tempString = replaceFirstChar(tempString,'[',"");
-		for(int x=0; x<tempString.length();x++) {
-			if(tempString.charAt(x)=='['&&!closeBracket) {
-				//case of [
-				openBracket=true;
-			}else if(tempString.charAt(x)=='['&&closeBracket) {
-				//case of ][<-
-				openBracket=true;
-				break;
-			}
-			if(tempString.charAt(x)==']'&&!openBracket) {
-				//case of ->][
-				closeBracket=true;
-				break;
-			}else if(tempString.charAt(x)==']'&&openBracket) {
-				//case of []<-
-				openBracket = false;
-				closeBracket =false;
-			}
-			
-		}
-		
-		if(openBracket!=closeBracket) {
-			//true if passed the test, false if not or no brackets
-			return false;
-		}else {
+		}else if(str.charAt(0)=='['&&str.charAt(str.length()-1)==']') {
 			return true;
 		}
+		return false;
 	}
-
+	
 	public static String replaceFirstChar(String str, char target, String replacement) {
 		for(int x=0;x<str.length();x++) {
 			if(str.charAt(x)==target) {
@@ -606,10 +588,12 @@ public class Brain{
 		}
 		return -1;
 	}
-
 	
-	public static String getWholeFileToString(String filename) {
-		File file = new File (Brain.directory + filename); 
+	public static String getWholeFileToString(String fileName) {
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
+		File file = new File (fileName); 
     	Scanner scanner = null;
 		try {
 			scanner = new  Scanner (file);
@@ -644,21 +628,23 @@ public class Brain{
 		return newArr;
 	}
 	
-
-
-	public static void updateLists() throws FileNotFoundException {
+	public static void updateLists() throws IOException {
 		 //currentStatusComboBox.getItems().addAll(statusList);
 		String[] categoryList = null;
 		String[] phraseList = null;
+		String[] categoryFileNameComboList = null;
 		String[] phraseFileNameList = null;
+		String[][] phraseAndCategoryList = null;
 		String[] fileNameList = null;
-		String [] excludedFileNameList = {"keywords.txt","filelist.txt","categorygrouping.txt",
+		String[] tempStringArr=null;
+		String[] excludedFileNameList = {"keywords.txt","filelist.txt","categorygrouping.txt",
 				"categorylist.txt","customcategorygrouping.txt","commands.txt"};
+		String[] IncludeFileForSearches = {""};
 		String tempString = "";
 		Boolean validFile=false;
 		File file;
 		Scanner sc;
-		int counter=0;
+
 
         //need to search every phrase .txt file for categories list (for categoryManager)
 		//need to search for every phrase and record it in phrase list (for categoryManager)
@@ -682,6 +668,7 @@ public class Brain{
         		if(validFile) z++;
         		if(x==children.length-1) {
         			fileNameList = new String[z];
+        			IncludeFileForSearches = new String[children.length-z];
         		}
         	}
         	
@@ -701,34 +688,100 @@ public class Brain{
         	}
         	//fileNameList is filled with valid file names
         	//counting the number of total lines in all files & number of total categories
-
+        	//and helps remove any empty spaces in the files
         	for(int x=0, y=0, z=0; x<fileNameList.length;x++) {
+    			removeEmptySpaceFromFile(fileNameList[x]);
         		y = y + countLinesInFile(fileNameList[x]);
-        		z = z + toWholeFileCategory(fileNameList[x]).split("\n").length;
-        		if(x==fileNameList.length-1) {//triggers at the end of the final for run
+        		if(countLinesInFile(fileNameList[x])!=0) {//avoiding empty .txt files
+            		z = z + toWholeFileAroundCategories(fileNameList[x]).split("\n").length;
+        		}
+        		if (x==fileNameList.length-1) {//triggers at the end of the final for run 
                 	phraseList = new String[y];
             		phraseFileNameList = new String[y];
             		categoryList = new String[z];
+        			categoryFileNameComboList = new String[z];
         		}
         	}
+
+        
         	
+
+			//now finding List of phrases and its variation as well as categories
             for(int x=0, z=0 , i=0; x<fileNameList.length;x++) {
-        	   file = new File(directory + fileNameList[x]);
+            		file = new File(directory + fileNameList[x]);
 					sc = new Scanner(file);
 
+					//this further vets categories for any empty indexes
+					for(int y=0;y<toWholeFileAroundCategories(fileNameList[x]).split("\n").length;y++) {
+						if(countLinesInFile(fileNameList[x])!=0) {//avoiding empty files
+						categoryList[i]=removeNullInArray(
+								toWholeFileAroundCategories(fileNameList[x]).split("\n"))[y];
+						
+						categoryFileNameComboList[i]=
+								removeNullInArray(toWholeFileAroundCategories(fileNameList[x])
+										.split("\n"))[y] + "|" + fileNameList[x];
+						i++;
+					}
+					}
+					
 				while(sc.hasNextLine()) {//first find phrase and fileName
 					tempString=sc.nextLine();
-		    		System.out.println("tempString is: " + tempString);
+		    		//System.out.println("tempString is: " + tempString);
 					phraseList[z] = tempString.substring(0, tempString.indexOf('|'));
 					phraseFileNameList[z]=tempString.substring(0, tempString.indexOf('|'))
 							+ "//" + fileNameList[x];
 					z++;
 				}
-				//now finding the categories in this file
-				for(int y=0;y<toWholeFileCategory(fileNameList[x]).split("\n").length;y++, i++) {
-					categoryList[i]=toWholeFileCategory(fileNameList[x]).split("\n")[y];
-				}
+	            sc.close();
            }
+            
+			//now need to initialize listOfCategoriesAndTheirPhrases, so need # of categories
+        	//and number of phrases under each
+            //now assigning listOfCategoriesAndTheirPhrases
+            
+            phraseAndCategoryList = new String[categoryList.length][];
+            
+            for(int x=0, z=0; x<categoryList.length;x++) {
+            	z=0;
+        	for(int y=0; y<fileNameList.length;y++) {
+        		file = new File(directory + fileNameList[y]);
+				sc = new Scanner(file);
+				while(sc.hasNextLine()) {
+					tempString=sc.nextLine();
+					if(tempString.substring(tempString.indexOf("|")+1,tempString.length())
+							.equals(categoryList[x])) {
+						z++;
+					}
+				}
+        	}
+        	//the length of each will be the number of lines corresponding to that category 
+        	//in the files plus one to accommodate the category name
+        	tempStringArr = new String[z+1];
+        	phraseAndCategoryList[x] = tempStringArr;
+        	phraseAndCategoryList[x][0]=categoryList[x];
+        	}
+            
+            //now assigning the phrases to the empty array spots
+            for(int x=0, z=0; x<categoryList.length;x++) {
+            	z=0;
+        	for(int y=0; y<fileNameList.length;y++) {
+        		file = new File(directory + fileNameList[y]);
+				sc = new Scanner(file);
+				while(sc.hasNextLine()) {
+					tempString=sc.nextLine();
+					if(tempString.substring(tempString.indexOf("|")+1,tempString.length())
+							.equals(categoryList[x])) {
+						phraseAndCategoryList[x][z+1]=tempString.substring(0, 
+			            		tempString.indexOf("|"));
+						z++;
+					}
+				}
+        	}
+            }//CategoryFileNameComboList
+            listOfCategoryFileNameCombo = categoryFileNameComboList;
+            filesToIncludeInSearches = fileNameList;
+            filesToExcludeFromSearches = excludedFileNameList;
+            listOfCategoriesAndTheirPhrases=phraseAndCategoryList;
             listOfPhrases = phraseList;
             listOfPhraseFileNameCombo = phraseFileNameList;
     		listOfCategories = categoryList;
@@ -736,9 +789,11 @@ public class Brain{
         }
 	
 	public static int countLinesInFile(String fileName) throws FileNotFoundException {
-
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
 		int counter = 0;
-		File file = new File(directory + fileName);
+		File file = new File(fileName);
 		Scanner sc = new Scanner(file);
 		while(sc.hasNextLine()) {
 			sc.nextLine();
@@ -748,11 +803,26 @@ public class Brain{
 		return counter;
 	}
 	
-	public static String toWholeFileCategory(String fileName) throws FileNotFoundException {
+	public static String stringArrToWholeString(String[] strArr){
+		String str = "";
+		for(int x=0; x<strArr.length;x++) {
+			if(x==strArr.length-1) {
+				str = str.concat(strArr[x]);
+			}else {
+				str = str.concat(strArr[x] + "\n");
+			}	
+		}
+		return str;
+	}
+	
+	public static String toWholeFileAroundCategories(String fileName) throws FileNotFoundException {
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
 		String superStringCategory= "";
 		String category = "";
 		String line = "";
-		File file = new File(directory + fileName);
+		File file = new File(fileName);
 		Scanner sc = new Scanner(file);
 		while(sc.hasNextLine()) {
 			line=sc.nextLine();
@@ -769,6 +839,95 @@ public class Brain{
 		return superStringCategory;
 	}
 	
+	public static String toWholeFileAroundPhrasesAndCategories(String fileName) throws FileNotFoundException{
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
+		String superStringCategoryAndPhrase= "";
+		File file = new File(fileName);
+		Scanner sc = new Scanner(file);
+		while(sc.hasNextLine()) {
+			if(sc.hasNextLine()) {
+				superStringCategoryAndPhrase=superStringCategoryAndPhrase.concat(sc.nextLine()
+						+"\n");
+			}else {
+				superStringCategoryAndPhrase=superStringCategoryAndPhrase.concat(sc.nextLine());
+			}
+		}
+		sc.close();
+		return superStringCategoryAndPhrase.trim();
+	}
+	
+	public static void removeEmptySpaceFromFile(String fileName) throws IOException{
+	
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
+		File file = new File(fileName);
+		Scanner sc = new Scanner(file);
+	    FileWriter output;
+		String line = "";
+		String str = "";
+		while(sc.hasNextLine()) {
+
+			line = sc.nextLine();
+			if(sc.hasNextLine()&&!line.equals("")) {
+				str = str.concat(line + "\n");
+			}else if(!line.equals("")){
+				str = str.concat(line);
+			}
+		}
+		output = new FileWriter(fileName);
+		if(str!="") {
+			output.write(str);
+		}
+		output.close();
+		sc.close();
+	}
+	
+	public static Boolean isStringAvailable(String str) {
+		//this tests whether a string is already in the system 
+		//or whether it can be added without problem
+		for(int x=0; x<listOfFileNames.length;x++) {
+			if(str.equals(listOfFileNames[x].substring(0, listOfFileNames[x].indexOf(".")-1))) {
+				return false;
+			}
+		}
+		for(int x=0; x<listOfCategories.length;x++) {
+			if(str.equals(listOfCategories[x])) {
+				return false;
+			}	
+		}
+		for(int x=0; x<listOfPhrases.length;x++) {
+			if(str.equals(listOfPhrases[x])) {
+				return false;
+			}	
+		}
+		return true;
+	}
+	
+	public static Boolean isStringInFile(String fileName, String str) {
+		//checks whether a string is equal to any line from given file
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
+		File file = new File(fileName);
+		Scanner sc = null;
+		try {
+			sc = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String line = "";
+		while(sc.hasNextLine()) {
+			line = sc.nextLine();
+			if(line.equals(str)) {
+				return true;
+			}	
+		}
+		return false;
+	}
+	//public static String 
 	/*
 	 * phrase fixer for files below
 	 * 

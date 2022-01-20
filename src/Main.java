@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 				Parent root = FXMLLoader.load(fxmlResource);
 		        Scene scene = new Scene(root);
 		        stage.setScene(scene);
+		        stage.setTitle("Little Robot");
 		        stage.show();		        
 				} catch(Exception e) {
 		    	e.printStackTrace();

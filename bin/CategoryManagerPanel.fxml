@@ -4,80 +4,90 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="559.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <children>
-      <AnchorPane layoutX="-17.0" prefHeight="375.0" prefWidth="362.0">
+      <AnchorPane fx:id="CategoryManagerAnchorPane" layoutX="-17.0" prefHeight="375.0" prefWidth="362.0">
          <children>
-            <ComboBox fx:id="UICategoryComboBox" layoutX="147.0" layoutY="59.0" prefWidth="150.0" promptText="User-Input category" />
-            <ComboBox fx:id="currentStatusComboBox" layoutX="147.0" layoutY="127.0" prefWidth="150.0" promptText="Current status" />
-            <ComboBox fx:id="responseCategoryComboBox" layoutX="147.0" layoutY="188.0" prefWidth="150.0" promptText="Response category" />
-            <Button fx:id="AddCategoryManagerPanelBtn" layoutX="36.0" layoutY="249.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="ADD">
+            <ComboBox fx:id="UICategoryComboBox" layoutX="147.0" layoutY="25.0" prefWidth="150.0" promptText="User-Input category" />
+            <ComboBox fx:id="currentStatusComboBox" layoutX="147.0" layoutY="78.0" prefWidth="150.0" promptText="Current status" />
+            <ComboBox fx:id="responseCategoryComboBox" layoutX="147.0" layoutY="140.0" prefWidth="150.0" promptText="Response category" />
+            <Button fx:id="DeleteCategoryCategoryManagerPanelBtn" layoutX="121.0" layoutY="188.0" mnemonicParsing="false" onAction="#DeleteCategoryCategoryManagerPanelBtnMethod" prefHeight="50.0" prefWidth="87.0" text="DELETE CATEGORY" textAlignment="CENTER" visible="false" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="AddAsCategoryCategoryManagerPanelBtn" layoutX="26.0" layoutY="188.0" mnemonicParsing="false" onAction="#AddAsCategoryCategoryManagerPanelBtnMethod" prefHeight="50.0" prefWidth="87.0" text="ADD AS CATEGORY" textAlignment="CENTER" visible="false" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="AddCategoryManagerPanelBtn" layoutX="37.0" layoutY="249.0" mnemonicParsing="false" onAction="#AddCategoryManagerPanelBtnMethod" prefHeight="50.0" prefWidth="75.0" text="ADD GROUP" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="RemoveCategoryManagerPanelBtn" layoutX="121.0" layoutY="249.0" mnemonicParsing="false" onAction="#RemoveCategoryManagerPanelBtnMethod" prefHeight="50.0" prefWidth="75.0" text="REMOVE GROUP" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Label fx:id="CategoryManagerPanelLabelOne" layoutX="26.0" layoutY="25.0" prefHeight="25.0" prefWidth="96.0" text="If user inputs a ">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="CategoryManagerPanelLabelTwo" layoutX="39.0" layoutY="78.0" prefHeight="25.0" prefWidth="96.0" text="while status is">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="CategoryManagerPanelLabelThree" layoutX="36.0" layoutY="140.0" prefHeight="25.0" prefWidth="102.0" text="respond with (a)">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label fx:id="CategoryManagerPanelLabelFour" layoutX="18.0" layoutY="332.0" prefHeight="25.0" prefWidth="389.0" text="Groups of connected categories are below.">
                <font>
                   <Font size="16.0" />
                </font>
-            </Button>
-            <Button fx:id="RemoveCategoryManagerPanelBtn" layoutX="121.0" layoutY="249.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" text="REMOVE">
+            </Label>
+            <Button fx:id="CategoryEditorCategoryManagerPanelBtn" layoutX="204.0" layoutY="249.0" mnemonicParsing="false" onAction="#CategoryEditorCategoryManagerPanelBtnMethod" prefHeight="50.0" prefWidth="99.0" text="CATEGORY EDITOR" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Label layoutX="31.0" layoutY="59.0" prefHeight="25.0" prefWidth="96.0" text="If user inputs a ">
+            <TextField fx:id="CategoryManagerPanelTextfield" layoutX="75.0" layoutY="103.0" prefHeight="26.0" prefWidth="201.0" promptText="Enter a phrase or category" visible="false">
                <font>
                   <Font size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="36.0" layoutY="127.0" prefHeight="25.0" prefWidth="96.0" text="while status is">
+               </font></TextField>
+            <Label fx:id="AltCategoryManagerPanelLabelOne" layoutX="98.0" layoutY="25.0" text="Current category:" visible="false">
                <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="36.0" layoutY="189.0" prefHeight="25.0" prefWidth="96.0" text="respond with a">
+                  <Font size="17.0" />
+               </font></Label>
+            <Label fx:id="AltCategoryManagerPanelLabelTwo" alignment="TOP_CENTER" layoutX="70.0" layoutY="50.0" prefHeight="61.0" prefWidth="201.0" text="CurrentCategoryLabel" textAlignment="CENTER" visible="false" wrapText="true">
                <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="302.0" layoutY="127.0" prefHeight="40.0" prefWidth="11.0" text=",">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Label>
-            <Label layoutX="302.0" layoutY="181.0" prefHeight="40.0" prefWidth="11.0" text=".">
-               <font>
-                  <Font size="25.0" />
-               </font>
-            </Label>
-            <Label layoutX="19.0" layoutY="336.0" prefHeight="25.0" prefWidth="278.0" text="Groups of connected categories here.">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <Slider layoutX="15.0" layoutY="322.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="14.0" prefWidth="311.0" />
-            <Slider layoutX="313.0" layoutY="-5.0" orientation="VERTICAL" prefHeight="340.0" prefWidth="14.0" />
-            <Button fx:id="CategoryModeManagerPanelBtn" layoutX="212.0" layoutY="244.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="96.0" text="CATEGORY MODE" wrapText="true">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Label fx:id="listOfCategoryLabel" alignment="TOP_LEFT" layoutX="64.0" layoutY="13.0" prefHeight="20.0" prefWidth="144.0" text="[CATEGORY LIST HERE]">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
+                  <Font size="17.0" />
+               </font></Label>
+            <Label fx:id="AltCategoryManagerPanelLabelThree" layoutX="63.0" layoutY="140.0" prefHeight="50.0" prefWidth="215.0" text="You can double click a category to select it or a phrase to instantly enter it." visible="false" wrapText="true" />
+            <Separator layoutX="315.0" layoutY="-5.0" mouseTransparent="true" orientation="VERTICAL" prefHeight="334.0" prefWidth="6.0" />
+            <Separator layoutX="18.0" layoutY="323.0" mouseTransparent="true" prefHeight="15.0" prefWidth="540.0" />
          </children>
       </AnchorPane>
       <VBox layoutX="305.0" layoutY="27.0" prefHeight="299.0" prefWidth="235.0">
          <children>
-            <ListView fx:id="CategoryListCategoryManager" prefHeight="299.0" prefWidth="235.0" />
+            <ListView fx:id="ListOfCategories" prefHeight="299.0" prefWidth="235.0" />
          </children>
       </VBox>
-      <VBox layoutY="360.0" prefHeight="199.0" prefWidth="540.0">
+      <VBox layoutY="360.0" prefHeight="200.0" prefWidth="540.0">
          <children>
-            <ListView fx:id="connectedCategoryConnectedList" prefHeight="192.0" prefWidth="526.0" />
+            <ListView fx:id="ListAtBottomOfCategoryManager" prefHeight="200.0" prefWidth="540.0" />
          </children>
       </VBox>
       <Label layoutX="351.0" layoutY="1.0" prefHeight="25.0" prefWidth="165.0" text="List of categories">
@@ -85,6 +95,6 @@
             <Font size="17.0" />
          </font>
       </Label>
-      <Slider layoutX="296.0" layoutY="322.0" prefHeight="14.0" prefWidth="243.0" />
+      <Rectangle fx:id="clickBlockingCategoryManagerRectangle" arcHeight="1.0" arcWidth="1.0" fill="TRANSPARENT" height="362.0" stroke="TRANSPARENT" strokeType="INSIDE" visible="false" width="540.0" />
    </children>
 </AnchorPane>
