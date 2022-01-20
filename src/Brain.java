@@ -550,6 +550,27 @@ public class Brain{
 		}
 		return counter;
 	}
+
+	public static int countNumberOfStringsInFile(String fileName, String str) {
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
+		int counter = 0;
+		File file = new File(fileName);
+		Scanner sc = null;
+		String line = "";
+		try {
+			sc = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		while(sc.hasNextLine()) {
+			line = sc.nextLine();
+			if(line.equals(str)) counter++;
+		}
+		sc.close();
+		return counter;
+	}
 	
 	public static Boolean isSurroundedByBrackets(String str) {
 		//objective of this method is to test whether the format is correct and ready to read,

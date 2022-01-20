@@ -272,15 +272,13 @@ public class Controller implements Initializable{
 						Brain.appendToFile(file, CategoryManagerPanelTextfield.getText() + "|" +
 								AltCategoryManagerPanelLabelTwo.getText());
 					}
+					Brain.updateLists();
 					break;
 				}
 			}			
 		}else {
-			System.out.println("Invalid input for phrase!");
-			
+			System.out.println("Invalid input for phrase!");			
 		}
-
-		
 		}
 		
 		System.out.println("AddCategoryManagerPanelBtn pressed");
@@ -300,7 +298,48 @@ public class Controller implements Initializable{
 		}
 		//things to do if removing a phrase:
 		//
-		
+		if(CategoryManagerPanelTextfield!=null&&CategoryManagerPanelTextfield.getText().length()
+				>1&&ListAtBottomOfCategoryManager.getItems().contains(
+						CategoryManagerPanelTextfield.getText())){
+			
+			String file = "";
+			String category = "";
+			
+			for(int x=0;x<Brain.listOfCategoryFileNameCombo.length;x++) {
+				file=Brain.listOfCategoryFileNameCombo[x].substring(
+						Brain.listOfCategoryFileNameCombo[x].indexOf("|")+1, 
+						Brain.listOfCategoryFileNameCombo[x].length());
+				category = Brain.listOfCategoryFileNameCombo[x].substring(0,
+						Brain.listOfCategoryFileNameCombo[x].indexOf("|"));
+				if(category.equals(AltCategoryManagerPanelLabelTwo.getText())) {
+					if(ListAtBottomOfCategoryManager.getItems().size()>1) {
+						//if the file has more than 1 phrase under that category
+						Brain.removeFromFile(file, 
+								CategoryManagerPanelTextfield.getText()+ "|" + category);
+					}else{
+						//if file has only 1 phrase under that category
+						Brain.removeFromFile(file, 
+								CategoryManagerPanelTextfield.getText()+ "|" + category);
+						Brain.appendToFile(file, "|" + category);
+					}
+					ListAtBottomOfCategoryManager.getItems().remove(
+							CategoryManagerPanelTextfield.getText());
+					Brain.updateLists();
+					break;
+				}
+				
+			}
+			
+			
+			
+			
+			//if(Brain.isStringInFile(, AltCategoryManagerPanelLabelTwo.getText())) {
+				
+			//}
+			
+			
+			
+		}
 		
 		
 		
