@@ -13,6 +13,7 @@ public class Brain{
 	final String fileListFileName = "filelist.txt";
 	final static String keywordFileName = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\keywords.txt";
 	final static String directory = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\";
+	static String tempString = "";
 	static String[] longSentenceStructArr = null;
 	static String[] shortSentenceStructArr = null;
 	static String[] commandArray = {"Action"};

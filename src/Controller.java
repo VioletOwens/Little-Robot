@@ -1,13 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -24,9 +21,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.PopupWindow;
 import javafx.stage.Stage;
 
 public class Controller implements Initializable{
@@ -204,7 +199,10 @@ public class Controller implements Initializable{
 	    	DeleteCategoryCategoryManagerPanelBtn.setVisible(true);
 			AltCategoryManagerPanelLabelOne.setVisible(true);
 			AltCategoryManagerPanelLabelTwo.setVisible(true);
-			AltCategoryManagerPanelLabelThree.setVisible(true);
+			//AltCategoryManagerPanelLabelThree.setVisible(true);
+			//You can double click a category to select it or a phrase to instantly enter it.
+			AltCategoryManagerPanelLabelThree.setText(
+				"You can double click a category to select it or a phrase to instantly enter it.");
 			CategoryManagerPanelTextfield.setVisible(true);
 			CategoryEditorCategoryManagerPanelBtn.setText("CONNECTED CATEGORIES");
 
@@ -226,7 +224,9 @@ public class Controller implements Initializable{
             DeleteCategoryCategoryManagerPanelBtn.setVisible(false);
 			AltCategoryManagerPanelLabelOne.setVisible(false);
 			AltCategoryManagerPanelLabelTwo.setVisible(false);
-			AltCategoryManagerPanelLabelThree.setVisible(false);
+			//AltCategoryManagerPanelLabelThree.setVisible(false);
+			AltCategoryManagerPanelLabelThree.setText(
+					"You can double click a group of connected categories to instantly enter it.");
 			CategoryManagerPanelTextfield.setVisible(false);
 			CategoryEditorCategoryManagerPanelBtn.setText("CATEGORY EDITOR");
 		}
@@ -235,7 +235,7 @@ public class Controller implements Initializable{
 	public void AddCategoryManagerPanelBtnMethod(ActionEvent event) throws IOException{
 		String file = "";
 		String category = "";
-		String tempString = "";
+		//String tempString = "";
 		if(UICategoryComboBox.getValue()!=null&&CurrentStatusComboBox.getValue()!=null
 				&&ResponseCategoryComboBox.getValue()!=null
 				&&UICategoryComboBox.isVisible()&&ResponseCategoryComboBox.isVisible()) {
@@ -287,16 +287,21 @@ public class Controller implements Initializable{
 	}
 	
 	public void RemoveCategoryManagerPanelBtnMethod(ActionEvent event) throws IOException{
-		if(UICategoryComboBox.getValue()!=null&&currentStatusComboBox.getValue()!=null
-				&&responseCategoryComboBox.getValue()!=null
-				&&UICategoryComboBox.isVisible()&&responseCategoryComboBox.isVisible()) {
+		if(UICategoryComboBox.getValue()!=null&&CurrentStatusComboBox.getValue()!=null
+				&&ResponseCategoryComboBox.getValue()!=null
+				&&UICategoryComboBox.isVisible()&&ResponseCategoryComboBox.isVisible()) {
 		String categoryGroup = "[" + UICategoryComboBox.getValue() + "]" +
-    			"[" + currentStatusComboBox.getValue() + "]" + 
-				"[" + responseCategoryComboBox.getValue() + "]";
+    			"[" + CurrentStatusComboBox.getValue() + "]" + 
+				"[" + ResponseCategoryComboBox.getValue() + "]";
 		if(ListAtBottomOfCategoryManager.getItems().contains(categoryGroup)) {
 			ListAtBottomOfCategoryManager.getItems().remove(categoryGroup);
     		Brain.removeFromFile("categorygrouping.txt",categoryGroup);
 		}
+		}else if(UICategoryComboBox.isVisible()&&(
+				UICategoryComboBox.getValue()==null
+				||CurrentStatusComboBox.getValue()==null
+				||ResponseCategoryComboBox.getValue()==null)){
+			System.out.println("Invalid input!");
 		}
 		//things to do if removing a phrase:
 		//
@@ -333,14 +338,11 @@ public class Controller implements Initializable{
 			}
 			
 			
-			
-			
-			//if(Brain.isStringInFile(, AltCategoryManagerPanelLabelTwo.getText())) {
-				
-			//}
-			
-			
-			
+		}else if(CategoryManagerPanelTextfield.isVisible()&&
+				(CategoryManagerPanelTextfield.getText().length()<1||
+						!ListAtBottomOfCategoryManager.getItems().contains(
+						CategoryManagerPanelTextfield.getText()))){
+			System.out.println("Invalid input!");
 		}
 		
 		
@@ -532,7 +534,8 @@ public class Controller implements Initializable{
                 @Override
                 public void handle(MouseEvent click) {
                     //case where we are looking at filenames and selecting where a category goes
-                    if(click.getClickCount() == 2&&!ListAtBottomOfCategoryManager
+                    if(ListAtBottomOfCategoryManager.getSelectionModel().getSelectedItem()!=null
+                    		&&click.getClickCount() == 2&&!ListAtBottomOfCategoryManager
                     		.getSelectionModel().getSelectedItem().equals("")
                     		&&CategoryManagerPanelLabelFour.getText().equals(
             				"Select a source file for the category from the list below.")) {
@@ -619,9 +622,25 @@ public class Controller implements Initializable{
                     		.getSelectionModel().getSelectedItem().equals("")
                     		&&UICategoryComboBox.isVisible()) {
                 	//case of wanting to fulfill in connectedcategorylist double click feature
-                    	UICategoryComboBox.setValue(null);
-                    	CurrentStatusComboBox.setValue(null);
-                    	ResponseCategoryComboBox.setValue(null);
+                    	Brain.tempString = ListAtBottomOfCategoryManager
+                        		.getSelectionModel().getSelectedItem();
+                    	
+                    	UICategoryComboBox.setValue(Brain.tempString
+                        		.substring(1, Brain.tempString.indexOf("]")));
+                    	
+                    	Brain.tempString = Brain.tempString.substring(
+                    			Brain.tempString.indexOf("]")+1, Brain.tempString.length());
+                    	
+                    	CurrentStatusComboBox.setValue(Brain.tempString.substring(
+                    			Brain.tempString.indexOf("[")+1,Brain.tempString.indexOf("]")		)
+                    			);
+                    	
+                    	Brain.tempString = Brain.tempString.substring(
+                    			Brain.tempString.indexOf("]")+1, Brain.tempString.length());
+                    	
+                    	ResponseCategoryComboBox.setValue(Brain.tempString.substring(
+                    			Brain.tempString.indexOf("[")+1,Brain.tempString.indexOf("]")		)
+                    			);
                     	
                     }
   
