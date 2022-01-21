@@ -342,13 +342,54 @@ public class Controller implements Initializable{
 		}
 		
 		
-		
-		
-		System.out.println("RemoveCategoryManagerPanelBtnMethod pressed");
 	}
 	
 	public void DeleteCategoryCategoryManagerPanelBtnMethod(ActionEvent event) throws IOException{
-		System.out.println("DeleteCategoryCategoryManagerPanelBtnMethod pressed");
+		if(CategoryManagerPanelLabelFour.getText().equals(
+				"Phrases relating to the category are below.")&&
+				ListAtBottomOfCategoryManager.getItems().isEmpty()) {
+			String category = "";
+			String newCategory = "";
+			String file = "";
+			int categoryIndex = -1;
+			for(int x=0; x<Brain.listOfCategoryFileNameCombo.length;x++) {
+				category = Brain.listOfCategoryFileNameCombo[x].substring(0, 
+						Brain.listOfCategoryFileNameCombo[x].indexOf("|"));
+				file = Brain.listOfCategoryFileNameCombo[x].substring(
+						Brain.listOfCategoryFileNameCombo[x].indexOf("|")+1,
+						Brain.listOfCategoryFileNameCombo[x].length());
+				if(AltCategoryManagerPanelLabelTwo.getText().equals(category)) {
+					for(int y=0; y<ListOfCategories.getItems().size();y++) {
+						if(ListOfCategories.getItems().get(y)==
+								AltCategoryManagerPanelLabelTwo.getText()) {
+							categoryIndex = y;
+							break;
+						}
+					}
+					
+					ListOfCategories.getItems().remove(AltCategoryManagerPanelLabelTwo.getText());
+					Brain.removeFromFile(file,"|"+category);
+					Brain.updateLists();
+					//current category label needs to be changed and
+					//list at bottom needs to be updated with new label chosen
+					newCategory = ListOfCategories.getItems().get(categoryIndex-1);
+					AltCategoryManagerPanelLabelTwo.setText(newCategory);
+					for(int y=0; y<Brain.listOfCategoriesAndTheirPhrases.length;y++) {
+						if(Brain.listOfCategoriesAndTheirPhrases[y][0].equals(newCategory)){
+							//found correct new category so want to fill list with its phrases
+							for(int z=1; z<Brain.listOfCategoriesAndTheirPhrases[y].length;z++) {
+								ListAtBottomOfCategoryManager.getItems().add(
+										Brain.listOfCategoriesAndTheirPhrases[y][z]);
+							}
+							break;
+						}
+					}
+					break;
+				}
+				}
+		}else {
+			System.out.println("The phrase list must be empty!");
+		}
 	}
 	
 	public void AddAsCategoryCategoryManagerPanelBtnMethod(ActionEvent event) throws IOException{
@@ -530,25 +571,16 @@ public class Controller implements Initializable{
                     	}else {
                     		//case of a known file selected and adding category to it
                     		try {
-                    			String str = Brain.toWholeFileAroundPhrasesAndCategories(
-										ListAtBottomOfCategoryManager.getSelectionModel()
-										.getSelectedItem())
-                    					.concat(
-												"|" + CategoryManagerPanelTextfield.getText());
-						      FileWriter outputToFile = new FileWriter(Brain.directory +
-										ListAtBottomOfCategoryManager.getSelectionModel()
-										.getSelectedItem());
-						     // System.out.println(str);
-						      
-						      outputToFile.write(str);
-						      outputToFile.close();
+                    			Brain.appendToFile(ListAtBottomOfCategoryManager
+                    					.getSelectionModel().getSelectedItem(),
+									"|" + CategoryManagerPanelTextfield.getText());
 						      ListOfCategories.getItems().add(
 						    		  CategoryManagerPanelTextfield.getText());
 						      Brain.updateLists();
 						      CategoryManagerPanelTextfield.setText("");
-								//below here resetting the listatbottom
 			                	CategoryManagerPanelLabelFour.setText(
                           			"Phrases relating to the category are below.");
+				//below here resetting the listatbottom
               	//removes the items in the list and reverts to the categories
           	ListAtBottomOfCategoryManager.getItems().clear();
           	for(int x=0;x<Brain.listOfCategoriesAndTheirPhrases.length;x++) {
@@ -559,6 +591,7 @@ public class Controller implements Initializable{
           				ListAtBottomOfCategoryManager.getItems().add(
           						Brain.listOfCategoriesAndTheirPhrases[x][y]);        				
           			}
+          			break;
           		}
           	}
 							} catch (IOException e) {

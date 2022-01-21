@@ -504,12 +504,12 @@ public class Brain{
 		if(!fileName.contains(directory)) {
 			fileName = directory + fileName;
 		}
-		File file = new File (fileName); 
 		Scanner scanner = null;
 		 FileWriter output = null;
-
+		 File file;
 		try {
-			scanner = new Scanner(file);
+		file = new File (fileName); 
+		scanner = new Scanner(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -770,7 +770,8 @@ public class Brain{
 				while(sc.hasNextLine()) {
 					tempString=sc.nextLine();
 					if(tempString.substring(tempString.indexOf("|")+1,tempString.length())
-							.equals(categoryList[x])) {
+							.equals(categoryList[x])&&tempString.substring(0, tempString
+									.indexOf("|")).length()>0) {//change here 
 						z++;
 					}
 				}
@@ -791,9 +792,9 @@ public class Brain{
 				while(sc.hasNextLine()) {
 					tempString=sc.nextLine();
 					if(tempString.substring(tempString.indexOf("|")+1,tempString.length())
-							.equals(categoryList[x])) {
-						phraseAndCategoryList[x][z+1]=tempString.substring(0, 
-			            		tempString.indexOf("|"));
+							.equals(categoryList[x])&&
+							tempString.substring(0,tempString.indexOf("|")).length()>0) {
+						phraseAndCategoryList[x][z+1]=tempString.substring(0, tempString.indexOf("|"));
 						z++;
 					}
 				}
