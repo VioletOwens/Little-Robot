@@ -49,9 +49,9 @@ public class Controller implements Initializable{
 	@FXML
 	private ComboBox<String> UICategoryComboBox;
 	@FXML
-	private ComboBox<String> currentStatusComboBox;
+	private ComboBox<String> CurrentStatusComboBox;
 	@FXML
-	private ComboBox<String> responseCategoryComboBox;
+	private ComboBox<String> ResponseCategoryComboBox;
 	@FXML
 	private Button AddCategoryManagerPanelBtn;
 	@FXML
@@ -62,6 +62,8 @@ public class Controller implements Initializable{
 	private Button AddAsCategoryCategoryManagerPanelBtn;
 	@FXML
 	private Button DeleteCategoryCategoryManagerPanelBtn;	
+	@FXML
+	private Button UndoCategoryManagerPanelBtn;
 	@FXML
 	private Label CategoryManagerPanelLabelOne;
 	@FXML
@@ -182,8 +184,8 @@ public class Controller implements Initializable{
 			CategoryManagerPanelLabelThree.setVisible(false);
 			CategoryManagerPanelLabelFour.setText("Phrases relating to the category are below.");
 			UICategoryComboBox.setVisible(false);
-			currentStatusComboBox.setVisible(false);
-			responseCategoryComboBox.setVisible(false);
+			CurrentStatusComboBox.setVisible(false);
+			ResponseCategoryComboBox.setVisible(false);
 			//changing ListAtBottomOfCategoryManager to phrases relating to the category
 			ListAtBottomOfCategoryManager.getItems().clear();
 	    	for(int x=0;x<Brain.listOfCategoriesAndTheirPhrases.length;x++) {
@@ -212,8 +214,8 @@ public class Controller implements Initializable{
 			CategoryManagerPanelLabelThree.setVisible(true);
 			CategoryManagerPanelLabelFour.setText("Groups of connected categories here.");
 			UICategoryComboBox.setVisible(true);
-			currentStatusComboBox.setVisible(true);
-			responseCategoryComboBox.setVisible(true);
+			CurrentStatusComboBox.setVisible(true);
+			ResponseCategoryComboBox.setVisible(true);
             ListAtBottomOfCategoryManager.getItems().setAll(Brain.
             		getWholeFileToString("categorygrouping.txt").split("\n"));	
 			AddCategoryManagerPanelBtn.setText("ADD GROUP");
@@ -234,12 +236,12 @@ public class Controller implements Initializable{
 		String file = "";
 		String category = "";
 		String tempString = "";
-		if(UICategoryComboBox.getValue()!=null&&currentStatusComboBox.getValue()!=null
-				&&responseCategoryComboBox.getValue()!=null
-				&&UICategoryComboBox.isVisible()&&responseCategoryComboBox.isVisible()) {
+		if(UICategoryComboBox.getValue()!=null&&CurrentStatusComboBox.getValue()!=null
+				&&ResponseCategoryComboBox.getValue()!=null
+				&&UICategoryComboBox.isVisible()&&ResponseCategoryComboBox.isVisible()) {
 		String categoryGroup = "[" + UICategoryComboBox.getValue() + "]" +
-    			"[" + currentStatusComboBox.getValue() + "]" + 
-				"[" + responseCategoryComboBox.getValue() + "]";
+    			"[" + CurrentStatusComboBox.getValue() + "]" + 
+				"[" + ResponseCategoryComboBox.getValue() + "]";
 		if(!ListAtBottomOfCategoryManager.getItems().contains(categoryGroup)) {
 			ListAtBottomOfCategoryManager.getItems().add(categoryGroup);
 			Brain.appendToFile("categorygrouping.txt",categoryGroup);
@@ -421,6 +423,12 @@ public class Controller implements Initializable{
 		
 	}
 	
+	public void UndoCategoryManagerPanelBtnMethod(ActionEvent event) throws IOException{
+		
+		System.out.println("Undo button pressed");
+		
+		
+	}
 	
 	
 	public void openControlPanel() throws IOException{
@@ -471,15 +479,15 @@ public class Controller implements Initializable{
         	AltCategoryManagerPanelLabelTwo.setText("Commendation");
         }
         
-        if(this.currentStatusComboBox!=null) {
-        currentStatusComboBox.getItems().addAll(Brain.listOfStatuses);
+        if(this.CurrentStatusComboBox!=null) {
+        CurrentStatusComboBox.getItems().addAll(Brain.listOfStatuses);
         }
         if(this.UICategoryComboBox!=null) {
 				UICategoryComboBox.getItems().addAll(Brain.listOfCategories);
         }
-        if(this.responseCategoryComboBox!=null) {
-        	responseCategoryComboBox.getItems().addAll(Brain.listOfCategories);
-        	responseCategoryComboBox.getItems().add("Current Status");
+        if(this.ResponseCategoryComboBox!=null) {
+        	ResponseCategoryComboBox.getItems().addAll(Brain.listOfCategories);
+        	ResponseCategoryComboBox.getItems().add("Current Status");
         }
       
         if(ListAtBottomOfCategoryManager!=null) {
@@ -601,12 +609,20 @@ public class Controller implements Initializable{
                     		
                     	//else if the adding category part because we don't want the double
                     	//click feature to interfere with operations
-                    } else if (click.getClickCount() == 2&&!ListAtBottomOfCategoryManager
+                    }else if(click.getClickCount() == 2&&!ListAtBottomOfCategoryManager
                     		.getSelectionModel().getSelectedItem().equals("")
                             &&CategoryManagerPanelTextfield.isVisible()) {
                     	//setting the textfield equal to the item that was double clicked
                     	CategoryManagerPanelTextfield.setText(
                     	ListAtBottomOfCategoryManager.getSelectionModel().getSelectedItem());
+                    }else if(click.getClickCount() == 2&&!ListAtBottomOfCategoryManager
+                    		.getSelectionModel().getSelectedItem().equals("")
+                    		&&UICategoryComboBox.isVisible()) {
+                	//case of wanting to fulfill in connectedcategorylist double click feature
+                    	UICategoryComboBox.setValue(null);
+                    	CurrentStatusComboBox.setValue(null);
+                    	ResponseCategoryComboBox.setValue(null);
+                    	
                     }
   
                 	}
