@@ -236,7 +236,8 @@ public class Controller implements Initializable{
 		String file = "";
 		String category = "";
 		//String tempString = "";
-		if(UICategoryComboBox.getValue()!=null&&CurrentStatusComboBox.getValue()!=null
+		if(UICategoryComboBox.getValue()!=null
+				&&CurrentStatusComboBox.getValue()!=null
 				&&ResponseCategoryComboBox.getValue()!=null
 				&&UICategoryComboBox.isVisible()&&ResponseCategoryComboBox.isVisible()) {
 		String categoryGroup = "[" + UICategoryComboBox.getValue() + "]" +
@@ -245,7 +246,14 @@ public class Controller implements Initializable{
 		if(!ListAtBottomOfCategoryManager.getItems().contains(categoryGroup)) {
 			ListAtBottomOfCategoryManager.getItems().add(categoryGroup);
 			Brain.appendToFile("categorygrouping.txt",categoryGroup);
+			Brain.inputNewCategoryManagerPanelLastActionInfo("Add", "categorygrouping.txt",
+					categoryGroup);
 		}
+		}else if(UICategoryComboBox.isVisible()&&
+				(UICategoryComboBox.getValue()==null
+				||CurrentStatusComboBox.getValue()==null
+				||ResponseCategoryComboBox.getValue()==null)){
+			System.out.println("Invalid input!");
 		}
 		if(CategoryManagerPanelTextfield.isVisible()) {
 			//ensuring the textfield is a valid phrase
@@ -269,11 +277,20 @@ public class Controller implements Initializable{
 						Brain.removeFromFile(file, "|"+AltCategoryManagerPanelLabelTwo.getText());
 						Brain.appendToFile(file, CategoryManagerPanelTextfield.getText() + "|" +
 							AltCategoryManagerPanelLabelTwo.getText());
+						//have secondary problem because two actions done in one
+						Brain.inputNewCategoryManagerPanelLastActionInfo("Swap", file,
+								"|"+AltCategoryManagerPanelLabelTwo.getText(),
+								CategoryManagerPanelTextfield.getText() + "|" +
+										AltCategoryManagerPanelLabelTwo.getText());								
 					}else {
 						//if there are no empty category phrase spots
 						Brain.appendToFile(file, CategoryManagerPanelTextfield.getText() + "|" +
 								AltCategoryManagerPanelLabelTwo.getText());
+						Brain.inputNewCategoryManagerPanelLastActionInfo("Add", file, 
+								CategoryManagerPanelTextfield.getText() + "|" +
+										AltCategoryManagerPanelLabelTwo.getText());
 					}
+					
 					Brain.updateLists();
 					break;
 				}
@@ -282,11 +299,10 @@ public class Controller implements Initializable{
 			System.out.println("Invalid input for phrase!");			
 		}
 		}
-		
-		System.out.println("AddCategoryManagerPanelBtn pressed");
 	}
 	
 	public void RemoveCategoryManagerPanelBtnMethod(ActionEvent event) throws IOException{
+		String fileName = "categorygrouping.txt";
 		if(UICategoryComboBox.getValue()!=null&&CurrentStatusComboBox.getValue()!=null
 				&&ResponseCategoryComboBox.getValue()!=null
 				&&UICategoryComboBox.isVisible()&&ResponseCategoryComboBox.isVisible()) {
@@ -295,7 +311,9 @@ public class Controller implements Initializable{
 				"[" + ResponseCategoryComboBox.getValue() + "]";
 		if(ListAtBottomOfCategoryManager.getItems().contains(categoryGroup)) {
 			ListAtBottomOfCategoryManager.getItems().remove(categoryGroup);
-    		Brain.removeFromFile("categorygrouping.txt",categoryGroup);
+    		Brain.removeFromFile(fileName,categoryGroup);
+    		Brain.updateLists();
+			Brain.inputNewCategoryManagerPanelLastActionInfo("Remove", fileName,categoryGroup);
 		}
 		}else if(UICategoryComboBox.isVisible()&&(
 				UICategoryComboBox.getValue()==null
@@ -323,11 +341,17 @@ public class Controller implements Initializable{
 						//if the file has more than 1 phrase under that category
 						Brain.removeFromFile(file, 
 								CategoryManagerPanelTextfield.getText()+ "|" + category);
+						Brain.inputNewCategoryManagerPanelLastActionInfo("Remove",file,
+								CategoryManagerPanelTextfield.getText()+ "|" + category);
+
 					}else{
 						//if file has only 1 phrase under that category
 						Brain.removeFromFile(file, 
 								CategoryManagerPanelTextfield.getText()+ "|" + category);
 						Brain.appendToFile(file, "|" + category);
+						Brain.inputNewCategoryManagerPanelLastActionInfo("Swap",file,
+								CategoryManagerPanelTextfield.getText()+ "|" + category,
+								"|" + category);
 					}
 					ListAtBottomOfCategoryManager.getItems().remove(
 							CategoryManagerPanelTextfield.getText());
@@ -370,7 +394,7 @@ public class Controller implements Initializable{
 							break;
 						}
 					}
-					
+					Brain.inputNewCategoryManagerPanelLastActionInfo("Remove",file,"|" + category);
 					ListOfCategories.getItems().remove(AltCategoryManagerPanelLabelTwo.getText());
 					Brain.removeFromFile(file,"|"+category);
 					Brain.updateLists();
@@ -426,11 +450,190 @@ public class Controller implements Initializable{
 	}
 	
 	public void UndoCategoryManagerPanelBtnMethod(ActionEvent event) throws IOException{
+		String[] lastAction = Brain.getCategoryManagerPanelLastActionInfo();
+		String tempString="";
+		String[] oppositeAction = new String[lastAction.length];
+		String[] listOfFunctions = {"add","remove","delete","swap","replace","create","append"};
+		String[][] listOfFunctionsOpposite = {{"add","remove"},{"delete","add"},{"remove","add"},
+				{"swap","swap"},{"switch","switch"},{"replace","replace"},{"create", "remove"},
+				{"append","remove"}};
+		//the first index is the opposite of the second one, intended to be read [0] then [1]
 		
-		System.out.println("Undo button pressed");
+		oppositeAction[1] = lastAction[1];
+		oppositeAction[2] = lastAction[2];
+		if(lastAction.length==4) {
+			oppositeAction[3] = lastAction[3];
+		}
 		
-		
+		for(int x=0; x<listOfFunctionsOpposite.length;x++) {
+			if(listOfFunctionsOpposite[x][0].equals(lastAction[0])) {
+				oppositeAction[0] = listOfFunctionsOpposite[x][1];
+				break;
+			}
+		}
+		//performing opposite action below.
+		if(oppositeAction[2].contains("[")&&UICategoryComboBox.isVisible()) {
+			switch(oppositeAction[0]) {
+			case "add":
+				Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
+				Brain.updateLists();
+				ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]);
+				break;
+				
+			case "append":
+				Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
+				Brain.updateLists();
+				ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]);
+				break;
+				
+			case "create":
+				Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
+				Brain.updateLists();
+				ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]);
+				break;
+
+			case "remove":
+				Brain.removeFromFile(oppositeAction[1], oppositeAction[2]);
+				Brain.updateLists();
+				ListAtBottomOfCategoryManager.getItems().remove(oppositeAction[2]);
+
+				break;
+				
+			case "delete":
+				Brain.removeFromFile(oppositeAction[1], oppositeAction[2]);
+				Brain.updateLists();
+				ListAtBottomOfCategoryManager.getItems().remove(oppositeAction[2]);
+				break;
+			}
+			//finally allowing action of the undo process to be remembered, so can be undone if so 
+			//pleased.
+			if(oppositeAction.length==4) {
+				Brain.inputNewCategoryManagerPanelLastActionInfo(oppositeAction[0],oppositeAction[1],
+						oppositeAction[2],oppositeAction[3]);
+			}else if(oppositeAction.length==3){
+				Brain.inputNewCategoryManagerPanelLastActionInfo(oppositeAction[0],oppositeAction[1],
+						oppositeAction[2]);
+			}
+		}else if(CategoryManagerPanelTextfield.isVisible()&&!oppositeAction[2].contains("[")){
+			//avoiding category grouping strings by doing this
+		switch(oppositeAction[0]) {
+		case "add":
+			Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
+			Brain.updateLists();
+			if(oppositeAction[2].subSequence(0, oppositeAction[2].indexOf("|")).length()==0) {
+				//if phrase part is empty, it must be a category
+				if(!oppositeAction[2].substring(oppositeAction[2].indexOf("|")+1,
+						oppositeAction[2].length()).equals("")) {
+				ListOfCategories.getItems().add(oppositeAction[2]
+						.substring(oppositeAction[2].indexOf("|")+1,oppositeAction[2].length()));
+				}
+
+				}else {
+				//else it must be a phrase.
+					ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]
+							.substring(0,oppositeAction[2].indexOf("|")));			}
+			break;
+			
+		case "append":
+			Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
+			Brain.updateLists();
+			if(oppositeAction[2].subSequence(0, oppositeAction[2].indexOf("|")).length()==0) {
+				//if phrase part is empty, it must be a category
+				ListOfCategories.getItems().add(oppositeAction[2]
+						.substring(oppositeAction[2].indexOf("|")+1,oppositeAction[2].length()));
+				}else {
+				//else it must be a phrase.
+					ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]
+							.substring(0,oppositeAction[2].indexOf("|")));			}
+			break;
+			
+		case "create":
+			Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
+			Brain.updateLists();
+			if(oppositeAction[2].subSequence(0, oppositeAction[2].indexOf("|")).length()==0) {
+				//if phrase part is empty, it must be a category
+				ListOfCategories.getItems().add(oppositeAction[2]
+						.substring(oppositeAction[2].indexOf("|")+1,oppositeAction[2].length()));
+				}else {
+				//else it must be a phrase.
+					ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]
+							.substring(0,oppositeAction[2].indexOf("|")));				}
+			break;
+
+		case "remove":
+			Brain.removeFromFile(oppositeAction[1], oppositeAction[2]);
+			Brain.updateLists();
+			if(oppositeAction[2].subSequence(0, oppositeAction[2].indexOf("|")).length()==0) {
+				//if phrase part is empty, it must be a category
+				ListOfCategories.getItems().remove(oppositeAction[2]
+						.substring(oppositeAction[2].indexOf("|")+1,oppositeAction[2].length()));
+				}else {
+				//else it must be a phrase.
+				ListAtBottomOfCategoryManager.getItems().remove(oppositeAction[2]
+						.substring(0,oppositeAction[2].indexOf("|")));			
+				}
+			break;
+			
+		case "delete":
+			Brain.removeFromFile(oppositeAction[1], oppositeAction[2]);
+			Brain.updateLists();
+			if(oppositeAction[2].subSequence(0, oppositeAction[2].indexOf("|")).length()==0) {
+				//if phrase part is empty, it must be a category
+				ListOfCategories.getItems().remove(oppositeAction[2]
+						.substring(oppositeAction[2].indexOf("|")+1,oppositeAction[2].length()));				
+				}else {
+				//else it must be a phrase.
+				ListAtBottomOfCategoryManager.getItems().remove(oppositeAction[2]
+						.substring(0,oppositeAction[2].indexOf("|")));			
+				}
+			break;
+			
+		case "swap":
+			Brain.removeFromFile(oppositeAction[1], oppositeAction[3]);
+			Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
+			Brain.updateLists();
+			
+			ListAtBottomOfCategoryManager.getItems().remove(oppositeAction[3]
+					.substring(0,oppositeAction[3].indexOf("|")));
+			if(oppositeAction[2].substring(0,oppositeAction[2].indexOf("|")).length()!=0) {
+				ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]
+						.substring(0,oppositeAction[2].indexOf("|")));
+			}
+
+			//always a phrase
+			tempString=oppositeAction[3];
+			oppositeAction[3] = oppositeAction[2];
+			oppositeAction[2] = tempString;
+			break;
+			
+		case "replace":
+			Brain.removeFromFile(oppositeAction[1], oppositeAction[3]);
+			Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
+			Brain.updateLists();
+			//always a phrase
+			ListAtBottomOfCategoryManager.getItems().remove(oppositeAction[3]
+					.substring(0,oppositeAction[3].indexOf("|")));
+			if(oppositeAction[2].substring(0,oppositeAction[2].indexOf("|")).length()!=0) {
+				ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]
+						.substring(0,oppositeAction[2].indexOf("|")));
+			}
+			tempString=oppositeAction[3];
+			oppositeAction[3] = oppositeAction[2];
+			oppositeAction[2] = tempString;
+			break;
+		}
+		//finally allowing action of the undo process to be remembered, so can be undone if so 
+		//pleased.
+		if(oppositeAction.length==4) {
+			Brain.inputNewCategoryManagerPanelLastActionInfo(oppositeAction[0],oppositeAction[1],
+					oppositeAction[2],oppositeAction[3]);
+		}else if(oppositeAction.length==3){
+			Brain.inputNewCategoryManagerPanelLastActionInfo(oppositeAction[0],oppositeAction[1],
+					oppositeAction[2]);
+		}
+		}//end of if else oppositeAction[2].contains("[")		
 	}
+
 	
 	
 	public void openControlPanel() throws IOException{
@@ -553,7 +756,8 @@ public class Controller implements Initializable{
                     		}
                     		try {
 								newFile.createNewFile();
-								
+								Brain.inputNewCategoryManagerPanelLastActionInfo(
+										"Create",newFile.getPath(),newFile.getName());
 								System.out.println("Printing newfiles name:" +
 										newFile.getName());
 								System.out.println("Printing newfiles path:" + 
@@ -582,6 +786,11 @@ public class Controller implements Initializable{
                     	}else {
                     		//case of a known file selected and adding category to it
                     		try {
+                    			Brain.inputNewCategoryManagerPanelLastActionInfo("Add",
+                    					ListAtBottomOfCategoryManager.getSelectionModel()
+                    					.getSelectedItem(),
+                    					"|" + CategoryManagerPanelTextfield.getText());
+                    			
                     			Brain.appendToFile(ListAtBottomOfCategoryManager
                     					.getSelectionModel().getSelectedItem(),
 									"|" + CategoryManagerPanelTextfield.getText());

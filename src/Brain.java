@@ -14,8 +14,10 @@ public class Brain{
 	final static String keywordFileName = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\keywords.txt";
 	final static String directory = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\";
 	static String tempString = "";
+	static private String[] lastCategoryManagerPanelActionInfo = {""};
 	static String[] longSentenceStructArr = null;
 	static String[] shortSentenceStructArr = null;
+	//group of lists for brain to use below.
 	static String[] commandArray = {"Action"};
     static String[] listOfStatuses = {"Any","Normal", "WILD!"};
     static String[] listOfCategories = {""};
@@ -950,6 +952,40 @@ public class Brain{
 		}
 		return false;
 	}
+	
+	public static void inputNewCategoryManagerPanelLastActionInfo(String action, String location,
+			String str) {
+		action = action.toLowerCase().trim();
+		String[] lastActionInfo = {action,location,str};
+		lastCategoryManagerPanelActionInfo = lastActionInfo;
+			
+	}
+	
+	public static void inputNewCategoryManagerPanelLastActionInfo(String action, String location,
+			String str1, String str2) {
+		action = action.toLowerCase().trim();
+
+		if(str2.equals("")) {
+			inputNewCategoryManagerPanelLastActionInfo(action, location, str1);
+		}else if(!action.equals("")&&!location.equals("")&&!str1.equals("")){
+			String[] lastActionInfo = {action,location,str1,str2};
+			lastCategoryManagerPanelActionInfo = lastActionInfo;
+			/*
+			 * 		really useful 
+			 *  System.out.println("action is:" + action + "\n" +
+				"location is:" + location + "\n" +
+				"string1 is:" + str1 + "\n" +
+				"string2 is:" + str2 + "\n");
+			 */
+		}
+	}
+
+	
+	public static String[] getCategoryManagerPanelLastActionInfo() {
+		return lastCategoryManagerPanelActionInfo;
+	}
+	
+	
 	//public static String 
 	/*
 	 * phrase fixer for files below
