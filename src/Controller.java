@@ -86,35 +86,32 @@ public class Controller implements Initializable{
 	
 	//CustomCategoryManagerPanel
 	@FXML
-	private ComboBox<String> customCategoryManagerPanelStatusComboBox;
+	private ComboBox<String> CategoryGroupManagerPanelStatusComboBox;
 	@FXML
-	private TextField customCategoryManagerPanelUITextField;
+	private TextField CategoryGroupManagerPanelUITextField;
 	@FXML
-	private TextField customCategoryManagerPanelResponseTextField;
+	private TextField CategoryGroupManagerPanelResponseTextField;
 	@FXML
-	private TextField customCategoryManagerPanelSearchTextField;
+	private TextField CategoryGroupManagerPanelSearchTextField;
 	@FXML
-	private Button customCategoryManagerPanelAddBtn;
+	private Button CategoryGroupManagerPanelAddBtn;
 	@FXML
-	private Button customCategoryManagerPanelRemoveBtn;
+	private Button CategoryGroupManagerPanelRemoveBtn;
 	@FXML
-	private Label customCategoryManagerCustomGroupLabel;
-	@FXML
-	private ListView<String> customCategoryManagerCustomGroupListView;
-
-	  
+	private ListView<String> CategoryGroupManagerCustomGroupListView;
+	
 	
 	public void calculator(ActionEvent event) throws IOException{
 		System.out.println("Calculator button pressed");
 	}
 	
 	public void customCategoryManagerPanelAddBtnMethod(ActionEvent event) throws IOException{
-		if(customCategoryManagerPanelUITextField.getText().length()!=0&&
-				customCategoryManagerPanelResponseTextField.getText().length()!=0
-				&&customCategoryManagerPanelStatusComboBox.getValue()!=null){
-		String UI = customCategoryManagerPanelUITextField.getText();
+		if(CategoryGroupManagerPanelUITextField.getText().length()!=0&&
+				CategoryGroupManagerPanelResponseTextField.getText().length()!=0
+				&&CategoryGroupManagerPanelStatusComboBox.getValue()!=null){
+		String UI = CategoryGroupManagerPanelUITextField.getText();
 		String categoryGroup = "";
-		String response = customCategoryManagerPanelResponseTextField.getText();
+		String response = CategoryGroupManagerPanelResponseTextField.getText();
 		if(Brain.countChars(UI, '[')!=Brain.countChars(UI, ']')
 				||Brain.countChars(response, '[')!=Brain.countChars(response, ']')) {
 			System.out.println("Invalid inputs, try again!");
@@ -122,20 +119,20 @@ public class Controller implements Initializable{
 			if(!Brain.isSurroundedByBrackets(UI)) {
 				//tests whether the string has brackets in the correct format around it
 				UI = "[" + UI + "]";
-				customCategoryManagerPanelUITextField.setText(UI);
+				CategoryGroupManagerPanelUITextField.setText(UI);
 			}
 			if(!Brain.isSurroundedByBrackets(response)) {
 				//tests whether the string has brackets in the correct format around it
 				response = "[" + response + "]";
-				customCategoryManagerPanelResponseTextField.setText(response);
+				CategoryGroupManagerPanelResponseTextField.setText(response);
 			}
 			categoryGroup = UI + 
-				"["	+ customCategoryManagerPanelStatusComboBox.getValue() + "]"
+				"["	+ CategoryGroupManagerPanelStatusComboBox.getValue() + "]"
 			+ response;
-    		if(customCategoryManagerCustomGroupListView.getItems().contains(categoryGroup)) {
+    		if(CategoryGroupManagerCustomGroupListView.getItems().contains(categoryGroup)) {
     			System.out.println("This has already been added, try again!");
     		}else {
-    			customCategoryManagerCustomGroupListView.getItems().add(categoryGroup);
+    			CategoryGroupManagerCustomGroupListView.getItems().add(categoryGroup);
 				Brain.appendToFile("customcategorygrouping.txt",categoryGroup);
     		}
 		}//end of else
@@ -143,11 +140,11 @@ public class Controller implements Initializable{
 	}
 	
 	public void customCategoryManagerPanelRemoveBtnMethod(ActionEvent event) throws IOException{
-		if(customCategoryManagerPanelUITextField.getText().length()!=0&&
-				customCategoryManagerPanelResponseTextField.getText().length()!=0
-				&&customCategoryManagerPanelStatusComboBox.getValue()!=null){
-		String UI = customCategoryManagerPanelUITextField.getText();
-		String response = customCategoryManagerPanelResponseTextField.getText();
+		if(CategoryGroupManagerPanelUITextField.getText().length()!=0&&
+				CategoryGroupManagerPanelResponseTextField.getText().length()!=0
+				&&CategoryGroupManagerPanelStatusComboBox.getValue()!=null){
+		String UI = CategoryGroupManagerPanelUITextField.getText();
+		String response = CategoryGroupManagerPanelResponseTextField.getText();
 		
 		if(Brain.countChars(UI, '[')!=Brain.countChars(UI, ']')
 				||Brain.countChars(response, '[')!=Brain.countChars(response, ']')) {
@@ -155,16 +152,16 @@ public class Controller implements Initializable{
 		}else {
 		if(!Brain.isSurroundedByBrackets(UI)) {
 			UI = "[" + UI + "]";
-			customCategoryManagerPanelUITextField.setText(UI);
+			CategoryGroupManagerPanelUITextField.setText(UI);
 		}
 		if(!Brain.isSurroundedByBrackets(response)) {
 			response = "[" + response + "]";
-			customCategoryManagerPanelResponseTextField.setText(response);
+			CategoryGroupManagerPanelResponseTextField.setText(response);
 		}
 		String categoryGroup = UI + 
-				"["	+ customCategoryManagerPanelStatusComboBox.getValue() + "]"
+				"["	+ CategoryGroupManagerPanelStatusComboBox.getValue() + "]"
 			+ response;	
-		customCategoryManagerCustomGroupListView.getItems().remove(categoryGroup);
+		CategoryGroupManagerCustomGroupListView.getItems().remove(categoryGroup);
 		Brain.removeFromFile("customcategorygrouping.txt",categoryGroup);
 		}
 		}
@@ -453,12 +450,11 @@ public class Controller implements Initializable{
 		String[] lastAction = Brain.getCategoryManagerPanelLastActionInfo();
 		String tempString="";
 		String[] oppositeAction = new String[lastAction.length];
-		String[] listOfFunctions = {"add","remove","delete","swap","replace","create","append"};
+		//String[] listOfFunctions = {"add","remove","delete","swap","replace","create","append"};
 		String[][] listOfFunctionsOpposite = {{"add","remove"},{"delete","add"},{"remove","add"},
 				{"swap","swap"},{"switch","switch"},{"replace","replace"},{"create", "remove"},
 				{"append","remove"}};
 		//the first index is the opposite of the second one, intended to be read [0] then [1]
-		
 		oppositeAction[1] = lastAction[1];
 		oppositeAction[2] = lastAction[2];
 		if(lastAction.length==4) {
@@ -514,8 +510,8 @@ public class Controller implements Initializable{
 				Brain.inputNewCategoryManagerPanelLastActionInfo(oppositeAction[0],oppositeAction[1],
 						oppositeAction[2]);
 			}
-		}else if(CategoryManagerPanelTextfield.isVisible()&&!oppositeAction[2].contains("[")){
 			//avoiding category grouping strings by doing this
+		}else if(CategoryManagerPanelTextfield.isVisible()&&!oppositeAction[2].contains("[")){
 		switch(oppositeAction[0]) {
 		case "add":
 			Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
@@ -546,7 +542,7 @@ public class Controller implements Initializable{
 					ListAtBottomOfCategoryManager.getItems().add(oppositeAction[2]
 							.substring(0,oppositeAction[2].indexOf("|")));			}
 			break;
-			
+
 		case "create":
 			Brain.appendToFile(oppositeAction[1], oppositeAction[2]);
 			Brain.updateLists();
@@ -634,8 +630,6 @@ public class Controller implements Initializable{
 		}//end of if else oppositeAction[2].contains("[")		
 	}
 
-	
-	
 	public void openControlPanel() throws IOException{
 		Parent root = FXMLLoader.load(getClass().getResource("/ControlPanel.fxml"));
 		Stage stage = new Stage();
@@ -863,19 +857,15 @@ public class Controller implements Initializable{
         	CategoryManagerAnchorPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent click) {
-                	//need to also fix separators in category manager not allowing focus
-                	//to pass through them
                 	CategoryManagerAnchorPane.requestFocus();
                 }
         	});
-        	//CategoryManagerAnchorPane.setFocusTraversable(true);
         }
         
         if(clickBlockingCategoryManagerRectangle!=null) {
         	clickBlockingCategoryManagerRectangle.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent click) {
-                	//CategoryManagerPanelLabelFour.setText();
                 	clickBlockingCategoryManagerRectangle.setVisible(false);
                 	CategoryManagerPanelLabelFour.setText(
                             			"Phrases relating to the category are below.");
@@ -907,47 +897,27 @@ public class Controller implements Initializable{
         
         //end of categoryManagerPanel
         //beginning of CustomCategoryManagerPanel
-        if(customCategoryManagerPanelStatusComboBox!=null) {
-        	customCategoryManagerPanelStatusComboBox.getItems().addAll(Brain.listOfStatuses);
+        if(CategoryGroupManagerPanelStatusComboBox!=null) {
+        	CategoryGroupManagerPanelStatusComboBox.getItems().addAll(Brain.listOfStatuses);
         }
-        if(customCategoryManagerCustomGroupLabel!=null) {
-    		File file = new File (Brain.directory + "customcategorygrouping.txt"); 
-        	Scanner scanner = null;
-    		try {
-    			scanner = new  Scanner (file);
-    		} catch (FileNotFoundException e) {
-    			e.printStackTrace();
-    		}
-    		String tempString = "";
-    		String wholeFile = "";
-            while(scanner.hasNextLine()) {
-            	tempString = scanner.nextLine();
-            	if(wholeFile.equals("")) {
-            		wholeFile = tempString;
-            	}else {
-                	wholeFile = wholeFile + "\n" + tempString;
-            	}
-            }
-            customCategoryManagerCustomGroupLabel.setText(wholeFile);
-        }
-        if(customCategoryManagerCustomGroupListView!=null) {
-            customCategoryManagerCustomGroupListView.getItems().setAll(
+        if(CategoryGroupManagerCustomGroupListView!=null) {
+            CategoryGroupManagerCustomGroupListView.getItems().setAll(
             		Brain.getWholeFileToString("customcategorygrouping.txt").split("\n"));       	
         }
         
-        if(customCategoryManagerPanelSearchTextField!=null) {
-        	customCategoryManagerPanelSearchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        if(CategoryGroupManagerPanelSearchTextField!=null) {
+        	CategoryGroupManagerPanelSearchTextField.setOnKeyReleased(new EventHandler<KeyEvent>() {
             	@Override
         		public void handle(KeyEvent k) {
-                if(customCategoryManagerPanelSearchTextField.getText().equals("")) {
-                    customCategoryManagerCustomGroupListView.getItems().setAll(
+                if(CategoryGroupManagerPanelSearchTextField.getText().equals("")) {
+                    CategoryGroupManagerCustomGroupListView.getItems().setAll(
                     		Brain.getWholeFileToString("customcategorygrouping.txt")
                     		.split("\n"));
                 }else if(k.getCode().isDigitKey()||k.getCode().isLetterKey()||
                 		k.getCode().isWhitespaceKey()){  
-                        customCategoryManagerCustomGroupListView.getItems().setAll(
+                        CategoryGroupManagerCustomGroupListView.getItems().setAll(
                         		Brain.sortCustomGroupList(
-                        				customCategoryManagerPanelSearchTextField.getText(),
+                        				CategoryGroupManagerPanelSearchTextField.getText(),
         								Brain.getWholeFileToString("customcategorygrouping.txt")
         	                    		.split("\n")));
                     }
@@ -958,8 +928,8 @@ public class Controller implements Initializable{
         //end of CustomCategoryManagerPanel
         
 	}//end of initialize
-
-
+	
+	
 	
 	/**useful links below
 	 *https://stackoverflow.com/questions/15452768/consume-javafx-keytyped-event-from-textfield

@@ -1,5 +1,4 @@
 [dde][Normal][o]
-[e][Normal][o]
 [h][Any][a]
 [a][Any][aaa]
 [a][Any][aaae]

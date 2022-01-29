@@ -11,8 +11,7 @@ public class Brain{
 	
 	private String userInput; 
 	final String fileListFileName = "filelist.txt";
-	final static String keywordFileName = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\keywords.txt";
-	final static String directory = "C:\\Users\\chris\\Desktop\\CS\\CS Software\\Workspace\\Little Robot\\phrases\\";
+	static String directory = "";
 	static String tempString = "";
 	static private String[] lastCategoryManagerPanelActionInfo = {""};
 	static String[] longSentenceStructArr = null;
@@ -27,12 +26,14 @@ public class Brain{
     static String[] listOfFileNames = {""};
     static String[] listOfPhraseFileNameCombo = {""};
     static String[] listOfCategoryFileNameCombo = {""};
-    static String[] filesToIncludeInSearches = {""};//not currently set up
+    static String[] filesToIncludeInSearches = {""};
     static String[] filesToExcludeFromSearches = {""};
 	Brain(String userInput) throws IOException {
+		buildDirectory();
 		updateLists();
-		this.userInput = userInput;		
+		setUserInput(userInput);		
 		interpretInput(userInput);
+		
 	}
 	
 	private static void interpretInput(String UI) throws FileNotFoundException {//attempts to comprehend the user input
@@ -77,13 +78,14 @@ public class Brain{
 		//making array of array of strings, the outer array with names of file
 		//and inner arrays are list of strings 
 		
-		File file = new File (keywordFileName); 
+		File file = new File (directory + "keywords.txt"); 
 		Scanner firstScanner = null;
 		Scanner secondScanner = null;
 		Boolean hadToSort = false;
 		String wholeFile= "";
 		String[] tempArr;
 		int firstCounter = 0;
+		if(file.exists()) {
 		try  { 
 			firstScanner =  new  Scanner (file);
 
@@ -181,6 +183,7 @@ public class Brain{
 		}  catch (Exception ex)  { 
 			ex.printStackTrace();
 			}
+	}
 	}
 	
 	private static void generalOrganizer(String fileName, String UI) {
@@ -302,10 +305,11 @@ public class Brain{
 		String line = "";
 		String category = "";
 		String tempString="";
-		File file = new File (keywordFileName); 
+		File file = new File (directory + "keywords.txt"); 
 		int tempInt=0;
 		String tempFileName = "";
 		Boolean found = false;
+		if(file.exists()) {
 		try {
 		Scanner scannerOne = new  Scanner (file);
 		// Read the file line by line 
@@ -380,6 +384,8 @@ public class Brain{
 				e.printStackTrace();//useful for troubleshooting
 			}
 	        return str;
+		}
+		return "";
 	}//end of method
 	
 	private static void actionCommand(String str) throws IOException {
@@ -398,7 +404,7 @@ public class Brain{
 		return "";
 	}
 	
-	private static String[] appendToArray(String[] arr, String str) {
+	public static String[] appendToArray(String[] arr, String str) {
 		for(int x=0;x<arr.length;x++) {
 			if(arr[x]==null||arr[x]=="") {
 				arr[x]=str;
@@ -575,21 +581,6 @@ public class Brain{
 		return counter;
 	}
 	
-	public static Boolean isSurroundedByBrackets(String str) {
-		//objective of this method is to test whether the format is correct and ready to read,
-		//that is to have a pair of '[' and ']' surrounding the whole string
-		if((!str.contains("[")&&!str.contains("]"))
-				||!str.replace(str.substring(firstIndexOfChar(str,'['),str.lastIndexOf("]")+1)
-				, "").equals("")) {
-			//if removing substring between [] makes str != "" then return false 
-			//basically vetting bad cases of "hello + [stuff]" and things with no brackets
-			return false;
-		}else if(str.charAt(0)=='['&&str.charAt(str.length()-1)==']') {
-			return true;
-		}
-		return false;
-	}
-	
 	public static String replaceFirstChar(String str, char target, String replacement) {
 		for(int x=0;x<str.length();x++) {
 			if(str.charAt(x)==target) {
@@ -611,30 +602,6 @@ public class Brain{
 			}
 		}
 		return -1;
-	}
-	
-	public static String getWholeFileToString(String fileName) {
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
-		}
-		File file = new File (fileName); 
-    	Scanner scanner = null;
-		try {
-			scanner = new  Scanner (file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		String tempString = "";
-		String wholeFile = "";
-        while(scanner.hasNextLine()) {
-        	tempString = scanner.nextLine();
-        	if(wholeFile.equals("")) {
-        		wholeFile = tempString;
-        	}else {
-            	wholeFile = wholeFile + "\n" + tempString;
-        	}
-        }
-		return wholeFile;
 	}
 	
 	public static String[] sortCustomGroupList(String target, String[] arr) {
@@ -663,7 +630,6 @@ public class Brain{
 		String[] tempStringArr=null;
 		String[] excludedFileNameList = {"keywords.txt","filelist.txt","categorygrouping.txt",
 				"categorylist.txt","customcategorygrouping.txt","commands.txt"};
-		String[] IncludeFileForSearches = {""};
 		String tempString = "";
 		Boolean validFile=false;
 		File file;
@@ -679,7 +645,9 @@ public class Brain{
 		//
         File dir = new File(directory);
         String[] children = dir.list();
-        if (children == null)System.out.println("THE PHRASE FILES ARE GONE!!!");
+        if (children == null||children.length==0) {
+        	System.out.println("THE PHRASE FILES ARE GONE!!!");
+        }else {
         	//finding fileNameList length
         	for(int x=0, z=0; x<children.length;x++) {
         		validFile=true;//ensuring all the files added are valid
@@ -692,7 +660,6 @@ public class Brain{
         		if(validFile) z++;
         		if(x==children.length-1) {
         			fileNameList = new String[z];
-        			IncludeFileForSearches = new String[children.length-z];
         		}
         	}
         	
@@ -812,6 +779,7 @@ public class Brain{
     		listOfCategories = categoryList;
     		listOfFileNames=children;
         }
+	}
 	
 	public static int countLinesInFile(String fileName) throws FileNotFoundException {
 		if(!fileName.contains(directory)) {
@@ -883,6 +851,30 @@ public class Brain{
 		return superStringCategoryAndPhrase.trim();
 	}
 	
+	public static String getWholeFileToString(String fileName) {
+		if(!fileName.contains(directory)) {
+			fileName = directory + fileName;
+		}
+		File file = new File (fileName); 
+    	Scanner scanner = null;
+		try {
+			scanner = new  Scanner (file);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		String tempString = "";
+		String wholeFile = "";
+        while(scanner.hasNextLine()) {
+        	tempString = scanner.nextLine();
+        	if(wholeFile.equals("")) {
+        		wholeFile = tempString;
+        	}else {
+            	wholeFile = wholeFile + "\n" + tempString;
+        	}
+        }
+		return wholeFile;
+	}
+	
 	public static void removeEmptySpaceFromFile(String fileName) throws IOException{
 	
 		if(!fileName.contains(directory)) {
@@ -908,6 +900,21 @@ public class Brain{
 		}
 		output.close();
 		sc.close();
+	}
+	
+	public static Boolean isSurroundedByBrackets(String str) {
+		//objective of this method is to test whether the format is correct and ready to read,
+		//that is to have a pair of '[' and ']' surrounding the whole string
+		if((!str.contains("[")&&!str.contains("]"))
+				||!str.replace(str.substring(firstIndexOfChar(str,'['),str.lastIndexOf("]")+1)
+				, "").equals("")) {
+			//if removing substring between [] makes str != "" then return false 
+			//basically vetting bad cases of "hello + [stuff]" and things with no brackets
+			return false;
+		}else if(str.charAt(0)=='['&&str.charAt(str.length()-1)==']') {
+			return true;
+		}
+		return false;
 	}
 	
 	public static Boolean isStringAvailable(String str) {
@@ -979,12 +986,49 @@ public class Brain{
 			 */
 		}
 	}
-
 	
 	public static String[] getCategoryManagerPanelLastActionInfo() {
 		return lastCategoryManagerPanelActionInfo;
 	}
 	
+	public static void buildDirectory() throws IOException {
+		//this method is very versatile and wont create extra files if they already exist.
+		//extra files are expected to be added here, namely the strings located
+		//in filesToExcludeFromSearches, and remove an aspect of hard coding in this code
+			File thisFile = new File(Brain.class.getName()+".java");
+			String directoryPath = thisFile.getAbsolutePath().replace(
+					thisFile.getName(), "");
+			//System.out.println("Directory being set, it is:" + directoryPath);
+			directory = directoryPath + "phrases\\";
+			
+			File fxml = new File(directoryPath + "fxmls");
+			if(!fxml.exists()) {
+				fxml.mkdirs();
+			}
+			
+			File phrase = new File(directoryPath + "phrases");
+			File keywords = new File(directoryPath+"\\phrases\\keywords.txt");
+			if(!phrase.exists()) {
+				phrase.mkdirs();
+				keywords.createNewFile();
+			}else if(!keywords.exists()) {
+				keywords.createNewFile();
+			}
+			
+	}
+
+	
+	public String getUserInput() {
+		return userInput;
+	}
+	
+
+	
+	private void setUserInput(String userInput) {
+		this.userInput = userInput;
+	}
+	
+
 	
 	//public static String 
 	/*

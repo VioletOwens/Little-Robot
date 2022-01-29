@@ -1,2 +1,0 @@
-hello|Common Greetingshow are you doing|Status Checkershow do you do|Status Checkershow are you|Status Checkersheya|Common Greetingshiya|Common Greetingsheyo|Common Greetingshey|Common Greetingshi|Common Greetingsits nice to meet you|Pleasant Greetingswhats your status|Status Checkersnice to meet you|Pleasant Greetingsgood afternoon|Timed Greetingsgood morning|Timed Greetingsgood evening|Timed Greetingswhats up|Status Checkers
-temp|ggge
