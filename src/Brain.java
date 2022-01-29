@@ -604,7 +604,7 @@ public class Brain{
 		return -1;
 	}
 	
-	public static String[] sortCustomGroupList(String target, String[] arr) {
+	public static String[] sortStringArr(String target, String[] arr) {
     	//test whole file arr against what is in search bar to know what to display
 		//return string arr of files to be displayed
 		String[] newArr = new String[arr.length];
@@ -628,8 +628,9 @@ public class Brain{
 		String[][] phraseAndCategoryList = null;
 		String[] fileNameList = null;
 		String[] tempStringArr=null;
-		String[] excludedFileNameList = {"keywords.txt","filelist.txt","categorygrouping.txt",
-				"categorylist.txt","customcategorygrouping.txt","commands.txt"};
+		String[] excludedFileNameList = {
+				"keywords.txt","filelist.txt","categorygrouping.txt","inputresponsegrouping.txt"
+				,"commands.txt"};
 		String tempString = "";
 		Boolean validFile=false;
 		File file;

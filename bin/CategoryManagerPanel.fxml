@@ -15,9 +15,9 @@
    <children>
       <AnchorPane fx:id="CategoryManagerAnchorPane" prefHeight="312.0" prefWidth="540.0">
          <children>
-            <ComboBox fx:id="UICategoryComboBox" layoutX="128.0" layoutY="14.0" prefWidth="150.0" promptText="User-Input category" />
-            <ComboBox fx:id="CurrentStatusComboBox" layoutX="128.0" layoutY="53.0" prefWidth="150.0" promptText="Current status" />
-            <ComboBox fx:id="ResponseCategoryComboBox" layoutX="128.0" layoutY="92.0" prefWidth="150.0" promptText="Response category" />
+            <ComboBox fx:id="UICategoryComboBox" layoutX="128.0" layoutY="14.0" prefWidth="150.0" promptText="Select a category" />
+            <ComboBox fx:id="CurrentStatusComboBox" layoutX="128.0" layoutY="53.0" prefWidth="150.0" promptText="Select a status" />
+            <ComboBox fx:id="ResponseCategoryComboBox" layoutX="128.0" layoutY="92.0" prefWidth="150.0" promptText="Select a category" />
             <Button fx:id="DeleteCategoryCategoryManagerPanelBtn" layoutX="102.0" layoutY="168.0" mnemonicParsing="false" onAction="#DeleteCategoryCategoryManagerPanelBtnMethod" prefHeight="50.0" prefWidth="87.0" text="DELETE CATEGORY" textAlignment="CENTER" visible="false" wrapText="true">
                <font>
                   <Font size="14.0" />

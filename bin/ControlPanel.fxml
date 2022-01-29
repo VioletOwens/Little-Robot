@@ -8,18 +8,28 @@
    <children>
       <AnchorPane prefHeight="300.0" prefWidth="380.0">
          <children>
-            <Button layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#calculator" prefHeight="96.0" prefWidth="96.0" text="Calculator">
+            <Button fx:id="CalculatorControlPanelBtn" layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#calculator" prefHeight="96.0" prefWidth="96.0" text="Calculator">
                <font>
-                  <Font size="14.0" />
+                  <Font size="16.0" />
                </font></Button>
-            <Button layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCategoryManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Category Manager" textAlignment="CENTER" wrapText="true">
+            <Button fx:id="CategoryManagerControlPanelBtn" layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCategoryManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Category Manager" textAlignment="CENTER" visible="false" wrapText="true">
                <font>
-                  <Font size="14.0" />
+                  <Font size="16.0" />
                </font></Button>
-            <Button fx:id="customCategoryManagerButton" layoutX="240.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCustomCategoryManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Custom Category Manager" textAlignment="CENTER" wrapText="true">
+            <Button fx:id="CategoryGroupManagerControlPanelBtn" layoutX="240.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCategoryGroupManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Category Group Manager" textAlignment="CENTER" visible="false" wrapText="true">
                <font>
-                  <Font size="14.0" />
+                  <Font size="16.0" />
                </font></Button>
+            <Button fx:id="BackControlPanelBtn" layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#CategoryAndPhraseControlPanelBtnMethod" prefHeight="96.0" prefWidth="96.0" text="Back" visible="false">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="CategoryAndPhraseControlPanelBtn" layoutX="131.0" layoutY="24.0" mnemonicParsing="false" onAction="#CategoryAndPhraseControlPanelBtnMethod" prefHeight="96.0" prefWidth="98.0" text="Categories And Phrases" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
    </children>
