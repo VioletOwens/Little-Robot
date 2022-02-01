@@ -108,6 +108,8 @@ public class Brain{
 										listOfCategoriesAndTheirPhrases[outerIndex][0];
 								understandingCntr++;
 								numberOfSkippedWords = backwardCounter;//UIByWord.length-
+								System.out.println("the number of words we know is:" +
+										numberOfSkippedWords);
 								isFound = true;
 								innerIndex = listOfCategoriesAndTheirPhrases
 										[outerIndex].length-1;
@@ -134,7 +136,13 @@ public class Brain{
 					if(outerIndex+1==listOfCategoriesAndTheirPhrases.length
 							&&numberOfSkippedWords==backwardCounter&&isFound) {
 						//numberOfSkippedWords will be 1+ always
-						for(int x=0;x<numberOfSkippedWords;x++) {
+						//need the number of words that we previously don't know
+						Boolean[] tempArr = removeNullInArray(UIByWordBoolean);
+						int numberOfUnknown=0;
+						for(int x=0; x<tempArr.length;x++) {
+							if(!tempArr[x])numberOfUnknown++;
+						}
+						for(int x=0;x<numberOfSkippedWords-numberOfUnknown;x++) {
 						UIByWordBoolean[boolCtr] = true;
 						boolCtr++;
 						}
@@ -173,8 +181,19 @@ public class Brain{
 		}
 		if(UIByWordBoolean!=null) {
 			UIByWordBoolean = removeNullInArray(UIByWordBoolean);
-			for(int x=0;x<UIByWordBoolean.length;x++) {
-			if(!UIByWordBoolean[x]) {
+			for(int x=0,indexOfFirstFalse = 0;x<UIByWordBoolean.length;x++) {
+				
+			if(x>=1&&!UIByWordBoolean[x-1]&&!UIByWordBoolean[x]) {
+				//if both the last one and this one are false, append this to unknownStrings[x]
+				unknownStrings[indexOfFirstFalse] = unknownStrings[indexOfFirstFalse].concat
+						(" "+UIByWord[x]);
+				
+				//indexOfFirstFalse++;
+			}else if(x>=1&&UIByWordBoolean[x-1]&&!UIByWordBoolean[x]){
+				//if changing into a false
+				indexOfFirstFalse=x;
+				unknownStrings[x] = UIByWord[x];
+			}else if(!UIByWordBoolean[x]) {
 				unknownStrings[x] = UIByWord[x];
 			}
 		}
