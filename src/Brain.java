@@ -36,22 +36,177 @@ public class Brain{
 		
 	}
 	
-	private static void interpretInput(String UI) throws FileNotFoundException {//attempts to comprehend the user input
-		//check if each string input is equal to anything from keyword list
-		//first check each word in string for keyword/phrases. when found,
-		//check if following/prior part is anything that we know in files
-		//if not, say "I do not know anything about that. Should I?"
-		//checkIfInfoFromFile(keywordFileName,part of UI);//trying word by word
-		UI = UI.toLowerCase().replace("'", "");//avoids a lot of trouble to lowercase and ' here
-		String[] UIWords = UI.split(" ");
-		longSentenceStructArr = new String[UIWords.length + 1];//need to make this
+	private static void interpretInput(String UI) throws FileNotFoundException {
+		/* should be versatile and allow for user input of any type of thing in file,
+		 * examples may include wanting to break sentences down to adjective, noun, verb etc. 
+		 * compared to recognizing whole sentences/phrases 
+		 * 
+		 * best way to accomplish this would be to include
+		 * checkIfInfoFromFile(keywordFileName,part of UI), attempt word by word, back to front?
+		 */
+		UI = UI.toLowerCase().replace("'", "").trim();
+		String[] UIByWord = UI.split(" ");
+		String[] unknownStrings = new String[1];//every time a string is unknown it is added
+		String[] resultingUnderstanding = new String[UIByWord.length];
+		String tempString = "";
+		int understandingCntr = 0;
+		int boolCtr = 0;
+		Boolean[] UIByWordBoolean = new Boolean[UIByWord.length];
+		Boolean isFound = false;
+		
+		for(int x=0, total = 1, addVar = 2; x<UIByWord.length-1;x++) {
+			total = total + addVar;
+			addVar++;	
+			if(x+1==UIByWord.length-1) {
+				unknownStrings = new String[total];
+			}
+		}
+		unknownStrings = new String[UIByWord.length];
+		
+		if(UI.contains(" ")) {//multiple words
+			/*can just search through listOfCategoriesAndTheirPhrases for the phrase
+			 * first checking all words together, then slowly taking it apart from the end
+			 * until only beginning word left (the left-most word) if not able to be found.
+			 * if found though, remove that portion of the string, trim(), then
+			 * loop in trying to understand string. if we really can't understand down to the
+			 * word itself, add it to compendium of unknown words/gibberish, remove from string,
+			 * then continue trying to understand the rest of the string. repeat until nothing
+			 * left. if words are in a continuous row that we don't understand, append
+			 * the new words to the end of the last one with a space, else move to next index
+			 * 
+			 */
+			for(int numberOfSkippedWords = 0; numberOfSkippedWords<UIByWord.length;) {
+				//operates the unknown word index
+				for(int backwardCounter=UIByWord.length;backwardCounter>numberOfSkippedWords;
+						backwardCounter--) {
+					//operates the backward counter index for the identification of UIByWord
+					tempString = "";
+					isFound = false;
+					for(int tempStringBuilderIndex = numberOfSkippedWords; 
+							tempStringBuilderIndex<backwardCounter;tempStringBuilderIndex++) {
+						//builds the new string to attempt to identify
+						if(tempStringBuilderIndex==numberOfSkippedWords) {
+							tempString = UIByWord[tempStringBuilderIndex];
+						}else{
+							tempString = tempString + " " + UIByWord[tempStringBuilderIndex];
+						}
+					}//by here stringToBuild is built
+					//must be able to match a string already in system, else stripped of trailing
+					//word and tried again until either something is found, or nothing left.
+					for(int outerIndex = 0; outerIndex < listOfCategoriesAndTheirPhrases.length;
+							outerIndex++) {
+						for(int innerIndex = 1; innerIndex<listOfCategoriesAndTheirPhrases
+								[outerIndex].length; innerIndex++) {
+							//both for operates searching through listOfCategoriesAndTheirPhrases
+							if(tempString.equals(
+									listOfCategoriesAndTheirPhrases[outerIndex][innerIndex])) {
+								//if a match is found, remove backwards counter number
+								//of indexes from UIByWord from the front, and build the next 
+								//string by adding
+								//backwards counter number to numberOfSkippedWords 
+								resultingUnderstanding[understandingCntr] = 
+										listOfCategoriesAndTheirPhrases[outerIndex][0];
+								understandingCntr++;
+								numberOfSkippedWords = backwardCounter;//UIByWord.length-
+								isFound = true;
+								innerIndex = listOfCategoriesAndTheirPhrases
+										[outerIndex].length-1;
+								outerIndex = listOfCategoriesAndTheirPhrases.length-1;
+							}
+						}//triggering a lot more than once per word
+						//should be triggering at the end if is
+						
+						if(isFound) {
+							System.out.println(tempString + " has been found in:" +
+									resultingUnderstanding[understandingCntr-1]);
+						}else {
+							System.out.println(tempString + " has NOT been found in:" +
+									listOfCategoriesAndTheirPhrases[outerIndex][0]);
+
+						}
+						//triggering even when hey lol to hey
+						//should only be triggering when front word is dropped
+						//suspecting it has something to do with outerIndex+1
+						//mixed with 
+					if(backwardCounter-1==numberOfSkippedWords){
+						numberOfSkippedWords++;
+					}
+					if(outerIndex+1==listOfCategoriesAndTheirPhrases.length
+							&&numberOfSkippedWords==backwardCounter&&isFound) {
+						//numberOfSkippedWords will be 1+ always
+						for(int x=0;x<numberOfSkippedWords;x++) {
+						UIByWordBoolean[boolCtr] = true;
+						boolCtr++;
+						}
+					}else if(outerIndex+1==listOfCategoriesAndTheirPhrases.length
+							&&numberOfSkippedWords==backwardCounter) {
+						UIByWordBoolean[boolCtr] = false;
+						boolCtr++;
+					}
+			}	//backwards counter measures the number of words being considered
+				//floor measures the number of unknown words
+			
+			}
+			
+			
+
+			//listOfPhraseFileNameCombo
+			}	
+		}else {//one word
+			for(int outerIndex = 0; outerIndex < listOfCategoriesAndTheirPhrases.length;
+					outerIndex++) {
+				for(int innerIndex = 1; innerIndex<listOfCategoriesAndTheirPhrases
+						[outerIndex].length; innerIndex++) {
+					if(listOfCategoriesAndTheirPhrases[outerIndex][innerIndex].equals(UI)) {
+						resultingUnderstanding[understandingCntr] = 
+								listOfCategoriesAndTheirPhrases[outerIndex][0];
+					} 
+			}
+				if(outerIndex+1==listOfCategoriesAndTheirPhrases.length&&isFound) {
+					UIByWordBoolean[boolCtr] = true;
+					boolCtr++;
+				}else if(outerIndex+1==listOfCategoriesAndTheirPhrases.length) {
+					UIByWordBoolean[boolCtr] = false;
+					boolCtr++;
+				}
+		}
+		}
+		if(UIByWordBoolean!=null) {
+			UIByWordBoolean = removeNullInArray(UIByWordBoolean);
+			for(int x=0;x<UIByWordBoolean.length;x++) {
+			if(!UIByWordBoolean[x]) {
+				unknownStrings[x] = UIByWord[x];
+			}
+		}
+		}
+		if(resultingUnderstanding!=null) {
+		System.out.println("The understanding of UI is as follows:");
+		resultingUnderstanding = removeNullInArray(resultingUnderstanding);
+		for(int runthru = 0; runthru<resultingUnderstanding.length;runthru++) {
+			System.out.println(resultingUnderstanding[runthru]);
+		}
+		}
+		unknownStrings = removeNullInArray(unknownStrings);
+		if(unknownStrings!=null) {
+			System.out.println("The unknown parts of UI is as follows:");
+			for(int runthru = 0; runthru<unknownStrings.length;runthru++) {
+				System.out.println(unknownStrings[runthru]);
+			}	
+		}
+		
+		
+		/*
 		keywordOrganizer(UI);//organizes keyword list into suitable matching
 		identifySentenceStructure(UI);//comprehending the string
 		organizeSentStructArr();//used to reduce clutter in this method
 		String response = responseCenter(shortSentenceStructArr);
 		if(!response.equals(""))System.out.println("Response formed, that being:" + response);
+		*/
+		
 	}
 	
+
+
 	private static void organizeSentStructArr() {
 		int counter = 0;
 		for(int y=0; y<longSentenceStructArr.length;y++) {
@@ -417,6 +572,7 @@ public class Brain{
 	public static String[] removeNullInArray(String[] arr) {
 		int numberOfNull=0;
 		String[] nullessArr;
+		if(arr!=null&&arr.length!=0) {
 		for(int x=0;x<arr.length; x++) {
 			if(arr[x]==null||arr[x].equals("")) {
 				numberOfNull++;
@@ -439,6 +595,28 @@ public class Brain{
 			nullessArr[0] = "";
 		}
 		return nullessArr;
+	}else {
+		return arr;
+	}
+	}
+	
+	public static Boolean[] removeNullInArray(Boolean[] arr) {
+		if(arr!=null&&arr.length>0) {
+		int nonNullArrIndexes = 0;
+		for(int x=0; x<arr.length;x++) {
+			if(arr[x]!=null)nonNullArrIndexes++;
+		}
+		Boolean[] newArr = new Boolean[nonNullArrIndexes];
+		for(int x=0,y=0; x<arr.length;x++) {
+			if(arr[x]!=null) {
+				newArr[y]=arr[x];
+				y++;
+			}
+		}
+			return newArr;
+		}else {
+			return arr;
+		}
 	}
 	
 	public static String stringArrToString(String[] arr, int startingIndex) {
@@ -1028,8 +1206,6 @@ public class Brain{
 	private void setUserInput(String userInput) {
 		this.userInput = userInput;
 	}
-	
-
 	
 	//public static String 
 	/*

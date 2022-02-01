@@ -1,6 +1,3 @@
-control panel//commands.txt
-controlpanel//commands.txt
-cp//commands.txt
 you are as much as you need to be//positivephrases.txt
 you should be deleted//insults.txt
 its nice to meet you//greetings.txt
@@ -14,7 +11,9 @@ nice to meet you//greetings.txt
 you should die//insults.txt
 good afternoon//greetings.txt
 how do you do//greetings.txt
+control panel//commands.txt
 kill yourself//insults.txt
+controlpanel//commands.txt
 good morning//greetings.txt
 good evening//greetings.txt
 u should die//insults.txt
@@ -50,3 +49,4 @@ die//insults.txt
 kys//insults.txt
 sad//emotions.txt
 hi//greetings.txt
+cp//commands.txt
