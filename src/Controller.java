@@ -110,6 +110,7 @@ public class Controller implements Initializable{
 	public void calculator(ActionEvent event) throws IOException{
 		System.out.println("Calculator button pressed");
 	}
+	
 	public void CategoryAndPhraseControlPanelBtnMethod(ActionEvent event) throws IOException{
 		//state 1 is
 		//CategoryAndPhraseControlPanelBtn
@@ -144,8 +145,8 @@ public class Controller implements Initializable{
 	}
 	
 	public void CategoryGroupManagerPanelAddBtnMethod(ActionEvent event) throws IOException{
-		if(CategoryGroupManagerPanelUITextField.getText().length()!=0&&
-				CategoryGroupManagerPanelResponseTextField.getText().length()!=0
+		if(CategoryGroupManagerPanelUITextField.getText().length()>0&&
+				CategoryGroupManagerPanelResponseTextField.getText().length()>0
 				&&CategoryGroupManagerPanelStatusComboBox.getValue()!=null){
 		String UI = CategoryGroupManagerPanelUITextField.getText();
 		String categoryGroup = "";
