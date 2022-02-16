@@ -1,7 +1,9 @@
+package application;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Scanner;
 
 import javafx.fxml.FXMLLoader;
@@ -14,10 +16,11 @@ import javafx.stage.Stage;
  */
 public class Brain{
 	
-	private String userInput;
-	static String directory = "";
-	static String tempString = "";//used liberally, able to be used as a temporary string 
-	static private String[] CategoryManagerPanelLastActionInfo = {""};
+	private static String userInput;
+	protected static String directory = "";
+	protected static int tempInt=0;
+	protected static String tempString = "";//used liberally, able to be used as a temporary string 
+	static protected String[] CategoryManagerPanelLastActionInfo = {""};
 	
 	
 	//these need to be removed through code revision
@@ -30,40 +33,43 @@ public class Brain{
 	 * can choose to swap windows with a unique subWindow full of the buttons, including back
 	 * which would reopen original control panel window
 	 */
-    static String[] listOfStatuses = {"Any","Normal", "WILD!"};
+	protected static String[] listOfStatuses = {"Any","Normal", "WILD!"};
 
 	
     
     //need to write the stuff below
-    static String response = "";
+    protected static String response = "";
     
     
 	//need to figure a way to store this information in another accessible java file?
 	//group of lists for brain to use below.
-    static String[] UIUnderstanding = {""};
-    static String[] UnknownPartsOfUI = {""};
-    static String[] listOfPhrases = {""};
-    static String[] listOfCategories = {""};
-    static String[] listOfCommandPhrases = {""};
-    static String[] fullListOfFiles = {""};
-    static String[] listOfPhraseFileNameCombo = {""};
-    static String[] listOfCategoryFileNameCombo = {""};
-    static String[] filesToIncludeInSearches = {""};
-    static String[] filesToExcludeFromSearches = {""};
-    static String[][] listOfCommandLinesByCategory = {{""}};
-    static String[][] ListOfPhrasesCommandsAndTheirCategories = {{""}};
-    static String[][] listOfCategoriesAndTheirPhrases = {{""}};
+    protected static String[] UIUnderstanding = {""};
+    protected static String[] UnknownPartsOfUI = {""};
+    protected static String[] listOfPhrases = {""};
+    protected static String[] listOfCategories = {""};
+    protected static String[] listOfCommandPhrases = {""};
+    protected static String[] fullListOfFiles = {""};
+    protected static String[] listOfPhraseFileNameCombo = {""};
+    protected static String[] listOfCategoryFileNameCombo = {""};
+    protected static String[] filesToIncludeInSearches = {""};
+    protected static String[] filesToExcludeFromSearches = {""};
+    protected static String[][] listOfCommandLinesByCategory = {{""}};
+    protected static String[][] ListOfPhrasesCommandsAndTheirCategories = {{""}};
+    protected static String[][] listOfCategoriesAndTheirPhrases = {{""}};
     
     
-    
-	Brain(String userInput) throws IOException {
+	public static void startUp(String input) throws IOException {
+		setUI(input);
 		buildDirectory();
 		updateLists();
 		setUserInput(userInput);
 		interpretInput(userInput);
 		formulateResponse();
 		respondToUser();
-		
+		if(isExpressionOnlyElementary(userInput)) {
+			response = solveExpression(userInput);
+			System.out.println("The result of '" +userInput+"' is:" + response);
+		}
 		//remove this for sure later
 		if(UIUnderstanding!=null&&UIUnderstanding[0].equals("OpenWindow(ControlPanel.fxml)")) {
 			//perhaps a better way exists to call open control panel
@@ -71,8 +77,8 @@ public class Brain{
 			//Controller controller = new Controller();
 			//controller.openControlPanel();
 
-			
-			Parent root = FXMLLoader.load(getClass().getResource("ControlPanel.fxml"));
+			URL url = new File("fxmls\\ControlPanel.fxml").toURI().toURL();
+			Parent root = FXMLLoader.load(url);
 			Stage stage = new Stage();
 			Scene scene = new Scene(root);
 	        stage.setScene(scene);
@@ -82,7 +88,9 @@ public class Brain{
 			System.out.println("UIUnderstanding[0]="+UIUnderstanding[0]);
 
 		}
+		
 	}
+	
 	
 	private static void interpretInput(String UI) throws FileNotFoundException {
 		/* should be versatile and allow for user input of any type of thing in file,
@@ -998,8 +1006,8 @@ public class Brain{
 		return userInput;
 	}
 	
-	private void setUserInput(String userInput) {
-		this.userInput = userInput;
+	private static void setUserInput(String UI) {
+		userInput = UI;
 	}
 	
 	public static Boolean doesStrContainArr(String str, String[] arr) {
@@ -1069,8 +1077,8 @@ public class Brain{
 
 	public static Boolean isExpressionOnlyElementary(String str) {
 		/*supposed to tell whether expression only contains elementary functions such as
-		 * constants and variables, sin, sqrt, log, any operands that work with variables, etc.
-		 * https://en.wikipedia.org/wiki/Elementary_function
+		 *variables, sin, sqrt, log, any operands that work with variables, etc.
+		 *https://en.wikipedia.org/wiki/Elementary_function
 		 */
 		return false;
 	}
@@ -1118,6 +1126,11 @@ public class Brain{
 		
 		return "";
 	}
+	
+	public static void setUI(String str) {
+		userInput=str;
+	}
+	
 	
 	//new command is OpenWindow(controlPanel) , formerly Action(controlPanelOpen)
 	

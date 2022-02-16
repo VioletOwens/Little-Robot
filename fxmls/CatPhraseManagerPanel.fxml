@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="312.0" prefWidth="540.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CatPhraseMPanelController">
+   <children>
+      <AnchorPane prefHeight="312.0" prefWidth="540.0">
+         <children>
+            <AnchorPane fx:id="CatPhraseMPAnchorPane" prefHeight="312.0" prefWidth="547.0">
+               <children>
+                  <Button layoutX="197.0" layoutY="168.0" mnemonicParsing="false" onAction="#deleteCategory" prefHeight="50.0" prefWidth="87.0" text="DELETE CATEGORY" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="102.0" layoutY="168.0" mnemonicParsing="false" onAction="#addCategory" prefHeight="50.0" prefWidth="87.0" text="ADD AS CATEGORY" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="19.0" layoutY="224.0" mnemonicParsing="false" onAction="#addPhrase" prefHeight="50.0" prefWidth="75.0" text="ADD PHRASE" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="102.0" layoutY="224.0" mnemonicParsing="false" onAction="#removePhrase" prefHeight="50.0" prefWidth="75.0" text="REMOVE PHRASE" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="19.0" layoutY="168.0" mnemonicParsing="false" onAction="#undo" prefHeight="50.0" prefWidth="75.0" text="UNDO" textAlignment="CENTER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                  <Label fx:id="PhraseLabel" layoutX="2.0" layoutY="286.0" prefHeight="25.0" text="Phrases relating to the category are below.">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="184.0" layoutY="224.0" mnemonicParsing="false" onAction="#openCatGroupEditor" prefHeight="50.0" prefWidth="99.0" text="GROUP EDITOR" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <TextField fx:id="CatManagerTextField" layoutX="45.0" layoutY="80.0" prefHeight="26.0" prefWidth="201.0" promptText="Enter a phrase or category">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </TextField>
+                  <Label layoutX="75.0" layoutY="4.0" text="Current category:">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="CurrentCatLabel" alignment="TOP_CENTER" layoutX="45.0" layoutY="30.0" prefHeight="50.0" prefWidth="201.0" text="CurrentCategoryLabel" textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <Separator layoutX="285.0" layoutY="1.0" mouseTransparent="true" orientation="VERTICAL" prefHeight="280.0" prefWidth="15.0" />
+                  <Separator layoutY="275.0" mouseTransparent="true" prefHeight="15.0" prefWidth="547.0" />
+                  <Label layoutX="6.0" layoutY="128.0" prefHeight="36.0" prefWidth="220.0" text="You can double click a category to open its phrases below." wrapText="true" />
+                  <Label layoutX="358.0" layoutY="2.0" prefHeight="25.0" text="List of Categories">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <VBox layoutX="300.0" layoutY="27.0" prefHeight="247.0" prefWidth="240.0">
+               <children>
+                  <ListView fx:id="ListOfCategories" prefHeight="247.0" prefWidth="240.0" />
+               </children>
+            </VBox>
+            <VBox layoutY="312.0" prefHeight="166.0" prefWidth="547.0">
+               <children>
+                  <ListView fx:id="ListOfPhrases" layoutX="-1.0" prefHeight="166.0" prefWidth="525.0" />
+               </children>
+            </VBox>
+            <Rectangle fx:id="Rectangle" arcHeight="1.0" arcWidth="1.0" fill="TRANSPARENT" height="362.0" stroke="TRANSPARENT" strokeType="INSIDE" visible="false" width="540.0" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

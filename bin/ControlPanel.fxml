@@ -4,40 +4,22 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ControlPanelController">
    <children>
       <AnchorPane fx:id="AnchorPaneControlPanel" prefHeight="300.0" prefWidth="362.0">
          <children>
-            <Button fx:id="CalculatorControlPanelBtn" layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#calculator" prefHeight="96.0" prefWidth="96.0" text="Calculator">
+            <Button layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCalculatorWindow" prefHeight="96.0" prefWidth="96.0" text="Calculator">
                <font>
                   <Font size="16.0" />
                </font></Button>
-            <Button fx:id="CategoryManagerControlPanelBtn" layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCategoryManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Category Manager" textAlignment="CENTER" visible="false" wrapText="true">
+            <Button layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCaPControlPanel" prefHeight="96.0" prefWidth="96.0" text="Categories And Phrases" textAlignment="CENTER" wrapText="true">
                <font>
-                  <Font size="16.0" />
-               </font></Button>
-            <Button fx:id="CategoryGroupManagerControlPanelBtn" layoutX="240.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCategoryGroupManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Category Group Manager" textAlignment="CENTER" visible="false" wrapText="true">
-               <font>
-                  <Font size="16.0" />
-               </font></Button>
-            <Button fx:id="BackControlPanelBtn" layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#CategoryAndPhraseControlPanelBtnMethod" prefHeight="96.0" prefWidth="96.0" text="Back" visible="false">
-               <font>
-                  <Font size="16.0" />
+                  <Font size="15.0" />
                </font>
             </Button>
-            <Button fx:id="CategoryAndPhraseControlPanelBtn" layoutX="131.0" layoutY="24.0" mnemonicParsing="false" onAction="#openControlPanelSubWinCaP" prefHeight="96.0" prefWidth="98.0" text="Categories And Phrases" textAlignment="CENTER" wrapText="true">
+            <Button layoutX="240.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCaSControlPanel" prefHeight="96.0" prefWidth="96.0" text="Commands And Statuses" textAlignment="CENTER" wrapText="true">
                <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-            <Button layoutX="129.0" layoutY="150.0" mnemonicParsing="false" onAction="#openCommandManagerPanel" prefHeight="96.0" prefWidth="103.0" text="Commands And Statuses" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-            <Button layoutX="247.0" layoutY="150.0" mnemonicParsing="false" onAction="#openCommandManagerPanel" prefHeight="96.0" prefWidth="98.0" text="Command Manager" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font size="16.0" />
+                  <Font size="15.0" />
                </font>
             </Button>
          </children>
