@@ -19,7 +19,8 @@ public class Brain{
 	private static String userInput;
 	protected static String directory = "";
 	protected static int tempInt=0;
-	protected static String tempString = "";//used liberally, able to be used as a temporary string 
+	protected static String tempString = "";
+	//used liberally, able to be used as a temporary string 
 	static protected String[] CategoryManagerPanelLastActionInfo = {""};
 	
 	
@@ -28,14 +29,11 @@ public class Brain{
     //need to make a status manager
     //need to also make a command manager
 	//fix | problem in interpretInput at top
-	//fix button swapping ability in control panel
-	/* 
-	 * can choose to swap windows with a unique subWindow full of the buttons, including back
-	 * which would reopen original control panel window
-	 */
+	
 	protected static String[] listOfStatuses = {"Any","Normal", "WILD!"};
 
-	
+	//how are you doing how 
+	//the above line doesnt work in code fix it
     
     //need to write the stuff below
     protected static String response = "";
@@ -66,17 +64,9 @@ public class Brain{
 		interpretInput(userInput);
 		formulateResponse();
 		respondToUser();
-		if(isExpressionOnlyElementary(userInput)) {
-			response = solveExpression(userInput);
-			System.out.println("The result of '" +userInput+"' is:" + response);
-		}
+
 		//remove this for sure later
 		if(UIUnderstanding!=null&&UIUnderstanding[0].equals("OpenWindow(ControlPanel.fxml)")) {
-			//perhaps a better way exists to call open control panel
-			//nvm this method of opening is perfect :)
-			//Controller controller = new Controller();
-			//controller.openControlPanel();
-
 			URL url = new File("fxmls\\ControlPanel.fxml").toURI().toURL();
 			Parent root = FXMLLoader.load(url);
 			Stage stage = new Stage();
@@ -85,8 +75,9 @@ public class Brain{
 	        stage.setTitle("Control Panel");
 	        stage.show();
 		}else {
-			System.out.println("UIUnderstanding[0]="+UIUnderstanding[0]);
-
+			if(UIUnderstanding[0]!=null&&!UIUnderstanding[0].equals("")) {
+				System.out.println("UIUnderstanding[0]="+UIUnderstanding[0]);
+			}
 		}
 		
 	}
@@ -99,14 +90,13 @@ public class Brain{
 		 * 
 		 * best way to accomplish this would be to include
 		 * checkIfInfoFromFile(keywordFileName,part of UI), attempt word by word, back to front?
+		 * every time a UI string is unknown it is added to unknown strings, vice versa with
+		 * resultingUnderstanding
 		 */
 		UI = UI.toLowerCase().replace("'", "").trim();
 		String[] UIByWord = UI.split(" ");
-		String[] unknownStrings = new String[1];//every time a string is unknown it is added
+		String[] unknownStrings = new String[1];
 		String[] resultingUnderstanding = new String[UIByWord.length];
-		String[] operands = {"+","-","*","/","sin","cos","tan"};
-		//commands should already be apart of phraseList,so need to make sure it is included
-		//also make sure commands arent peaking through in the categoryManager and categorygroup
 		String[][] FullList = ListOfPhrasesCommandsAndTheirCategories;
 		String tempString = "";
 		int understandingCntr = 0;
@@ -121,34 +111,10 @@ public class Brain{
 				unknownStrings = new String[total];
 			}
 		}
-		if(UI.contains("|")) {
-			UnknownPartsOfUI[0]=UI;
-			//this needs to be able to disallow UI to be entered due to the "|"
-			//and warn the user because of it
-			
-			//delete portion below this except for return statement to pretty up
-			unknownStrings[0]=UI;
-			if(resultingUnderstanding!=null) {
-				System.out.println("The understanding of UI is as follows:");
-				resultingUnderstanding = removeNullInArray(resultingUnderstanding);
-				for(int x = 0; x<resultingUnderstanding.length;x++) {
-					System.out.println(resultingUnderstanding[x]);
-				}
-				}
-				unknownStrings = removeNullInArray(unknownStrings);
-				if(unknownStrings!=null) {
-					System.out.println("The unknown parts of UI is as follows:");
-					for(int x = 0; x<unknownStrings.length;x++) {
-						System.out.println(unknownStrings[x]);
-					}	
-				}
-			
-			return;
-		}
 		unknownStrings = new String[UIByWord.length];
-		if(!doesStrContainArr(UI, operands)) {
-		if(UI.contains(" ")) {//multiple words
-			/*can just search through listOfCategoriesAndTheirPhrases for the phrase
+		if(!doesExpContainElementary(UI)) {
+		if(UI.contains(" ")) {
+			/* Case of UI having more than one word. The process is explained below.
 			 * first checking all words together, then slowly taking it apart from the end
 			 * until only beginning word left (the left-most word) if not able to be found.
 			 * if found though, remove that portion of the string, trim(), then
@@ -157,7 +123,7 @@ public class Brain{
 			 * then continue trying to understand the rest of the string. repeat until nothing
 			 * left. if words are in a continuous row that we don't understand, append
 			 * the new words to the end of the last one with a space, else move to next index
-			 * 
+			 * in unknown words array
 			 */
 			
 			for(int numberOfSkippedWords = 0; numberOfSkippedWords<UIByWord.length;) {
@@ -207,22 +173,37 @@ public class Brain{
 					}
 					if(outerIndex+1==FullList.length
 							&&numberOfSkippedWords==backwardCounter&&isFound) {
+						//this needs to be called multiple times for multi-word recognition
+						//need new number of known
+						/*
 						//numberOfSkippedWords will be 1+ always
 						//need the number of words that we previously don't know
-						Boolean[] tempArr = removeNullInArray(UIByWordBoolean);
-						int numberOfUnknown=0;
-						for(int x=0; x<tempArr.length;x++) {
-							if(!tempArr[x])numberOfUnknown++;
-						}
-						for(int x=0;x<numberOfSkippedWords-numberOfUnknown;x++) {
+						//Boolean[] tempArr = removeNullInArray(UIByWordBoolean);
+						//int numberOfUnknown=0;
+						//for(int x=0; x<tempArr.length;x++) {
+						//	if(!tempArr[x])numberOfUnknown++;
+						//}
+						//for(int x=0;x<numberOfSkippedWords-numberOfUnknown;x++) {
+						//}
+						 * 
+						 */
 						UIByWordBoolean[boolCtr] = true;
 						boolCtr++;
-						}
 					}else if(outerIndex+1==FullList.length
 							&&numberOfSkippedWords==backwardCounter) {
+						
+						if(boolCtr>0&&UIByWordBoolean[boolCtr-1]==true) {
+							//finishes line of trues if need be
+						for(int x=0,y=boolCtr; x<numberOfSkippedWords-y-1;x++) {
+							UIByWordBoolean[boolCtr]=true;
+							boolCtr++;
+						}
+						}
+						
 						UIByWordBoolean[boolCtr] = false;
 						boolCtr++;
 					}
+					//how are you doing how borken
 			}	//backwards counter measures the number of words being considered
 				//floor measures the number of unknown words
 			}
@@ -265,6 +246,12 @@ public class Brain{
 			}
 		}
 		}
+		}else if(doesExpContainElementary(UI)){//doesStrContainNonDigitsOrLetters(UI)&&
+			resultingUnderstanding[0]=solveExpression(UI);
+		}else {
+			System.out.println("We dont know how to deal with whatever that is yet :(");
+		}
+		
 		if(resultingUnderstanding!=null) {
 		System.out.println("The understanding of UI is as follows:");
 		resultingUnderstanding = removeNullInArray(resultingUnderstanding);
@@ -279,21 +266,9 @@ public class Brain{
 				System.out.println(unknownStrings[x]);
 			}	
 		}
-		for(int x=0; x<ListOfPhrasesCommandsAndTheirCategories.length;x++) {	
-			for(int y=0; y<ListOfPhrasesCommandsAndTheirCategories[x].length;y++) {
-				/*System.out.println("ListOfPhrasesCommandsAndTheirCategories[" + x + "]["
-						+y+"] is:"+ListOfPhrasesCommandsAndTheirCategories[x][y]);
-			*/
-			}
-		}
-		}else if(!doesStrContainNonDigitsOrLetters(UI)&&doesStrContainArr(UI, operands)){
-			System.out.println("We dont know how to deal with operands yet :(");
-		}else {
-			System.out.println("We dont know how to deal with whatever that is yet :(");
-		}
 		
-		UIUnderstanding = resultingUnderstanding;
-		UnknownPartsOfUI=unknownStrings;
+		UIUnderstanding=removeNullInArray(resultingUnderstanding);
+		UnknownPartsOfUI=removeNullInArray(unknownStrings);
 		/*
 		keywordOrganizer(UI);//organizes keyword list into suitable matching
 		identifySentenceStructure(UI);//comprehending the string
@@ -336,7 +311,7 @@ public class Brain{
 				y++;
 			}
 		}
-		if(nullessArr.length<2&&nullessArr[0]==null) {
+		if(nullessArr[0]==null) {//used to have nullessArr.length<2&&
 			nullessArr[0] = "";
 		}
 		return nullessArr;
@@ -794,7 +769,8 @@ public class Brain{
 		return str;
 	}
 	
-	public static String toWholeFileAroundCategories(String fileName) throws FileNotFoundException {
+	public static String toWholeFileAroundCategories(String fileName)
+			throws FileNotFoundException {
 		if(!fileName.contains(directory)) {
 			fileName = directory + fileName;
 		}
@@ -818,7 +794,8 @@ public class Brain{
 		return superStringCategory;
 	}
 	
-	public static String toWholeFileAroundPhrasesAndCategories(String fileName) throws FileNotFoundException{
+	public static String toWholeFileAroundPhrasesAndCategories(String fileName)
+			throws FileNotFoundException{
 		if(!fileName.contains(directory)) {
 			fileName = directory + fileName;
 		}
@@ -1019,6 +996,7 @@ public class Brain{
 		return false;
 	}
 	
+	
 	public static Boolean doesStrContainDigitOrLetter(String str) {
 		for(int x=0; x<str.length();x++) {
 			if(Character.isLetterOrDigit(str.charAt(x))) {
@@ -1064,27 +1042,106 @@ public class Brain{
 		return stackedArr;
 	}
 	
-	public static Boolean doesStrContainNonDigitsOrLetters(String str) {
+	public static Boolean doesStrContainDigitsOrLetters(String str) {
 		Character c;
 		for(int x=0; x<str.length();x++) {
 			c=str.charAt(x);
-			if(!Character.isLetterOrDigit(c)&&!Character.isWhitespace(c)) {
+			if(Character.isLetterOrDigit(c)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static Boolean doesStrContainLetters(String str) {
+		Character c;
+		for(int x=0; x<str.length();x++) {
+			c=str.charAt(x);
+			if(Character.isLetter(c)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public static Boolean doesStrContainNumber(String str) {
+		Character c;
+		for(int x=0; x<str.length();x++) {
+			c=str.charAt(x);
+			if(Character.isDigit(c)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static Boolean isExpressionOnlyElementary(String str) {
+	public static Boolean doesExpContainElementary(String str) {
 		/*supposed to tell whether expression only contains elementary functions such as
 		 *variables, sin, sqrt, log, any operands that work with variables, etc.
 		 *https://en.wikipedia.org/wiki/Elementary_function
+		 *remember | is absolute value
 		 */
+		String[] elementaryFunctions= {
+				"+","-","*","/","(",")",
+			"π","^","ln","log","√","|","sqrt","abs",
+			"sin","cos","tan",
+			"arcsin","arccos","arctan",//this line...
+			"asin","acos","atan",//means the same as this line,  just alt spelling.
+			"sinh","cosh","tanh",
+			"arsinh","arcosh","artanh",//this is inverse of line above.
+		};
+		if(doesStrContainArr(str,elementaryFunctions)) {
+			return true;
+		}
 		return false;
 	}
 	
 	private static String solveExpression(String str) {
 		//supposed to intake any expression, assuming it is able to be processed
+		str = str.replace("sqrt", "√").replace(" ", "");
+		
+		String[] elementaryFunctions= {
+				"+","-","*","/","(",")",
+			"π","^","ln","log","√","|","sqrt","abs",
+			"sin","cos","tan",
+			"arcsin","arccos","arctan",//this line...
+			"asin","acos","atan",//means the same as this line,  just alt spelling.
+			"sinh","cosh","tanh",
+			"arsinh","arcosh","artanh",//this is inverse of line above.
+		};
+		String[] emdas = {
+				"^","*","/","+","-"
+		};
+		String[] parenth = {
+				"(",")"	
+		};
+		String[] otherNonTrig= {
+				"ln","log","√","|","sqrt","abs"
+		};
+		String[] trig = {
+				"sin","cos","tan",
+				"arcsin","arccos","arctan",//this line...
+				"asin","acos","atan",//means the same as this line,  just alt spelling.
+				"sinh","cosh","tanh",
+				"arsinh","arcosh","artanh",
+		};
+		
+		/* this process of expression solving will go as follows:
+		 * first, run it through simplifyOp to 'clean' the expression.
+		 * then, if there are any parenthesis, check to see within about whether more than one
+		 * non-parenthesis elementary function exists, if so call identifyNextOperation to place
+		 * parenthesis around the appropriate part, further isolating the simplest operation.
+		 * once simplest operation* is found, send it to solveSimpleOp expecting a double answer.
+		 * once answer is formulated, replace the string with the double answer.
+		 * 
+		 * Repeating the above steps should lead to the answer to any expression.
+		 * *The simplest operation mentioned here is string with only 1 operator
+		 */
+		
+		str = simplifyOp(str);
+		
+		
+		
 		return str;
 	}
 
@@ -1115,9 +1172,19 @@ public class Brain{
 	
 	
 	private static String formulateResponse() {
+		if(UIUnderstanding!=null&&!doesStrContainLetters(UIUnderstanding[0])&&
+				doesStrContainNumber(UIUnderstanding[0])){
+			return UIUnderstanding[0];
+		}
 		
 		
-		return "";
+		
+		if(doesExpContainElementary(userInput)) {
+			response = solveExpression(userInput);
+			System.out.println("The result of '" +userInput+"' is:" + response);
+		}
+		
+		return response;
 	}
 	
 	private static String respondToUser() {
@@ -1127,11 +1194,45 @@ public class Brain{
 		return "";
 	}
 	
-	public static void setUI(String str) {
-		userInput=str;
+	private static String simplifyOp(String str) {
+		/* the purpose of this method is to 'clean' the expression of unnecessary clutter
+		 * trims unnecessary operators and empty parenthesis, inserts * between number and
+		 * parenthesis if needed, inserts parenthesis before and after number following
+		 * Trigonometry functions, fixes abs and sqrt calls, removes parenthesis around singular
+		 * doubles/ints 
+		 * 8+3() = 8+3
+		 * 8(9)=8*(9) or (8)(9)=(8)*(9)
+		 * 8+3-(1) = 8+3-1
+		 * sin0 cos0 tan0 = sin(0) cos(0) tan(0)
+		 * abs-1 = |-1|
+		 * sqrt2 = √2
+		 * 
+		 * 
+		 */
+		//str = str.replaceStrInArrWithStr used for solving parenth problem 
+		//Elementaryexpression + ( into replaceStrInArrWithStr
+		str = str.replace("π", "3.14159");
+		str = str.replace("pi", "3.14159");
+		str = str.replace("", "").replace("", "");
+		str = str.replace("", "").replace("", "");
+
+		
+		
+		
+		
+		return str;
 	}
 	
 	
+	public static void setUI(String str) {
+		userInput=str;
+	}
+	/* The two ways to swap a scene is by using the stages below. 
+	 * If you want to create a new scene,
+	 * use the second one. else, have root, stage, and scene static at top and use first one.
+	 * stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+	 * Stage stage = new Stage();
+	 */
 	//new command is OpenWindow(controlPanel) , formerly Action(controlPanelOpen)
 	
 }//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java
