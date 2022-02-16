@@ -6,16 +6,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+
 	public class Main extends Application{
 		@Override
 		   public void start(Stage stage) throws Exception {
 				try {
-				URL fxmlResource = getClass().getResource("/Main.fxml");//formerly "/Main.fxml"
-				Parent root = FXMLLoader.load(fxmlResource);
+				Parent root = FXMLLoader.load(getClass()
+						.getResource("Main.fxml"));
 		        Scene scene = new Scene(root);
 		        stage.setScene(scene);
 		        stage.setTitle("Little Robot");
-		        stage.show();		        
+		        stage.show();		 
+		        
+		        
 				} catch(Exception e) {
 		    	e.printStackTrace();
 		    }
@@ -27,5 +30,3 @@ import javafx.stage.Stage;
 		launch(args);
 	}
 }
-	
-	//how do i open multiple windows at once/close one and open another (control panel keyword)

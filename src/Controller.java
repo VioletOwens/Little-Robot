@@ -34,6 +34,8 @@ public class Controller implements Initializable{
 	
 	//Control Panel
 	@FXML
+	private AnchorPane AnchorPaneControlPanel;
+	@FXML
 	private Button CategoryAndPhraseControlPanelBtn;
 	@FXML
 	private Button CategoryManagerControlPanelBtn;
@@ -105,6 +107,10 @@ public class Controller implements Initializable{
 	private ListView<String> CategoryGroupManagerInputResponseGroupListView;
 	@FXML
 	private AnchorPane CategoryGroupManagerPanelAnchorPane;
+	
+	static String tempString="";
+	
+	static Double[] tempDoubleArr = {};
 	
 	
 	public void calculator(ActionEvent event) throws IOException{
@@ -678,6 +684,46 @@ public class Controller implements Initializable{
         stage.show();
 	}
 	
+	public void openControlPanelSubWinCaP() throws IOException{
+		//this controls the sub-window for categories and phrases
+		//CategoryAndPhraseControlPanelBtnMethod		
+		tempDoubleArr = new Double[2];
+		tempDoubleArr[0]=AnchorPaneControlPanel.getPrefWidth();
+		tempDoubleArr[1]=AnchorPaneControlPanel.getPrefHeight();
+
+		System.out.println("Width is:" + tempDoubleArr[0] + ", while height is:" +
+				tempDoubleArr[1]);
+		//need AnchorPaneControlPanel
+		//AnchorPaneControlPanel.getChildren().setAll(FXMLLoader.load("vista2.fxml"));
+		
+		//opening SubWinCategoriesAndPhrases.fxml
+		//Scene mainScene = new Scene(AnchorPaneControlPanel.getChildren());
+		FXMLLoader loader = FXMLLoader.load(getClass().getResource(
+				"/SubWinCategoriesAndPhrases.fxml"));
+		Parent root = FXMLLoader.load(getClass().getResource(
+				"/SubWinCategoriesAndPhrases.fxml"));
+		Stage stage = (Stage) CalculatorControlPanelBtn.getScene().getWindow();
+		Scene scene = new Scene(loader.getRoot());
+		stage.setScene(scene);
+        //focusing on working out how to seamless switch between scenes
+        //this link helps https://coderslegacy.com/java/switch-between-scenes-in-javafx/
+        //stage.setWidth(tempDoubleArr[0]);
+        //stage.setHeight(tempDoubleArr[1]);//need to know how to copy window sizes on swap
+        stage.setX(tempDoubleArr[0]);
+        stage.setY(tempDoubleArr[1]);//need to know how to copy window sizes on swap
+        stage.show();
+		System.out.println("Width is:" + tempDoubleArr[0] + ", while height is:" +
+				tempDoubleArr[1]);
+	}
+	
+	public void openControlPanelSubWinCaS() throws IOException{
+		//this controls the sub-window for commands and statuses
+		//CategoryAndPhraseControlPanelBtnMethod
+		
+	}
+	
+	
+	
 	public void openCategoryManagerPanel() throws IOException{
 		Parent root = FXMLLoader.load(getClass().getResource("/CategoryManagerPanel.fxml"));
 		Stage stage = new Stage();
@@ -693,6 +739,15 @@ public class Controller implements Initializable{
 		Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Category Group Manager Panel");
+        stage.show();
+	}
+	
+	public void openCommandManagerPanel() throws IOException{
+		Parent root = FXMLLoader.load(getClass().getResource("/CommandManagerPanel.fxml"));
+		Stage stage = new Stage();
+		Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setTitle("Command Manager Panel");
         stage.show();
 	}
 	

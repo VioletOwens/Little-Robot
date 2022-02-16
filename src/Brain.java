@@ -3,6 +3,11 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 	
 /**
  * @author Violet Owens
@@ -11,35 +16,44 @@ public class Brain{
 	
 	private String userInput;
 	static String directory = "";
-	static String tempString = "";
+	static String tempString = "";//used liberally, able to be used as a temporary string 
 	static private String[] CategoryManagerPanelLastActionInfo = {""};
 	
 	
+	//these need to be removed through code revision
 	
-	static String[] longSentenceStructArr = null;
-	static String[] shortSentenceStructArr = null;
-	static String[] commandArray = {"Action"};
+    //need to make a status manager
+    //need to also make a command manager
+	//fix | problem in interpretInput at top
+	//fix button swapping ability in control panel
+	/* 
+	 * can choose to swap windows with a unique subWindow full of the buttons, including back
+	 * which would reopen original control panel window
+	 */
     static String[] listOfStatuses = {"Any","Normal", "WILD!"};
 
 	
+    
+    //need to write the stuff below
+    static String response = "";
+    
+    
 	//need to figure a way to store this information in another accessible java file?
 	//group of lists for brain to use below.
-    static String[] listOfCommandLines = {""};//needs to be written
-    static String[][] listOfCommandLinesByCategory = {{""}};//needs to be written
-    static String[] UIUnderstanding = {""};//needs to be written
-    static String[] UnknownPartsOfUI = {""};//needs to be written
-
-    
-    static String[] listOfCategories = {""};
-    static String[][] ListOfPhrasesCommandsAndTheirCategories = {{""}};
+    static String[] UIUnderstanding = {""};
+    static String[] UnknownPartsOfUI = {""};
     static String[] listOfPhrases = {""};
-    static String[][] listOfCategoriesAndTheirPhrases = {{""}};
-    static String[] listOfFiles = {""};
-    static String[] listOfFileNames = {""};
+    static String[] listOfCategories = {""};
+    static String[] listOfCommandPhrases = {""};
+    static String[] fullListOfFiles = {""};
     static String[] listOfPhraseFileNameCombo = {""};
     static String[] listOfCategoryFileNameCombo = {""};
     static String[] filesToIncludeInSearches = {""};
     static String[] filesToExcludeFromSearches = {""};
+    static String[][] listOfCommandLinesByCategory = {{""}};
+    static String[][] ListOfPhrasesCommandsAndTheirCategories = {{""}};
+    static String[][] listOfCategoriesAndTheirPhrases = {{""}};
+    
     
     
 	Brain(String userInput) throws IOException {
@@ -47,10 +61,29 @@ public class Brain{
 		updateLists();
 		setUserInput(userInput);
 		interpretInput(userInput);
+		formulateResponse();
+		respondToUser();
 		
+		//remove this for sure later
+		if(UIUnderstanding!=null&&UIUnderstanding[0].equals("OpenWindow(ControlPanel.fxml)")) {
+			//perhaps a better way exists to call open control panel
+			//nvm this method of opening is perfect :)
+			//Controller controller = new Controller();
+			//controller.openControlPanel();
+
+			
+			Parent root = FXMLLoader.load(getClass().getResource("ControlPanel.fxml"));
+			Stage stage = new Stage();
+			Scene scene = new Scene(root);
+	        stage.setScene(scene);
+	        stage.setTitle("Control Panel");
+	        stage.show();
+		}else {
+			System.out.println("UIUnderstanding[0]="+UIUnderstanding[0]);
+
+		}
 	}
 	
-	//working on interpretInput including commands correctly.
 	private static void interpretInput(String UI) throws FileNotFoundException {
 		/* should be versatile and allow for user input of any type of thing in file,
 		 * examples may include wanting to break sentences down to adjective, noun, verb etc. 
@@ -79,6 +112,30 @@ public class Brain{
 			if(x+1==UIByWord.length-1) {
 				unknownStrings = new String[total];
 			}
+		}
+		if(UI.contains("|")) {
+			UnknownPartsOfUI[0]=UI;
+			//this needs to be able to disallow UI to be entered due to the "|"
+			//and warn the user because of it
+			
+			//delete portion below this except for return statement to pretty up
+			unknownStrings[0]=UI;
+			if(resultingUnderstanding!=null) {
+				System.out.println("The understanding of UI is as follows:");
+				resultingUnderstanding = removeNullInArray(resultingUnderstanding);
+				for(int x = 0; x<resultingUnderstanding.length;x++) {
+					System.out.println(resultingUnderstanding[x]);
+				}
+				}
+				unknownStrings = removeNullInArray(unknownStrings);
+				if(unknownStrings!=null) {
+					System.out.println("The unknown parts of UI is as follows:");
+					for(int x = 0; x<unknownStrings.length;x++) {
+						System.out.println(unknownStrings[x]);
+					}	
+				}
+			
+			return;
 		}
 		unknownStrings = new String[UIByWord.length];
 		if(!doesStrContainArr(UI, operands)) {
@@ -227,6 +284,8 @@ public class Brain{
 			System.out.println("We dont know how to deal with whatever that is yet :(");
 		}
 		
+		UIUnderstanding = resultingUnderstanding;
+		UnknownPartsOfUI=unknownStrings;
 		/*
 		keywordOrganizer(UI);//organizes keyword list into suitable matching
 		identifySentenceStructure(UI);//comprehending the string
@@ -476,7 +535,6 @@ public class Brain{
 	}
 	
 	public static void updateLists() throws IOException {
-		 //currentStatusComboBox.getItems().addAll(statusList);
 		String[] categoryList = null;
 		String[] phraseList = null;
 		String[] commandCategoryList = null;
@@ -490,7 +548,7 @@ public class Brain{
 		String[] tempStringArr=null;
 		String[] excludedFileNameList = {
 				"keywords.txt","filelist.txt","categorygrouping.txt","inputresponsegrouping.txt"
-				,"commands.txt"};
+				,"commands.txt"};//i know this is hardcoded im trying to make a manager for it
 		String line = "";
 		String tempString="";
 		int tempCtr = 0;
@@ -687,8 +745,9 @@ public class Brain{
             phrasesCommandsAndTheirCategoriesList = 
             		stackArrays(commandFileList,phraseAndCategoryList);
             
+            listOfCommandLinesByCategory=commandFileList;
             ListOfPhrasesCommandsAndTheirCategories= phrasesCommandsAndTheirCategoriesList;
-            listOfCommandLines = commandCategoryList;
+            listOfCommandPhrases = commandCategoryList;
             listOfCategoryFileNameCombo = categoryFileNameComboList;
             filesToIncludeInSearches = fileNameList;
             filesToExcludeFromSearches = excludedFileNameList;
@@ -696,7 +755,7 @@ public class Brain{
             listOfPhrases = phraseList;
             listOfPhraseFileNameCombo = phraseFileNameList;
     		listOfCategories = categoryList;
-    		listOfFileNames = children;
+    		fullListOfFiles = children;
         }
 	}
 	
@@ -839,8 +898,8 @@ public class Brain{
 	public static Boolean isStringAvailable(String str) {
 		//this tests whether a string is already in the system 
 		//or whether it can be added without problem
-		for(int x=0; x<listOfFileNames.length;x++) {
-			if(str.equals(listOfFileNames[x].substring(0, listOfFileNames[x].indexOf(".")-1))) {
+		for(int x=0; x<fullListOfFiles.length;x++) {
+			if(str.equals(fullListOfFiles[x].substring(0, fullListOfFiles[x].indexOf(".")-1))) {
 				return false;
 			}
 		}
@@ -884,7 +943,6 @@ public class Brain{
 		action = action.toLowerCase().trim();
 		String[] lastActionInfo = {action,location,str};
 		CategoryManagerPanelLastActionInfo = lastActionInfo;
-			
 	}
 	
 	public static void inputNewCategoryManagerPanelLastActionInfo(String action, String location,
@@ -961,8 +1019,9 @@ public class Brain{
 		}
 		return false;
 	}
+	
 	public static String[] stackArrays(String[] arr1, String[] arr2) {
-		/*the purpose of this method is to allow users the ability to 'stack' arrays atop each
+		/* the purpose of this method is to allow users the ability to 'stack' arrays atop each
 		 * other. This will entail merging the two arrays into one larger array, putting arr1
 		 * information before inputing arr2 information
 		 */
@@ -978,8 +1037,9 @@ public class Brain{
 		}
 		return stackedArr;
 	}
+	
 	public static String[][] stackArrays(String[][] arr1, String[][] arr2){
-		/*the purpose of this method is to allow users the ability to 'stack' arrays atop each
+		/* the purpose of this method is to allow users the ability to 'stack' arrays atop each
 		 * other. This will entail merging the two arrays into one larger array, putting arr1
 		 * information before inputing arr2 information
 		 */
@@ -996,7 +1056,6 @@ public class Brain{
 		return stackedArr;
 	}
 	
-	
 	public static Boolean doesStrContainNonDigitsOrLetters(String str) {
 		Character c;
 		for(int x=0; x<str.length();x++) {
@@ -1009,9 +1068,10 @@ public class Brain{
 	}
 
 	public static Boolean isExpressionOnlyElementary(String str) {
-		//supposed to tell whether expression only contains elementary functions such as
-		//constants and variables, sin, sqrt, log, any operands that work with variables, etc.
-		//https://en.wikipedia.org/wiki/Elementary_function
+		/*supposed to tell whether expression only contains elementary functions such as
+		 * constants and variables, sin, sqrt, log, any operands that work with variables, etc.
+		 * https://en.wikipedia.org/wiki/Elementary_function
+		 */
 		return false;
 	}
 	
@@ -1019,255 +1079,7 @@ public class Brain{
 		//supposed to intake any expression, assuming it is able to be processed
 		return str;
 	}
-	
-	//below here are unnecessary and likely to be deleted soon
-	private static void organizeSentStructArr() {
-		int counter = 0;
-		for(int y=0; y<longSentenceStructArr.length;y++) {
-			if(longSentenceStructArr[y]==null) {
-				break;
-			}
-			counter++;
-		}
-		shortSentenceStructArr = new String[counter];
-		for(int x=0;x<shortSentenceStructArr.length;x++) {
-			shortSentenceStructArr[x]=longSentenceStructArr[x];
-			//System.out.println("shortSentenceStructArr of " + x + " is:" + shortSentenceStructArr[x]);
-		}		
-	}
-		
-	private static void keywordOrganizer(String UI) {
-		//reads through file first to get number of lines,
-		//then make array of exact size, assigning each line to array index
-		//then make simple sorting algorithm to sort in order of these variables:
-		//first, organize the arrays in order of first character in UI,
-		//then longest string (cant decide between word count or string length but latter easier)
-		//so we try length of string
-		
-		//making array of array of strings, the outer array with names of file
-		//and inner arrays are list of strings 
-		
-		File file = new File (directory + "keywords.txt"); 
-		Scanner firstScanner = null;
-		Scanner secondScanner = null;
-		Boolean hadToSort = false;
-		String wholeFile= "";
-		String[] tempArr;
-		int firstCounter = 0;
-		if(file.exists()) {
-		try  { 
-			firstScanner =  new  Scanner (file);
 
-			// Read the file line by line 
-			while  (firstScanner.hasNextLine())  { 
-					firstScanner.nextLine();  	 
-					firstCounter++;
-			}
-			firstScanner.close();
-			secondScanner = new Scanner(file);
-			tempArr = new String[firstCounter];
-			firstCounter=0;
-			while(secondScanner.hasNextLine()) {//simply add all lines to array of perfect size
-				tempArr[firstCounter]=secondScanner.nextLine();
-				firstCounter++;
-			}
-			/*
-			for(int xy=0; xy<tempArr.length;xy++) {
-				System.out.println("before: tempArr[" + xy + "]=" + tempArr[xy]);
-			} //great for troubleshooting
-			*/
-			firstCounter=0;
-			hadToSort=true;
-			String currentString="";
-			String nextString="";
-			while  (hadToSort)  { //will be sorting while for tempArr
-				hadToSort=false;
-				for(int x=0; x<tempArr.length;x++) {
-				currentString=tempArr[x];
-				if(!(x+1==tempArr.length)) {//to make sure we arent at end of array
-					nextString=tempArr[x+1];
-				if(currentString.charAt(0)==UI.charAt(0)
-					&&nextString.charAt(0)==UI.charAt(0)
-					&&currentString.substring(0,currentString.lastIndexOf("/")).length()
-					<nextString.substring(0,nextString.lastIndexOf("/")).length()) {
-					//next line and this line have same first char, sort by length
-					tempArr[x]=nextString;
-					tempArr[x+1]=currentString;
-					hadToSort=true;
-				}else if(currentString.charAt(0)!=UI.charAt(0)
-						&&nextString.charAt(0)!=UI.charAt(0)
-						&&currentString.substring(0,currentString.lastIndexOf("/")).length()
-						<nextString.substring(0,nextString.lastIndexOf("/")).length()) {
-					//if nextline and this line dont have same first char, sort by length
-					tempArr[x]=nextString;
-					tempArr[x+1]=currentString;
-					hadToSort=true;
-				}else if(currentString.charAt(0)!=UI.charAt(0)
-						&&nextString.charAt(0)==UI.charAt(0)) {
-					//if nextline has the first char but this line doesnt, swap.
-					tempArr[x]=nextString;
-					tempArr[x+1]=currentString;
-					hadToSort=true;
-				}
-				}//end of if checking if at end of array
-				}//end of for
-			}//end of while
-			/*
-			for(int u=0; u<tempArr.length;u++) {
-				System.out.println("after: tempArr[" + u + "]=" + tempArr[u]);
-			} //great for troubleshooting
-			*/			
-			//System.out.println("After sorting, tempArr contents:");
-			for(int x = 0; x<tempArr.length; x++) {
-					if(!(x+1==tempArr.length)) {
-						wholeFile=wholeFile.concat(tempArr[x]+"\n");
-					}else{//doesn't append last line with a newLine.
-						wholeFile=wholeFile.concat(tempArr[x]);
-					}
-				}
-			//stringArr completely sorted, now can reassign it to the file
-		      FileWriter output = new FileWriter(directory + "keywords.txt");
-		      output.write(wholeFile);
-		      output.close();
-		      
-		    //need to mainly make a category list that corresponds with the subsequent
-		    //necessary response. Each category/phrase should have at least 1 response
-		    //doing all this via the extra window to open and create
-		    //call this interface category manager
-		      
-		      
-		    //can add automatic detection system that detects if keywords contains a filename
-		    //not in directory, can create new file with this info in it, but can't
-		    //have categories since its auto generated (include that word
-		    //and understanding of it (category) is "Unknown" with warning in file)
-		    //maybe also implement warning ability into the response (maybe when asked about 
-		    //status!!)
-		    //can also implement ability to check directories for files not contained in
-		    //keywords.txt, and add them if the format checks out.
-
-
-
-		      if (firstScanner!=null) firstScanner.close (); 
-		      if (secondScanner!=null) secondScanner.close();
-		}  catch (Exception ex)  { 
-			ex.printStackTrace();
-			}
-	}
-	}
-	
-	private static void generalOrganizer(String fileName, String UI) {
-		//used to organize most files and clean up any messes, if any.
-		if(!fileName.contains(".txt")){//if it doesnt include .txt, append it at end.
-			fileName = fileName + ".txt";
-		}
-		File file = new File (directory + fileName); 
-		String[] stringArr;
-		String wholeFile="";
-		String currentLine = "";
-		String nextLine = "";
-		Boolean didWeSort = false;
-		int counterOne=0;
-		Scanner scannerOne = null ;
-		Scanner preempScanner = null;
-
-		
-		try  { 
-			preempScanner = new Scanner(file);
-			while(preempScanner.hasNextLine()) {//while to preemptively clean file and count lines
-				String line = preempScanner.nextLine();
-				if(line.length()<1) {
-					//skip line if first char isnt digit or letter (empty)
-				}else {
-				if(!line.contains("|")) {
-					//if the line doesnt contains | 
-					line = line.concat("|Unknown");
-				}else if(line.substring(0, line.indexOf("|")).length()
-						==line.length()) {
-					//since line contains |, there must not be text past it
-					line = line.concat("Unknown");					
-				}
-				counterOne++;
-				if(preempScanner.hasNextLine()) {//mechanism to build wholeFile
-				wholeFile=wholeFile+line+"\n";
-				}else {
-					wholeFile=wholeFile+line;
-				}
-			}
-			}//end of while
-		    FileWriter output = new FileWriter(directory + fileName);
-		    output.write(wholeFile);
-		    output.close();
-		      
-			stringArr = new String[counterOne];			
-			scannerOne =  new  Scanner (file);
-			counterOne=0;
-			while  (scannerOne.hasNextLine())  { 
-				stringArr[counterOne]=scannerOne.nextLine();
-				counterOne++;
-			}
-			//below, stringArr content is sorted in this order: exact copy, 
-			//same first char (as UI) second by length, different first char second by length
-			counterOne=0;
-			didWeSort=true;
-			while(didWeSort) {
-				didWeSort=false;
-				for(int x=0; x<stringArr.length;x++) {
-				currentLine = stringArr[x];
-				if(!(x+1==stringArr.length)) {
-					nextLine = stringArr[x+1];
-
-				if(currentLine.substring(0,currentLine.indexOf("|")).equals(UI)) {
-					//if very first is matching word, leave it alone!
-				}
-				else if(nextLine.substring(0,nextLine.indexOf("|")).equals(UI)) {
-					stringArr[x]=nextLine;
-					stringArr[x+1]=currentLine;
-					didWeSort=true;
-				}else if(nextLine.charAt(0)==UI.charAt(0)
-						&&currentLine.charAt(0)==UI.charAt(0)
-						&&nextLine.substring(0,nextLine.indexOf("|")).length()
-						>currentLine.substring(0,currentLine.indexOf("|")).length()) {
-					stringArr[x]=nextLine;
-					stringArr[x+1]=currentLine;	
-					didWeSort=true;
-				}else if(nextLine.charAt(0)!=UI.charAt(0)
-						&&currentLine.charAt(0)!=UI.charAt(0)
-						&&nextLine.substring(0,nextLine.indexOf("|")).length()
-						>currentLine.substring(0,currentLine.indexOf("|")).length()) {
-					stringArr[x]=nextLine;
-					stringArr[x+1]=currentLine;
-					didWeSort=true;
-				}else if(nextLine.charAt(0)==UI.charAt(0)
-						&&currentLine.charAt(0)!=UI.charAt(0)) {
-					stringArr[x]=nextLine;
-					stringArr[x+1]=currentLine;
-					didWeSort=true;
-				}
-				
-			}//end of if testing if at last index of array
-			}//end of for of stringArr.length
-			}//end of if checking if were at end of array
-			wholeFile = "";
-			for(int x=0; x<stringArr.length;x++) {
-				if(x+1!=stringArr.length) {
-					wholeFile = wholeFile + stringArr[x] + "\n";
-				}
-				else {
-					wholeFile = wholeFile + stringArr[x];
-				}
-			}
-		    FileWriter outputTwo = new FileWriter(directory + fileName);
-		    outputTwo.write(wholeFile);
-		    outputTwo.close();
-		      
-
-			if (scannerOne!=null) scannerOne.close(); 
-		}  catch (Exception ex)  { 
-			ex.getMessage();
-		} 
-		
-	}
-		
 	public static int numOfLinesInFileOfCat(String fileName, String targetCategory)
 			throws FileNotFoundException {
 		File file;
@@ -1294,186 +1106,19 @@ public class Brain{
 	}
 	
 	
-	private static String identifySentenceStructure(String userInput) throws FileNotFoundException {
-		String str = userInput.replace(",", " ").replace("  ", " ").strip();//string priming
-		//System.out.println("Input at first in identifySentenceStructure(str) is:" + str);
-		String line = "";
-		String category = "";
-		String tempString="";
-		File file = new File (directory + "keywords.txt"); 
-		int tempInt=0;
-		String tempFileName = "";
-		Boolean found = false;
-		if(file.exists()) {
-		try {
-		Scanner scannerOne = new  Scanner (file);
-		// Read the file line by line 
-		while  (scannerOne.hasNextLine()&&!found)  { 
-			line = scannerOne.nextLine(); 
-			tempFileName=line.substring(line.lastIndexOf("/")+1,line.length());
-			line=line.substring(0,line.indexOf("/"));
-			tempString=str;
-			/*
-			System.out.println("looking for match in keyword.txt. "
-					+ "tempString is:" + tempString
-					+" while corresponding line is:" + line);//very useful for troubleshooting
-					*/
-			while(tempString!=""&&tempString.contains(line)) {
-				if(tempString!=""&&(tempString.equals(line))) {
-					found = true;
-					break;
-				}else if(tempString.contains(" ")){//used to remove last word
-						tempInt=tempString.length()-tempString.split(" ")[tempString.split(" ").length-1].length();
-						tempString = tempString.substring(0,tempInt-1);
-				}
-				else {//case of last word, which has alrdy been tested
-					tempString="";
-				}
-		}//end of tempString while
-		}//end of outer while
-		scannerOne.close();
-		line = "";
-				//System.out.println("Out of first while (keyword identified)");
-				if(found) {//tempFileName contains destination of word and tempString is the word
-					generalOrganizer(tempFileName,tempString);//used to organize most files
-					file = new File(directory + tempFileName);
-				Scanner scannerTwo = new  Scanner (file);
-				while  (scannerTwo.hasNextLine()&&str.trim()!="")  { 
-					line = scannerTwo.nextLine();  	 
-					category = line.substring(line.indexOf("|")+1, line.length());
-					line = line.substring(0,line.indexOf("|"));
-					if(str.contains(line)) {//if line can be found in string, get category
-						str = str.replace(line, "").trim();
-						found=false;
-						for(int h=0;h<commandArray.length;h++) {//checking for command words
-							if(category.contains(commandArray[h])) {
-								found=true;
-								tempString=commandArray[h];
-								switch (tempString){
-								case "Action":
-									actionCommand(category.substring(
-											category.indexOf("(")+1,category.indexOf(")")));
-									break;
-									
-								}//out of switch case
-								break;
-							}
-						}//out of for loop
-						if(!found) {//only append category if it IS NOT a command phrase
-							longSentenceStructArr=appendToArray(longSentenceStructArr,category);
-						}
-					}//out of if str.contains(line)
-					if(str.replace(" ","")=="") {//if we run out of words
-						break;
-					}else {
-						keywordOrganizer(str);//organize keywords.txt around new str
-						//Recursion until entire string is understood
-						str = identifySentenceStructure(str);
-					}
-				}
-				scannerTwo.close();
-				}
-			} catch (IOException e) {
-				//System.out.println("ERROR: NO STREAM!! (Gone one too many times"
-				//		+ " through recurssion without closing stream and read is attempted)");
-				e.printStackTrace();//useful for troubleshooting
-			}
-	        return str;
-		}
-		return "";
-	}//end of method
-	
-	private static void actionCommand(String str) throws IOException {
-		Controller controller = new Controller();//used to allow calls to controller methods
-		System.out.println("actionCommand method called, str:" + str);
-		switch (str){
-		case "controlPanelOpen":
-			controller.openControlPanel();
-			break;
-		}
+	private static String formulateResponse() {
 		
-	}
-	
-	private static String responseCenter(String[] sentStructArr) {
 		
 		return "";
 	}
 	
-	
+	private static String respondToUser() {
+		
+		
+		
+		return "";
+	}
 	
 	//new command is OpenWindow(controlPanel) , formerly Action(controlPanelOpen)
-	
-	//public static String 
-	/*
-	 * phrase fixer for files below
-	 * 
-        file = new File (Brain.keywordFileName);
-    	scanner.close();
-		scanner =  new  Scanner (file);
-		tempString="";
-		counterOne=0;
-        while(scanner.hasNextLine()) {
-        	tempString = scanner.nextLine();
-        	if(scanner.hasNextLine()) {
-            	keywordSuperString = keywordSuperString.concat(tempString) + "\n";
-        	}
-        	else {
-            	keywordSuperString = keywordSuperString.concat(tempString);
-        	}
-        	counterOne++;
-        }
-        scanner.close();
-        
-        //first checking if keywordPhraseFileNameList contains anything that keywords needs
-        //then going to check if keywords contains anything we dont know (cant tell in first
-        //check)
-        for(int x=0;x<keywordPhraseFileNameList.length; x++) {
-        	if(!keywordSuperString.contains(keywordPhraseFileNameList[x])) {
-    			keywordSuperString =keywordSuperString + 
-    					"\n" + keywordPhraseFileNameList[x];
-        	}
-        }        
-	      outputToFile = new FileWriter(Brain.keywordFileName);
-	      outputToFile.write(keywordSuperString);
-	      outputToFile.close();//applying first contribution to keywords.txt
-	        file = new File (Brain.keywordFileName);
-			scanner =  new  Scanner (file);
-			tempString="";
-			keywordSuperString="";//remaking file without oddities 
-        	while(scanner.hasNextLine()) {
-        		tempString = scanner.nextLine();
-                for(int x=0; x<keywordPhraseFileNameList.length;x++) {
-                	if(keywordPhraseFileNameList[x].equals(tempString)) {
-                		if(!keywordSuperString.equals("")) {
-                    		keywordSuperString=keywordSuperString+"\n"+
-                    				keywordPhraseFileNameList[x];
-                    		break;
-                		}else {
-                			keywordSuperString=keywordPhraseFileNameList[x];
-                			break;
-                		}
-                	}	
-                }
-        	}
-            	outputToFile = new FileWriter(Brain.keywordFileName);
-  	      outputToFile.write(keywordSuperString);
-  	      outputToFile.close();//applying second contribution to keywords.txt (removing oddities)
-	 * 
-	 * 
-	 * 
-	 */
-	
-	//private static void errorAttributer() {//infers any errors in userInput	
-	//}
-	//types of words:greetings, question words, queeries (lol) like hows ur current status,
-	//filler,		
-	//when special keywords are called, group up info in array containing special	
-//in file.txt, can have flag at end of line of trigger to signal collection of rest of info
-//so that we can collect information in the commands/triggers (eg. open [insert file name] need
-//to know info of file name to open a file!)
-//need to also make flag reader in file below (just after it replaces str? and before it assigns final
-//category to shortSentenceStructArr, since goal is for category to
-//also include the additional info)
-
 	
 }//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java

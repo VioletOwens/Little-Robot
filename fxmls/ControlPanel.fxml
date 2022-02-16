@@ -6,7 +6,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
    <children>
-      <AnchorPane prefHeight="300.0" prefWidth="380.0">
+      <AnchorPane fx:id="AnchorPaneControlPanel" prefHeight="300.0" prefWidth="362.0">
          <children>
             <Button fx:id="CalculatorControlPanelBtn" layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#calculator" prefHeight="96.0" prefWidth="96.0" text="Calculator">
                <font>
@@ -25,7 +25,17 @@
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button fx:id="CategoryAndPhraseControlPanelBtn" layoutX="131.0" layoutY="24.0" mnemonicParsing="false" onAction="#CategoryAndPhraseControlPanelBtnMethod" prefHeight="96.0" prefWidth="98.0" text="Categories And Phrases" textAlignment="CENTER" wrapText="true">
+            <Button fx:id="CategoryAndPhraseControlPanelBtn" layoutX="131.0" layoutY="24.0" mnemonicParsing="false" onAction="#openControlPanelSubWinCaP" prefHeight="96.0" prefWidth="98.0" text="Categories And Phrases" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button layoutX="129.0" layoutY="150.0" mnemonicParsing="false" onAction="#openCommandManagerPanel" prefHeight="96.0" prefWidth="103.0" text="Commands And Statuses" textAlignment="CENTER" wrapText="true">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button layoutX="247.0" layoutY="150.0" mnemonicParsing="false" onAction="#openCommandManagerPanel" prefHeight="96.0" prefWidth="98.0" text="Command Manager" textAlignment="CENTER" wrapText="true">
                <font>
                   <Font size="16.0" />
                </font>
