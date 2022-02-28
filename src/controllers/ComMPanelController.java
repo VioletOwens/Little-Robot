@@ -3,6 +3,7 @@ package controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import application.Brain;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,15 +18,13 @@ import javafx.scene.shape.Rectangle;
 public class ComMPanelController implements Initializable{
 
 	@FXML
-	AnchorPane ComAnchorPane;
+	AnchorPane ComGAnchorPane;
 	@FXML
-	ComboBox<String> CommandComboBox;
+	ComboBox<String> CommandGroupComboBox;
 	@FXML
-	TextField CommandTextField;
+	TextField CommandGTextField;
 	@FXML
 	ListView<String> ListOfCommands;
-	@FXML
-	Rectangle Rectangle;
 	
 	
 	
@@ -55,14 +54,30 @@ public class ComMPanelController implements Initializable{
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
-        if(ComAnchorPane!=null){
-        	ComAnchorPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        if(ComGAnchorPane!=null){
+        	ComGAnchorPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent click) {
-                	ComAnchorPane.requestFocus();
+                	ComGAnchorPane.requestFocus();
                 }
         	});
-        }		
+        }	
+        if(CommandGroupComboBox!=null) {
+        	ListOfCommands.getItems().addAll(Brain.getCommandGroupingKeys());
+        	;
+        }
+        
+        if(ListOfCommands!=null) {
+        	String[] newArr = Brain.getCommandGroupingValue(
+        			ListOfCommands.getSelectionModel().getSelectedItem());
+        	System.out.println(newArr[0] + "WOWOWOOW");
+
+        	ListOfCommands.getItems().addAll(
+        			Brain.subArr(newArr,1,
+					Brain.getCommandGroupingValue(
+		        			ListOfCommands.getSelectionModel().
+		        			getSelectedItem()).length));
+        }
 	}
 
 }

@@ -4,7 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,6 +23,7 @@ public class Brain{
 	private static String userInput;
 	protected static String directory = "";
 	protected static int tempInt=0;
+	protected static String[] tempArr = {""};
 	protected static String tempString = "";
 	//used liberally, able to be used as a temporary string 
 	static protected String[] CategoryManagerPanelLastActionInfo = {""};
@@ -45,7 +50,9 @@ public class Brain{
     protected static String[] UnknownPartsOfUI = {""};
     protected static String[] listOfPhrases = {""};
     protected static String[] listOfCategories = {""};
+    private static String[] listOfCommands = {""};
     protected static String[] listOfCommandPhrases = {""};
+    protected static String[][] listOfCommandGrouping = {{""}};
     protected static String[] fullListOfFiles = {""};
     protected static String[] listOfPhraseFileNameCombo = {""};
     protected static String[] listOfCategoryFileNameCombo = {""};
@@ -54,7 +61,10 @@ public class Brain{
     protected static String[][] listOfCommandLinesByCategory = {{""}};
     protected static String[][] ListOfPhrasesCommandsAndTheirCategories = {{""}};
     protected static String[][] listOfCategoriesAndTheirPhrases = {{""}};
-    
+    public static Map<String,String[]> indivComGrouping = new HashMap<>();
+    public static Map<String,Map<String,String[]>> totalCommandGrouping = 
+    		new HashMap<>();//trying out this method of storing command information
+
     
 	public static void startUp(String input) throws IOException {
 		setUI(input);
@@ -74,12 +84,7 @@ public class Brain{
 	        stage.setScene(scene);
 	        stage.setTitle("Control Panel");
 	        stage.show();
-		}else {
-			if(UIUnderstanding[0]!=null&&!UIUnderstanding[0].equals("")) {
-				System.out.println("UIUnderstanding[0]="+UIUnderstanding[0]);
-			}
 		}
-		
 	}
 	
 	
@@ -93,6 +98,15 @@ public class Brain{
 		 * every time a UI string is unknown it is added to unknown strings, vice versa with
 		 * resultingUnderstanding
 		 */
+		String[] elementaryFunctions= {
+				"+","-","*","/","(",")",
+			"π","^","ln","log","√","|","sqrt","abs",
+			"sin","cos","tan",
+			"arcsin","arccos","arctan",//this line...
+			"asin","acos","atan",//means the same as this line,  just alt spelling.
+			"sinh","cosh","tanh",
+			"arsinh","arcosh","artanh",//this is inverse of line above.
+		};
 		UI = UI.toLowerCase().replace("'", "").trim();
 		String[] UIByWord = UI.split(" ");
 		String[] unknownStrings = new String[1];
@@ -112,7 +126,7 @@ public class Brain{
 			}
 		}
 		unknownStrings = new String[UIByWord.length];
-		if(!doesExpContainElementary(UI)) {
+		if(!doesStrContainArr(UI,elementaryFunctions)) {
 		if(UI.contains(" ")) {
 			/* Case of UI having more than one word. The process is explained below.
 			 * first checking all words together, then slowly taking it apart from the end
@@ -246,7 +260,7 @@ public class Brain{
 			}
 		}
 		}
-		}else if(doesExpContainElementary(UI)){//doesStrContainNonDigitsOrLetters(UI)&&
+		}else if(doesStrContainArr(UI,elementaryFunctions)){//doesStrContainNonDigitsOrLetters(UI)&&
 			resultingUnderstanding[0]=solveExpression(UI);
 		}else {
 			System.out.println("We dont know how to deal with whatever that is yet :(");
@@ -339,26 +353,6 @@ public class Brain{
 		}
 	}
 	
-	public static String stringArrToString(String[] arr, int startingIndex) {
-		String wholeFile = "";
-		
-		for(int x=startingIndex; x<arr.length;x++) {
-			if(!arr[x].equals("")&&!(arr[x].contains("]")||arr[x].contains("["))) {
-			if(x<=0) {
-				wholeFile="[" + arr[x] + "]";
-			}else {
-				wholeFile = wholeFile + "\n"+ "[" + arr[x] + "]";
-			}
-		}else {
-			if(x<=0) {
-				wholeFile=arr[x];
-			}else {
-				wholeFile = wholeFile + "\n"+ arr[x];
-			}
-		}
-		}
-		return wholeFile;
-	}
 	
 	public static void appendToFile(String fileName, String str){
 		if(!fileName.contains(directory)) {
@@ -479,49 +473,15 @@ public class Brain{
 		return counter;
 	}
 	
-	public static String replaceFirstChar(String str, char target, String replacement) {
-		for(int x=0;x<str.length();x++) {
-			if(str.charAt(x)==target) {
-				if(x==0) {
-					return replacement + str.substring(1, str.length());
-				}else {
-					return str.substring(0, x-1) + replacement + str.substring(x+1
-							,str.length());
-				}
-			}
-		}
-		return str;
-	}
 	
-	public static int firstIndexOfChar(String str, char target) {
-		for(int x=0;x<str.length();x++) {
-			if(str.charAt(x)==target) {
-				return x;
-			}
-		}
-		return -1;
-	}
-	
-	public static String[] sortStringArr(String target, String[] arr) {
-    	//test whole file arr against what is in search bar to know what to display
-		//return string arr of files to be displayed
-		String[] newArr = new String[arr.length];
-		int counter = 0;
-		for(int i=0; i<arr.length;i++) {
-			if(arr[i].contains(target)) {
-				newArr[counter]=arr[i];
-				counter++;
-			}
-		}
-		newArr = removeNullInArray(newArr);
-		return newArr;
-	}
+
 	
 	public static void updateLists() throws IOException {
 		String[] categoryList = null;
 		String[] phraseList = null;
 		String[] commandCategoryList = null;
 		String[] commandPhraseList = null;
+		String[] commandList = null;
 		String[][] commandFileList=null;
 		String[][] phrasesCommandsAndTheirCategoriesList = null;
 		String[] categoryFileNameComboList = null;
@@ -622,10 +582,12 @@ public class Brain{
 				while(sc.hasNextLine()) {//first find phrase and fileName
 					line=sc.nextLine();
 		    		//System.out.println("tempString is: " + tempString);
-					phraseList[z] = line.substring(0, line.indexOf('|'));
-					phraseFileNameList[z]=line.substring(0, line.indexOf('|'))
-							+ "//" + fileNameList[x];
-					z++;
+					if(line.contains("|")) {
+						phraseList[z] = line.substring(0, line.indexOf('|'));
+						phraseFileNameList[z]=line.substring(0, line.indexOf('|'))
+								+ "//" + fileNameList[x];
+						z++;
+					}
 				}
 	            sc.close();
            }
@@ -682,7 +644,8 @@ public class Brain{
 				sc = new Scanner(file);
 				while(sc.hasNextLine()) {
 					line=sc.nextLine();
-					if(line.substring(line.indexOf("|")+1,line.length())
+					if(line.contains("|")&&
+							line.substring(line.indexOf("|")+1,line.length())
 							.equals(categoryList[x])&&line.substring(0, line
 									.indexOf("|")).length()>0) {//change here 
 						z++;
@@ -704,7 +667,8 @@ public class Brain{
 				sc = new Scanner(file);
 				while(sc.hasNextLine()) {
 					tempString=sc.nextLine();
-					if(tempString.substring(tempString.indexOf("|")+1,tempString.length())
+					if(tempString.contains("|")&&
+							tempString.substring(tempString.indexOf("|")+1,tempString.length())
 							.equals(categoryList[x])&&
 							tempString.substring(0,tempString.indexOf("|")).length()>0) {
 						phraseAndCategoryList[x][z+1]=tempString.substring(0, tempString.indexOf("|"));
@@ -714,20 +678,73 @@ public class Brain{
         	}
             }
 			sc.close();
-            //need to write commandPhraseList
     		file = new File(directory + "commands.txt");
 			sc = new Scanner(file);
 			tempCtr=0;
+			tempInt = 0;
+			commandList = new String[commandPhraseList.length];
 			while(sc.hasNextLine()) {
 				line = sc.nextLine();
-				commandPhraseList[tempCtr]=line.substring(0,line.indexOf('|'));
-				tempCtr++;
+				if(line.contains("|")) {
+					commandPhraseList[tempCtr]=line.substring(0,line.indexOf('|'));
+					if(!doesStrContainArr(line.substring(line.indexOf('|')+1,line.indexOf('(')),
+							removeNullInArray(commandList))){
+						commandList[tempInt] = line.substring(line.indexOf('|')+1,line.indexOf('('));
+					}
+					tempCtr++;
+				}
 			}
+			
+			
+			//collecting list of command grouping in commandGrouping hashmap for first time!!
+			sc.close();
+    		file = new File(directory + "commandsgrouping.txt");
+			sc = new Scanner(file);
+			tempCtr=0;
+			tempInt = 0;
+			tempString = "";
+			while(sc.hasNextLine()) {
+				indivComGrouping = new HashMap<>();
+				line = sc.nextLine();
+				if(line.charAt(line.length()-1)==':') {
+					//assigning title of group of category
+					tempString = line.substring(0, line.length()-1);
+				}else if(line.contains(",")) {
+					//tempArr = new String[countChars(line,',')+1];
+					tempArr = line.substring(line.indexOf("[")+1, line.lastIndexOf("]")).
+							split(",");
+					if(!tempString.equals("")&&tempArr!=null) {
+						//line.substring(0,line.indexOf("[")) = the name of command
+						if(line.contains("(")&&line.contains(")")) {
+							tempArr = addStringToArr(tempArr,
+									line.substring(line.indexOf("("),line.length())
+									,tempArr.length);
+						}
 
+						indivComGrouping.put(line.substring(0,line.indexOf("[")), tempArr);
+						//not adding both groups as it should. overrites the first one fir some reason
+						//could do index counter at end of tempString like this
+						//groupName[0] = hashmap of all commands within this subgroup
+						totalCommandGrouping.put(tempString, indivComGrouping);
+					}
+				}
+			}
+			
+			
+			
+			
+			
+			commandList = removeNullInArray(commandList);
+			
+			
             //assigning phrasesCommandsAndTheirCategoriesList
             phrasesCommandsAndTheirCategoriesList = 
             		stackArrays(commandFileList,phraseAndCategoryList);
             
+            
+            
+            
+            listOfCommands = commandList;
             listOfCommandLinesByCategory=commandFileList;
             ListOfPhrasesCommandsAndTheirCategories= phrasesCommandsAndTheirCategoriesList;
             listOfCommandPhrases = commandCategoryList;
@@ -869,7 +886,7 @@ public class Brain{
 		//objective of this method is to test whether the format is correct and ready to read,
 		//that is to have a pair of '[' and ']' surrounding the whole string
 		if((!str.contains("[")&&!str.contains("]"))
-				||!str.replace(str.substring(firstIndexOfChar(str,'['),str.lastIndexOf("]")+1)
+				||!str.replace(str.substring(str.indexOf('['),str.lastIndexOf("]")+1)
 				, "").equals("")) {
 			//if removing substring between [] makes str != "" then return false 
 			//basically vetting bad cases of "hello + [stuff]" and things with no brackets
@@ -949,9 +966,6 @@ public class Brain{
 		}
 	}
 	
-	public static String[] getCategoryManagerPanelLastActionInfo() {
-		return CategoryManagerPanelLastActionInfo;
-	}
 	
 	public static void buildDirectory() throws IOException {
 		//this method is very versatile and wont create extra files if they already exist.
@@ -989,23 +1003,14 @@ public class Brain{
 	
 	public static Boolean doesStrContainArr(String str, String[] arr) {
 		for(int x=0; x<arr.length;x++) {
-			if(str.contains(arr[x])) {
+			if(!arr[x].equals("")&&!str.equals("")&&str.contains(arr[x])) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	
-	public static Boolean doesStrContainDigitOrLetter(String str) {
-		for(int x=0; x<str.length();x++) {
-			if(Character.isLetterOrDigit(str.charAt(x))) {
-				return true;
-			}	
-		}
-		return false;
-	}
-	
+
 	public static String[] stackArrays(String[] arr1, String[] arr2) {
 		/* the purpose of this method is to allow users the ability to 'stack' arrays atop each
 		 * other. This will entail merging the two arrays into one larger array, putting arr1
@@ -1042,63 +1047,11 @@ public class Brain{
 		return stackedArr;
 	}
 	
-	public static Boolean doesStrContainDigitsOrLetters(String str) {
-		Character c;
-		for(int x=0; x<str.length();x++) {
-			c=str.charAt(x);
-			if(Character.isLetterOrDigit(c)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static Boolean doesStrContainLetters(String str) {
-		Character c;
-		for(int x=0; x<str.length();x++) {
-			c=str.charAt(x);
-			if(Character.isLetter(c)) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public static Boolean doesStrContainNumber(String str) {
-		Character c;
-		for(int x=0; x<str.length();x++) {
-			c=str.charAt(x);
-			if(Character.isDigit(c)) {
-				return true;
-			}
-		}
-		return false;
-	}
 
-	public static Boolean doesExpContainElementary(String str) {
-		/*supposed to tell whether expression only contains elementary functions such as
-		 *variables, sin, sqrt, log, any operands that work with variables, etc.
-		 *https://en.wikipedia.org/wiki/Elementary_function
-		 *remember | is absolute value
-		 */
-		String[] elementaryFunctions= {
-				"+","-","*","/","(",")",
-			"π","^","ln","log","√","|","sqrt","abs",
-			"sin","cos","tan",
-			"arcsin","arccos","arctan",//this line...
-			"asin","acos","atan",//means the same as this line,  just alt spelling.
-			"sinh","cosh","tanh",
-			"arsinh","arcosh","artanh",//this is inverse of line above.
-		};
-		if(doesStrContainArr(str,elementaryFunctions)) {
-			return true;
-		}
-		return false;
-	}
-	
+
+
 	private static String solveExpression(String str) {
 		//supposed to intake any expression, assuming it is able to be processed
-		str = str.replace("sqrt", "√").replace(" ", "");
 		
 		String[] elementaryFunctions= {
 				"+","-","*","/","(",")",
@@ -1127,19 +1080,28 @@ public class Brain{
 		};
 		
 		/* this process of expression solving will go as follows:
-		 * first, run it through simplifyOp to 'clean' the expression.
+		 * first, run it through simplifyExp to 'clean' the expression.
 		 * then, if there are any parenthesis, check to see within about whether more than one
 		 * non-parenthesis elementary function exists, if so call identifyNextOperation to place
 		 * parenthesis around the appropriate part, further isolating the simplest operation.
-		 * once simplest operation* is found, send it to solveSimpleOp expecting a double answer.
-		 * once answer is formulated, replace the string with the double answer.
+		 * once simplest operation* is found, send it to solveSimpleExp expecting a 
+		 * double answer. once answer is formulated, replace the string with the double answer.
 		 * 
 		 * Repeating the above steps should lead to the answer to any expression.
 		 * *The simplest operation mentioned here is string with only 1 operator
+		 * 
+		 * case where √ or - could be answer to a number. 
+		 * maybe give option to see total worked out version after seeing just the √?
+		 * 
 		 */
 		
-		str = simplifyOp(str);
 		
+		
+		
+		str = simplifyExp(str);
+		
+		
+		//only simplifies right now
 		
 		
 		return str;
@@ -1172,7 +1134,9 @@ public class Brain{
 	
 	
 	private static String formulateResponse() {
-		if(UIUnderstanding!=null&&!doesStrContainLetters(UIUnderstanding[0])&&
+		
+		
+		/*if(UIUnderstanding!=null&&!doesStrContainLetters(UIUnderstanding[0])&&
 				doesStrContainNumber(UIUnderstanding[0])){
 			return UIUnderstanding[0];
 		}
@@ -1184,6 +1148,8 @@ public class Brain{
 			System.out.println("The result of '" +userInput+"' is:" + response);
 		}
 		
+		*/
+		
 		return response;
 	}
 	
@@ -1194,35 +1160,410 @@ public class Brain{
 		return "";
 	}
 	
-	private static String simplifyOp(String str) {
+	private static String simplifyExp(String str) {
 		/* the purpose of this method is to 'clean' the expression of unnecessary clutter
-		 * trims unnecessary operators and empty parenthesis, inserts * between number and
-		 * parenthesis if needed, inserts parenthesis before and after number following
-		 * Trigonometry functions, fixes abs and sqrt calls, removes parenthesis around singular
-		 * doubles/ints 
+		 * 1. trims unnecessary operators and empty parenthesis, 
+		 * 2. inserts * between number & parenthesis, & parenthesis & | if applicable, 
+		 * 2.1 inserts floating emdas after cleaning parenthesis up
+		 * 3. inserts parenthesis before and after number following nonPemdas functions, 
+		 * 4. fixes abs and |, sqrt and √, and ** to ^
+		 * 5. removes parenthesis around singular doubles/ints if no trig function is prior, 
+		 * 6. else work out trig func
+		 * 7. any parenthesis, trig, digits and dots,non-trig all require the * between each
+		 * 8. replace .1 with 0.1
 		 * 8+3() = 8+3
 		 * 8(9)=8*(9) or (8)(9)=(8)*(9)
 		 * 8+3-(1) = 8+3-1
 		 * sin0 cos0 tan0 = sin(0) cos(0) tan(0)
 		 * abs-1 = |-1|
 		 * sqrt2 = √2
-		 * 
+		 * NEED TO MAKE AN ALL INCLUSIVE EXCEPTION THROW AROUND WHATS WRONG WITH STRING
+		 * for warning throws:
+		 * too many/not enough, Parenthesis, '|',
+		 * non-elementary function detected
+		 * dividing by 0
 		 * 
 		 */
-		//str = str.replaceStrInArrWithStr used for solving parenth problem 
-		//Elementaryexpression + ( into replaceStrInArrWithStr
+		
+		System.out.println("Before cleaning:" + str);
+
+		String[] elementaryFunctions= {
+				"+","-","*","/","(",")",
+			"π","^","ln","log","√","|","sqrt","abs",
+			"sin","cos","tan",
+			"arcsin","arccos","arctan",//this line...
+			"asin","acos","atan",//means the same as this line,  just alt spelling.
+			"sinh","cosh","tanh",
+			"arsinh","arcosh","artanh",//this is inverse of line above.
+		};
+		String[] emdas = {"^","*","/","+","-"};
+		String[] emda = {"^","*","/","+"};
+		String[] parenth = {"(",")"	};
+		String[] otherNonTrig= {"ln","log","√","|","sqrt","abs"};
+		String[] trig = {
+				"sin","cos","tan",
+				"arcsin","arccos","arctan",//this line...
+				"asin","acos","atan",//means the same as this line,  just alt spelling.
+				"sinh","cosh","tanh","arsinh","arcosh","artanh",
+		};
+		String[] nonPemdas = {
+						"ln","log","√","sqrt","abs","sin","cos","tan",
+					"arcsin","arccos","arctan","sinh","cosh","tanh","arsinh","arcosh","artanh"
+		};
+		String[] digits = {"0","1","2","3","4","5","6","7","8","9","."};
+		
+		String[] allButP = {
+				"^","*","/","+","-","ln","log","√","|","sqrt","abs","sin","cos","tan","arcsin",
+				"arccos","arctan","asin","acos","atan","sinh","cosh","tanh","arsinh","arcosh",
+				"artanh"
+};
+		
+		String strReducer = str;
+        String strBuilder = "";
+        //String inBetwStr = "";
+        String ogStr = str;
+        Boolean cleanRun = false;
+        Boolean removeParenth = false;
+        String innerStr;
+        String tempString;
+				
+		//1. first remove unnecessary empty parenthesis
+		str = str.replace(" ", "");
+		str = str.replace("()", "");
+		str = str.replace(")(", ")*(");
+		str = str.replace(")|", ")*|").replace("|(", "|*(").replace("||", "|*|");
+		str = str.replace("**", "^");
+
+		//digit fixing
+		str = str.replace("sqrt", "√");
 		str = str.replace("π", "3.14159");
 		str = str.replace("pi", "3.14159");
-		str = str.replace("", "").replace("", "");
-		str = str.replace("", "").replace("", "");
+		
+		//1. removing trailing all but parenthesis
+		for(int x=0; x<allButP.length;x++) {
+			if(str.contains(allButP[x])) {
+				str = removeTrailingStr(str, allButP[x]);
+			}
+		}
+		for(int x=0; x<emda.length;x++) {
+			if(str.contains(emda[x])) {
+				str = removeLeadingStr(str,emda[x]);
+			}
+		}
+		
+		
+		//2. inserting parenthesis where needed
+		for(int x=0; x<nonPemdas.length;x++) {
+			if(str.contains(")"+nonPemdas[x])) {
+				//nonpemdas next to parenthesis
+				str = str.replace(")"+nonPemdas[x], ")*"+nonPemdas[x]);
+			}
+			for(int y=0; y<digits.length;y++) {
+				if(str.contains(digits[y]+nonPemdas[x])) {
+					//digit next to nonpemdas 9sin 
+					str = str.replace(digits[y]+nonPemdas[x], digits[y]+"*"+nonPemdas[x]);
+				}else if(str.contains(digits[y]+"(")||str.contains(")"+digits[y])) {
+					//digit next to parenthesis 9(10-1)8
+					str = str.replace(digits[y]+"(", digits[y]+"*(");
+					str = str.replace(")"+digits[y], ")*"+digits[y]);
+				}
+			}
+		}
+		
+		/* Good strings to test: 
+		 * "(7)(8)(9)", "(1-(sin(10)))","(10.1)"
+		 * (sin7*sin8)sin9, (1-sin8)-1(1-1)
+		 * ((8)-1)
+		 * (1-(8)-1)
+		 * Below is a continuation of 2 and 2.1
+		 */
+		
+		
+		for(int x=0, pCount = countChars(strReducer,'('); x<pCount; x++) {
+			//using this to check innermost P content for emdas and area right before for
+			//nonPemdas
+			if(doesStrContainArr(innerPContent(str, x),emdas)
+					&&//need to work on prior checking part
+					doesStrContainArr(innerPContent(str, x),nonPemdas,str.indexOf
+							(innerPContent(str, x))-6,str.indexOf
+									(innerPContent(str, x)))) {
+				
+				
+				
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		}
+		
+		
+		/*
+	tempString = str;
+	strReducer = str;
+        for(int x=0,pCount = countChars(strReducer,'('); x<pCount;x++) {
+        	inBetwStr = "";
+        	lastParenthContent=strReducer.substring(strReducer.lastIndexOf("(")+1,
+            		strReducer.lastIndexOf("(")+strReducer.substring(strReducer
+    					.lastIndexOf("("),
+    					strReducer.lastIndexOf("(")+strReducer.substring(strReducer.
+    							lastIndexOf("("), strReducer.length()).indexOf(")")).length());
+        	
 
+        	if(tempString.contains(inBetwStr+"("+lastParenthContent+")")) {
+            	tempString = replaceLast(tempString,inBetwStr+"("+lastParenthContent+")", "");
+        	}else if(tempString.contains("("+lastParenthContent+")"+ inBetwStr)) {
+            	tempString = replaceLast(tempString,"("+lastParenthContent+")"+ inBetwStr, "");
+        	}else {
+            	tempString = replaceLast(tempString,"("+lastParenthContent+")", "");
+        	}
+        	
+        	//collecting in between stuff if it exists after
+        	//(1-sin8)-1(1-1)
+        	//
+        	if(tempString.length()>0&&
+        			tempString.charAt(tempString.length()-1)!=')'&&!checkForPriorStr(tempString,")",
+        			"(",tempString.length()).equals("")){
+        		inBetwStr = checkForPriorStr(tempString,")",
+            			"(",tempString.length());
+        		tempString = replaceLast(tempString, inBetwStr, "");
+        	}
+        	
+
+        	
+        	//strReducer = tempString;
+        	
+        	//checking for preemptive nonPemdas
+        	for(int nopem = 0; nopem<nonPemdas.length;nopem++) {
+        		removeParenth=true;
+        		//testing for premptive nonPemdas here
+            	if(strReducer.length()-lastParenthContent.length()-4-nonPemdas[nopem].length()>0
+            			&&strReducer.substring(strReducer.length()-lastParenthContent.length()-4
+            					-nonPemdas[nopem].length(), strReducer.length()-
+            					lastParenthContent.length()-4).contains(nonPemdas[nopem])) {
+            		removeParenth=false;
+            		break;
+            	}
+        		
+        	}
+        	//building string here	
+        	//(sin7*sin8)sin9 need to make sure that * in between the sin dont get dropped
+        	//(1-sin8)-1(1-1)
+        	if(removeParenth&&!doesStrContainArr(lastParenthContent,emdas)) {
+        		//build without parenthesis if no emdas within and no prior nonPemdas
+        		strBuilder =inBetwStr+lastParenthContent + strBuilder;
+        	}else if(!doesStrContainArr(strReducer.substring(1, 
+					2),emdas)&&
+        			!doesStrContainArr(strReducer.substring(strReducer.length()-2, 
+        					strReducer.length()-1),emdas)&&
+        			strReducer.substring(strReducer.length()-1, strReducer.length()).equals(")")){
+        		//else, rebuild with parenthesis
+        		strBuilder =  inBetwStr + "(" + lastParenthContent +")" + strBuilder;
+        	}else if(doesStrContainArr(strReducer.substring(1, 
+					2),emdas)) {
+        		strBuilder =  inBetwStr + "(" + strBuilder + lastParenthContent +")" ;
+        	}
+        	
+        	else {
+        		strBuilder =  inBetwStr + "(" + lastParenthContent + strBuilder +")";
+        	}
+        	//replacing to avoid infinite recurssion
+        	
+        	strReducer = replaceLast(strReducer,inBetwStr+"("+lastParenthContent+")", "");
+        	
+        }
+        
+        if(!tempString.equals("")) {
+        	//str = str + tempString;
+        }
+        
+        if(!strBuilder.equals("")&&strReducer.equals("")) {
+            str = strBuilder;
+        }else if(!strBuilder.equals("")&&!strReducer.equals("")) {
+        	ogStr = ogStr.replace(strReducer, "");
+        	//ogStr set to what was originally changed in str
+        	
+        	//str.substring(str.indexOf(ogStr), str.indexOf(ogStr)+ogStr.length());
+        	
+        	//str = str.replaceLast(ogStr,strBuilder);
+        	str = replaceLast(str, ogStr, strBuilder);
+        	//str = str.replace("","";)
+        			//include part that replaces what was in str to new organized form
+        	
+        }
+
+        //3. inserts parenthesis before and after number following nonPemdas functions, 
+        //tempString will occupy the number within
+        cleanRun = false;
+        
+        while(!cleanRun) {
+        cleanRun = true;
+
+       	for(int y=0; y<nonPemdas.length;y++) {
+       		
+       		for(int x=0; x<digits.length;x++) {
+        	
+                if(str.contains(nonPemdas[y]+digits[x])&&cleanRun) {
+                	
+                	
+                	for(int i=str.lastIndexOf(nonPemdas[y]+digits[x])+nonPemdas[y].length()+0
+                			, iniaIndex = i; i<str.length();i++) {
+                		tempString = str.substring(i, i+1);
+                		if(!doesStrContainArr(tempString,digits)){
+                			System.out.println("Parenthesis needed to be add to str:"+
+                					str.substring(
+                					str.lastIndexOf(nonPemdas[y]+digits[x])+
+                					nonPemdas[y].length(), i));
+                			//if(i==str.length()-1) {
+                    			tempString = str.substring(
+                    					str.lastIndexOf(nonPemdas[y]+digits[x])+
+                    					nonPemdas[y].length(), i);
+                			//}
+                			//make substring replacement work here, replacing for sin8to sin(8)
+                			str = replaceLast(str,nonPemdas[y]+tempString,
+                					nonPemdas[y]+"("+tempString+")");
+                			cleanRun = false;
+                			y=nonPemdas.length-1;
+                			x=digits.length-1;
+                			break;
+                		}else if(i==str.length()-1-countChars(str.substring(
+                				str.lastIndexOf(nonPemdas[y]+tempString),
+                				str.length()),')')) {
+                 			System.out.println("Parenthesis needed to be add to str:"+
+                					str.substring(
+                					str.lastIndexOf(nonPemdas[y]+digits[x])+
+                					nonPemdas[y].length(), i));
+                			str = replaceLast(str,nonPemdas[y]+tempString,
+                					nonPemdas[y]+"("+tempString+")");
+                			cleanRun = false;
+                			y=nonPemdas.length-1;
+                			x=digits.length-1;
+                			break;
+                			
+                		}
+                		
+                	}
+                	
+                }
+        	}
+       		
+        	if(y==nonPemdas.length-1&&!cleanRun) {
+        		//if at the end, we've ran it once, then run again until a cleanRun occurs
+                cleanRun = false;
+
+        	}
+        }
+        }
+        */
+        
+        
+        
+        
+
+		System.out.println("After cleaning:" + str);
+
+		return str;
+	}
+	
+	public static Boolean doesStrContainArr(String str, String[] strArr, int beginIndex,
+			int endIndex) {
 		
 		
+		return false;
+	}
+	
+	private static void setCommandGrouping(String[] strArr,String str) {
+		indivComGrouping.put(str, strArr);
+	}
+	
+	
+	public static String removeTrailingStr(String str, String target) {
+		if(str.length()>target.length()&&
+				str.substring(str.length()-target.length(),str.length()).equals(target)) {
+			//checking last bit of string
+			str=str.substring(0,str.length()-target.length());
+		}
+		return str;
+	}
+	
+	public static String removeLeadingStr(String str, String target) {
+		//checking first bit
+		if(str.substring(0, target.length()).equals(target)) {
+			str=str.substring(target.length(),str.length());
+		}
 		
 		
 		return str;
 	}
 	
+	
+	public static String insertString(String str, String target, int index) {
+
+		String strBuilder = "";
+		for(int x=0; x<str.length();x++) {
+			if(index==0&&x==0) {
+				strBuilder = target;
+			}
+				strBuilder = strBuilder+str.charAt(x);
+
+			if(index!=0&&x+1==index) {
+				//includes indexes 1 over length to be inserted at end
+				strBuilder = strBuilder+target;
+			}
+		}
+		return strBuilder;
+	}
+	public static String[] addStringToArr(String[] strArr, String str, int index) {
+		String[] newArr = new String[strArr.length+1];
+		
+		for(int x=0, y=0; x<newArr.length;x++) {
+			if(x==index) {
+				newArr[x] = str;
+			}else {
+				newArr[x] = strArr[y];
+				y++;
+			}
+		}
+		return newArr;
+	}
+	
+	public static String[] subArr(String[] strArr, int indexBegin, int indexEnd) {
+		if(indexEnd>indexBegin) {
+			String[] newArr = new String[indexEnd-indexBegin];
+			for(int x=0,y=indexBegin; x<indexEnd-indexBegin;x++) {
+				newArr[x] = strArr[y];
+				y++;
+			}
+			return newArr;
+		}else {
+			return null;
+		}
+	}
+	
+	public static String innerPContent(String str, int i) {
+	//i is the index of parenthesis (it counts up from 0 starting from innermost one)
+		int strLastI = str.lastIndexOf("(");
+		String lastPContent = str.substring(str.lastIndexOf("("),str.lastIndexOf("(")
+				+str.substring(strLastI,str.length()).indexOf(")")+1);
+				//need to make this
+		
+		
+		
+		
+		
+		System.out.println(lastPContent);		
+		
+		
+		return str;
+	}
 	
 	public static void setUI(String str) {
 		userInput=str;
@@ -1234,5 +1575,26 @@ public class Brain{
 	 * Stage stage = new Stage();
 	 */
 	//new command is OpenWindow(controlPanel) , formerly Action(controlPanelOpen)
+
+
+	public static String[] getListOfCommands() {
+		return listOfCommands;
+	}
+
+	public static String[] getCommandGroupingKeys() {
+		tempInt = 0;
+		String[] strArr = new String[indivComGrouping.keySet().size()];
+		for(String s:indivComGrouping.keySet()) {
+			strArr[tempInt] = s;
+			tempInt++;
+		}
+		return strArr;
+	}
+	
+	public static String[] getCommandGroupingValue(String str) {
+		return indivComGrouping.get(str);
+	}
+
+
 	
 }//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java

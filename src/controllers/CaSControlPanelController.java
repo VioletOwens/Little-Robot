@@ -35,13 +35,13 @@ public class CaSControlPanelController implements Initializable{
 	}
 	
 	@FXML
-	void openCommandManagerPanel(ActionEvent event) throws IOException{
-		URL url = new File("fxmls\\CommandManagerPanel.fxml").toURI().toURL();
+	void openCommandGroupManagerPanel(ActionEvent event) throws IOException{
+		URL url = new File("fxmls\\ComGroupMPanel.fxml").toURI().toURL();
 		root = FXMLLoader.load(url);
 		stage = new Stage();//(Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
-        stage.setTitle("Command Manager");
+        stage.setTitle("Command Group Manager");
         stage.show();	
         }
 	
@@ -55,6 +55,12 @@ public class CaSControlPanelController implements Initializable{
         stage.setTitle("Status Manager");
         stage.show();		
         }
+	
+	@FXML 
+	void openCommandRManagerPanel(ActionEvent event) throws IOException{
+		System.out.println("ITS NOT MADE YET MAKE IT!!");
+	}
+	
 	
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {

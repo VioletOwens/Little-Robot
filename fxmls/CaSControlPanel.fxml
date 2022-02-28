@@ -4,20 +4,24 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="300.0" prefWidth="362.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17" fx:controller="controllers.CaSControlPanelController">
+<AnchorPane prefHeight="300.0" prefWidth="362.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CaSControlPanelController">
    <children>
       <Button layoutX="22.0" layoutY="24.0" mnemonicParsing="false" onAction="#openControlPanelWindow" prefHeight="96.0" prefWidth="96.0" text="Back">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="240.0" layoutY="24.0" mnemonicParsing="false" onAction="#openStatusManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Status Manager" textAlignment="CENTER" wrapText="true">
+      <Button layoutX="22.0" layoutY="132.0" mnemonicParsing="false" onAction="#openStatusManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Status Manager" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCommandManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Command Manager" textAlignment="CENTER" wrapText="true">
+      <Button layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCommandGroupManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Command Group Manager" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button layoutX="240.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCommandRManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Command Require. Manager" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="16.0" />
          </font>
