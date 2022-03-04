@@ -41,7 +41,7 @@ public class CatGMPanelController extends Brain implements Initializable{
 	@FXML
 	TextField catSearchTextfield;
 	@FXML
-	TextField catGroupSearchTextfield;
+	TextField catGroupSearchTextField;
 	
 	
 	
@@ -91,7 +91,7 @@ public class CatGMPanelController extends Brain implements Initializable{
            ListOfCategories.setOnMouseReleased(new EventHandler<MouseEvent>() {
                @Override
                public void handle(MouseEvent click) {
-            	   try {
+            	   try{
             		   String clickedNode = click.getPickResult().getIntersectedNode().getId();
             		   String selectedCatItem = ListOfCategories.getSelectionModel().getSelectedItem();
             		   ListOfCategories.setCursor(Cursor.DEFAULT);
@@ -120,32 +120,27 @@ public class CatGMPanelController extends Brain implements Initializable{
         if(ListOfConCatGroup!=null) {
         	ListOfConCatGroup.getItems().setAll(Brain.
             		getWholeFileToString("categorygrouping.txt").split("\n"));
-        	
-        	
-        	
-        	
         	//the double click feature is below.
         	ListOfConCatGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent click) {
                 	if(click.getClickCount() == 2&&!ListOfConCatGroup
-                    		.getSelectionModel().getSelectedItem().equals("")) {
-                    	Brain.tempString = ListOfConCatGroup
-                        		.getSelectionModel().getSelectedItem();
+                    		.getSelectionModel().getSelectedItem().equals("")
+                    		&&!ListOfConCatGroup
+                    		.getSelectionModel().getSelectedItem().equals(" ")) {
+                		String tempString = "";
                     	
-                    	UICategoryComboBox.setValue(Brain.tempString
-                        		.substring(1, Brain.tempString.indexOf("]")));
+                		tempString = ListOfConCatGroup.getSelectionModel().getSelectedItem();
                     	
-                    	Brain.tempString = Brain.tempString.substring(
-                    			Brain.tempString.indexOf("]")+1, Brain.tempString.length());
+                    	UICategoryComboBox.setValue(tempString.substring(1, tempString.indexOf("]")));
                     	
-                    	CurrentStatusComboBox.setValue(Brain.tempString.substring(
-                    			Brain.tempString.indexOf("[")+1,Brain.tempString.indexOf("]")		)
-                    			);
-                    	Brain.tempString = Brain.tempString.substring(
-                    			Brain.tempString.indexOf("]")+1, Brain.tempString.length());
-                    	ResponseCategoryComboBox.setValue(Brain.tempString.substring(
-                    			Brain.tempString.indexOf("[")+1,Brain.tempString.indexOf("]")));}}
+                    	tempString = tempString.substring(tempString.indexOf("]")+1, tempString.length());
+                    	
+                    	CurrentStatusComboBox.setValue(tempString.substring(tempString.indexOf("[")+1,tempString.indexOf("]")		));
+                    	
+                    	tempString = tempString.substring(tempString.indexOf("]")+1, tempString.length());
+                    	
+                    	ResponseCategoryComboBox.setValue(tempString.substring(tempString.indexOf("[")+1,tempString.indexOf("]")));}}
             });
         }
         
@@ -172,7 +167,6 @@ public class CatGMPanelController extends Brain implements Initializable{
         		if(filteredCatList.size()==0) {
         			ListView<String> h = new ListView<String>();
         			h.getItems().add(" ");
-        			System.out.println(h.getItems());
             		ListOfCategories.setItems(h.getItems());
         		}else {
             		ListOfCategories.setItems(filteredCatList);
@@ -180,6 +174,27 @@ public class CatGMPanelController extends Brain implements Initializable{
         	});
         	
         }
+       if(catGroupSearchTextField!=null) {
+
+       	
+   		FilteredList<String> filteredCatList = new FilteredList<>(FXCollections.observableList(ListOfConCatGroup.getItems()),b->true);
+   		catGroupSearchTextField.setOnKeyReleased(e->{
+       		String searchText  = catGroupSearchTextField.getText();
+       		if(searchText.equals(null)||searchText.equals("")) {
+       			filteredCatList.setPredicate(b->true);
+       		}else {
+       			filteredCatList.setPredicate(b->b.contains(searchText));
+       		}
+       		if(filteredCatList.size()==0) {
+       			ListView<String> h = new ListView<String>();
+       			h.getItems().add(" ");
+       			ListOfConCatGroup.setItems(h.getItems());
+       		}else {
+       			ListOfConCatGroup.setItems(filteredCatList);
+       		}
+       	});
+    	   
+       }
         
         
         if(hoverInfoText!=null) {
