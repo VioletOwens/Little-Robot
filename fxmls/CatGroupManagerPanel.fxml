@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="CatGMAnchorPane" prefHeight="460.0" prefWidth="541.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CatGMPanelController">
+<AnchorPane fx:id="CatGMAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="460.0" prefWidth="541.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CatGMPanelController">
    <children>
       <ComboBox fx:id="UICategoryComboBox" layoutX="128.0" layoutY="18.0" prefWidth="150.0" promptText="Select a category" />
       <ComboBox fx:id="CurrentStatusComboBox" layoutX="128.0" layoutY="61.0" prefWidth="150.0" promptText="Select a status" />

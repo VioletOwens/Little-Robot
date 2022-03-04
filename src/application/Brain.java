@@ -84,6 +84,7 @@ public class Brain{
 			Scene scene = new Scene(root);
 	        stage.setScene(scene);
 	        stage.setTitle("Control Panel");
+	        stage.setResizable(false);
 	        stage.show();
 		}
 	}

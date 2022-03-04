@@ -30,6 +30,7 @@ public class ControlPanelController implements Initializable{
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Calculator");
+        stage.setResizable(false);
         stage.show();	
 	}
 	
@@ -42,6 +43,7 @@ public class ControlPanelController implements Initializable{
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Categories and Phrases");
+        stage.setResizable(false);
         stage.show();	
 	}
 	
@@ -55,6 +57,7 @@ public class ControlPanelController implements Initializable{
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Commands and Statuses");
+        stage.setResizable(false);
         stage.show();
 	}
 	

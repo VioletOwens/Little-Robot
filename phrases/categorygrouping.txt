@@ -1,3 +1,4 @@
 [Comforting Phrase][Normal][Negative Emotion]
 [Comforting Phrase][WILD!][Negative Emotion]
 [Death Threat][Any][Death Threat]
+[Negative Emotion][Normal][Strong Positive Emotion]

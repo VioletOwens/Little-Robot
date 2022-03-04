@@ -31,6 +31,7 @@ public class CaSControlPanelController implements Initializable{
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Control Panel");
+        stage.setResizable(false);
         stage.show();
 	}
 	
@@ -42,6 +43,7 @@ public class CaSControlPanelController implements Initializable{
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Command Group Manager");
+        stage.setResizable(false);
         stage.show();	
         }
 	
@@ -53,6 +55,7 @@ public class CaSControlPanelController implements Initializable{
         scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Status Manager");
+        stage.setResizable(false);
         stage.show();		
         }
 	
