@@ -1,5 +1,5 @@
 Window Command Group:
-OpenWindow[cp,control panel,controlpanel,open control panel,open controlpanel](ControlPanel.fxml)
+OpenControlPanel[cp,control panel,controlpanel,open control panel,open controlpanel](ControlPanel.fxml)
 Testing Command Group:
 testingCommand1[testingphrase1,testingphrase2,testingphrase3]
 testingCommand2[ALTtestingphrase1,ALTtestingphrase2,ALTtestingphrase3]

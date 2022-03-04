@@ -8,52 +8,67 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="ComGAnchorPane" prefHeight="432.0" prefWidth="265.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ComGroupMPanelController">
+<AnchorPane fx:id="ComGAnchorPane" prefHeight="400.0" prefWidth="356.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ComGroupMPanelController">
    <children>
       <AnchorPane />
-      <Button layoutX="28.0" layoutY="139.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="75.0" text="ADD TO GROUP" textAlignment="CENTER" wrapText="true">
+      <Button layoutX="88.0" layoutY="150.0" mnemonicParsing="false" onAction="#removeAsGroup" prefHeight="52.0" prefWidth="92.0" text="REMOVE AS GROUP" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="110.0" layoutY="139.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="115.0" text="REMOVE FROM GROUP" textAlignment="CENTER" wrapText="true">
+      <Button layoutX="7.0" layoutY="150.0" mnemonicParsing="false" onAction="#addAsGroup" prefHeight="52.0" prefWidth="75.0" text="ADD AS GROUP" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="120.0" layoutY="199.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="92.0" text="REMOVE AS GROUP" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <Button layoutX="37.0" layoutY="199.0" mnemonicParsing="false" prefHeight="52.0" prefWidth="75.0" text="ADD AS GROUP" textAlignment="CENTER" wrapText="true">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Button>
-      <TextField fx:id="CommandGTextField" layoutX="32.0" layoutY="12.0" prefHeight="25.0" prefWidth="204.0" promptText="Enter a command">
+      <TextField fx:id="CommandGTextField" layoutX="79.0" layoutY="10.0" prefHeight="30.0" prefWidth="210.0" promptText="Enter a group or trigger phrase">
          <font>
             <Font size="14.0" />
          </font>
       </TextField>
-      <ListView fx:id="ListOfCommands" layoutY="289.0" prefHeight="160.0" prefWidth="265.0" />
-      <Label layoutX="4.0" layoutY="264.0" text="Commands in this group are below.">
+      <ListView fx:id="ListOfTriggerPhrases" layoutY="240.0" prefHeight="160.0" prefWidth="356.0" />
+      <Label layoutX="8.0" layoutY="215.0" text="Trigger phrases in this group are below.">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <ComboBox fx:id="CommandGroupGroupComboBox" layoutX="81.0" layoutY="53.0" prefWidth="150.0" />
-      <Label layoutX="27.0" layoutY="51.0" text="Group:">
+      <ComboBox fx:id="CommandGroupGroupComboBox" layoutX="88.0" layoutY="49.0" prefHeight="25.0" prefWidth="200.0" />
+      <Label layoutX="32.0" layoutY="47.0" text="Group:">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Separator layoutY="261.0" prefWidth="265.0" />
-      <ComboBox fx:id="CommandGroupComComboBox" layoutX="93.0" layoutY="88.0" prefWidth="150.0" />
-      <Label layoutX="10.0" layoutY="88.0" text="Command:">
+      <Separator layoutY="212.0" prefWidth="356.0" />
+      <Label layoutX="23.0" layoutY="80.0" prefHeight="52.0" prefWidth="77.0" text="Current Command" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="16.0" />
+         </font>
+      </Label>
+      <Button layoutX="187.0" layoutY="150.0" mnemonicParsing="false" onAction="#addPhrase" prefHeight="52.0" prefWidth="75.0" text="ADD PHRASE" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button layoutX="269.0" layoutY="150.0" mnemonicParsing="false" onAction="#removePhrase" prefHeight="52.0" prefWidth="79.0" text="REMOVE PHRASE" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Text fx:id="hoverInfoText" layoutX="323.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="?">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <Label layoutX="100.0" layoutY="85.0" prefHeight="21.0" prefWidth="7.0" text=":" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentCommandLabel" alignment="TOP_LEFT" layoutX="110.0" layoutY="90.0" prefHeight="43.0" prefWidth="152.0" text="currentCommandLabel" wrapText="true">
+         <font>
+            <Font size="15.0" />
          </font>
       </Label>
    </children>

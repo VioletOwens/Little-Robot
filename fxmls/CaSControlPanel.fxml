@@ -13,7 +13,7 @@
       </Button>
       <Button layoutX="22.0" layoutY="132.0" mnemonicParsing="false" onAction="#openStatusManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Status Manager" textAlignment="CENTER" wrapText="true">
          <font>
-            <Font size="15.0" />
+            <Font size="16.0" />
          </font>
       </Button>
       <Button layoutX="132.0" layoutY="24.0" mnemonicParsing="false" onAction="#openCommandGroupManagerPanel" prefHeight="96.0" prefWidth="96.0" text="Command Group Manager" textAlignment="CENTER" wrapText="true">

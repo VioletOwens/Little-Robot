@@ -5,78 +5,73 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="460.0" prefWidth="541.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CatGMPanelController">
    <children>
-      <AnchorPane fx:id="CatGMAnchorPane" prefHeight="312.0" prefWidth="547.0">
-         <children>
-            <ComboBox fx:id="UICategoryComboBox" layoutX="128.0" layoutY="14.0" prefWidth="150.0" promptText="Select a category" />
-            <ComboBox fx:id="CurrentStatusComboBox" layoutX="128.0" layoutY="53.0" prefWidth="150.0" promptText="Select a status" />
-            <ComboBox fx:id="ResponseCategoryComboBox" layoutX="128.0" layoutY="92.0" prefWidth="150.0" promptText="Select a category" />
-            <Button layoutX="25.0" layoutY="224.0" mnemonicParsing="false" onAction="#addGroup" prefHeight="50.0" prefWidth="75.0" text="ADD GROUP" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button layoutX="108.0" layoutY="224.0" mnemonicParsing="false" onAction="#removeGroup" prefHeight="50.0" prefWidth="75.0" text="REMOVE GROUP" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Button layoutX="25.0" layoutY="168.0" mnemonicParsing="false" onAction="#undo" prefHeight="50.0" prefWidth="75.0" text="UNDO" textAlignment="CENTER">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Label layoutX="36.0" layoutY="14.0" prefHeight="25.0" prefWidth="87.0" text="If user inputs">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="32.0" layoutY="53.0" prefHeight="25.0" prefWidth="87.0" text="while status is">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="38.0" layoutY="92.0" prefHeight="25.0" prefWidth="87.0" text="respond with">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="2.0" layoutY="286.0" prefHeight="25.0" prefWidth="389.0" text="Groups of connected categories are below.">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <Button layoutX="190.0" layoutY="224.0" mnemonicParsing="false" onAction="#openPhraseEditor" prefHeight="50.0" prefWidth="75.0" text="PHRASE EDITOR" textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <Label layoutX="6.0" layoutY="126.0" prefHeight="36.0" prefWidth="220.0" text="You can double click a group of connected categories to instantly enter it." wrapText="true" />
-            <Separator layoutX="285.0" layoutY="1.0" mouseTransparent="true" orientation="VERTICAL" prefHeight="280.0" prefWidth="15.0" />
-            <Separator layoutY="275.0" mouseTransparent="true" prefHeight="15.0" prefWidth="547.0" />
-            <Label layoutX="360.0" prefHeight="25.0" text="List of Categories">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-      <VBox layoutX="301.0" layoutY="27.0" prefHeight="247.0" prefWidth="240.0">
-         <children>
-            <ListView fx:id="ListOfCategories" prefHeight="247.0" prefWidth="240.0" />
-         </children>
-      </VBox>
-      <VBox layoutX="1.0" layoutY="311.0" prefHeight="166.0" prefWidth="547.0">
-         <children>
-            <ListView fx:id="ListOfConCatGroup" prefHeight="170.0" />
-         </children>
-      </VBox>
+      <ComboBox fx:id="UICategoryComboBox" layoutX="128.0" layoutY="18.0" prefWidth="150.0" promptText="Select a category" />
+      <ComboBox fx:id="CurrentStatusComboBox" layoutX="128.0" layoutY="61.0" prefWidth="150.0" promptText="Select a status" />
+      <ComboBox fx:id="ResponseCategoryComboBox" layoutX="128.0" layoutY="104.0" prefWidth="150.0" promptText="Select a category" />
+      <Button layoutX="16.0" layoutY="220.0" mnemonicParsing="false" onAction="#addGroup" prefHeight="50.0" prefWidth="75.0" text="ADD GROUP" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="99.0" layoutY="220.0" mnemonicParsing="false" onAction="#removeGroup" prefHeight="50.0" prefWidth="75.0" text="REMOVE GROUP" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Button layoutX="16.0" layoutY="164.0" mnemonicParsing="false" onAction="#undo" prefHeight="50.0" prefWidth="75.0" text="UNDO" textAlignment="CENTER">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Label layoutX="36.0" layoutY="18.0" prefHeight="25.0" prefWidth="87.0" text="If user inputs">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="32.0" layoutY="61.0" prefHeight="25.0" prefWidth="87.0" text="while status is">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="38.0" layoutY="104.0" prefHeight="25.0" prefWidth="87.0" text="respond with">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label layoutX="2.0" layoutY="286.0" prefHeight="25.0" prefWidth="389.0" text="Groups of connected categories are below.">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Button layoutX="181.0" layoutY="220.0" mnemonicParsing="false" onAction="#openPhraseEditor" prefHeight="50.0" prefWidth="75.0" text="PHRASE EDITOR" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Button>
+      <Separator layoutX="285.0" layoutY="1.0" mouseTransparent="true" orientation="VERTICAL" prefHeight="280.0" prefWidth="15.0" />
+      <Separator layoutY="275.0" mouseTransparent="true" prefHeight="15.0" prefWidth="547.0" />
+      <Label layoutX="360.0" prefHeight="25.0" text="List of Categories">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
+      <Text fx:id="hoverInfoText" layoutX="272.0" layoutY="250.0" strokeType="OUTSIDE" strokeWidth="0.0" text="?">
+         <font>
+            <Font name="System Bold" size="16.0" />
+         </font>
+      </Text>
+      <ListView fx:id="ListOfCategories" layoutX="302.0" layoutY="48.0" prefHeight="223.0" prefWidth="238.0" />
+      <ListView fx:id="ListOfConCatGroup" layoutX="1.0" layoutY="311.0" prefHeight="166.0" prefWidth="547.0" />
       <Rectangle fx:id="rectangle" arcHeight="1.0" arcWidth="1.0" fill="TRANSPARENT" height="362.0" stroke="TRANSPARENT" strokeType="INSIDE" visible="false" width="540.0" />
+      <TextField fx:id="catSearchTextfield" layoutX="350.0" layoutY="23.0" prefHeight="25.0" prefWidth="190.0" promptText="Type to search categories" />
+      <TextField fx:id="catGroupSearchTextfield" layoutX="321.0" layoutY="286.0" prefHeight="25.0" prefWidth="219.0" promptText="Type to search connected categories" />
    </children>
 </AnchorPane>

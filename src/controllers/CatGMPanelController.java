@@ -7,11 +7,16 @@ import application.Brain;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class CatGMPanelController extends Brain implements Initializable{
 	
@@ -30,7 +35,11 @@ public class CatGMPanelController extends Brain implements Initializable{
 	@FXML
 	ListView<String> ListOfCategories;
 	@FXML
-	Rectangle rectangle;
+	Text hoverInfoText;
+	@FXML
+	TextField catSearchTextfield;
+	@FXML
+	TextField catGroupSearchTextfield;
 	
 	
 	
@@ -71,30 +80,54 @@ public class CatGMPanelController extends Brain implements Initializable{
 
         if(ListOfCategories!=null) {
            ListOfCategories.getItems().setAll(Brain.listOfCategories);
-           /*
-            ListOfCategories.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent click) {
-                    if (click.getClickCount() == 2&&!ListOfCategories.getSelectionModel()
-                            .getSelectedItem().equals("")) {
-                    	CategoryManagerPanelTextfield.setText(
-                    			ListOfCategories.getSelectionModel().getSelectedItem());
-                    }
-                	}
-            });
-            */
+           //below is the drag and drop feature
+           ListOfCategories.setOnDragDetected(new EventHandler<MouseEvent>() {
+               @Override
+               public void handle(MouseEvent click) {
+                   ListOfCategories.setCursor(Cursor.CLOSED_HAND);
+               	}});
+           ListOfCategories.setOnMouseReleased(new EventHandler<MouseEvent>() {
+               @Override
+               public void handle(MouseEvent click) {
+            	   try {
+                   ListOfCategories.setCursor(Cursor.DEFAULT);
+                   if(!click.getPickResult().getIntersectedNode().getId().equals(null)) {
+                	   if(click.getPickResult().getIntersectedNode().getId().equals(
+                     		  UICategoryComboBox.getId())) {
+                    	   UICategoryComboBox.getSelectionModel().select(
+                    			   ListOfCategories.getSelectionModel().getSelectedItem());
+                		   ListOfCategories.getSelectionModel().clearSelection();
+                	   }
+                	   if(click.getPickResult().getIntersectedNode().getId().equals(
+                			   ResponseCategoryComboBox.getId())) {
+                		   ResponseCategoryComboBox.getSelectionModel().select(
+                    			   ListOfCategories.getSelectionModel().getSelectedItem());
+                		   ListOfCategories.getSelectionModel().clearSelection();
+                	   }   
+                   }
+               }catch(NullPointerException e){
+            	//System.out.println("error caught."); 
+       		   ListOfCategories.getSelectionModel().clearSelection();
+               }
+               	}
+               
+           });
         }
         
         
         if(ListOfConCatGroup!=null) {
         	ListOfConCatGroup.getItems().setAll(Brain.
             		getWholeFileToString("categorygrouping.txt").split("\n"));
+        	
+        	
+        	
+        	
+        	//the double click feature is below.
         	ListOfConCatGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent click) {
                 	if(click.getClickCount() == 2&&!ListOfConCatGroup
                     		.getSelectionModel().getSelectedItem().equals("")) {
-                	//case of wanting to fulfill in connectedcategorylist double click feature
                     	Brain.tempString = ListOfConCatGroup
                         		.getSelectionModel().getSelectedItem();
                     	
@@ -107,20 +140,11 @@ public class CatGMPanelController extends Brain implements Initializable{
                     	CurrentStatusComboBox.setValue(Brain.tempString.substring(
                     			Brain.tempString.indexOf("[")+1,Brain.tempString.indexOf("]")		)
                     			);
-                    	
                     	Brain.tempString = Brain.tempString.substring(
                     			Brain.tempString.indexOf("]")+1, Brain.tempString.length());
-                    	
                     	ResponseCategoryComboBox.setValue(Brain.tempString.substring(
-                    			Brain.tempString.indexOf("[")+1,Brain.tempString.indexOf("]")		)
-                    			);
-                    	
-                    }
-  
-                	}
+                    			Brain.tempString.indexOf("[")+1,Brain.tempString.indexOf("]")));}}
             });
-        	
-        	
         }
         
         if(CatGMAnchorPane!=null){
@@ -128,40 +152,43 @@ public class CatGMPanelController extends Brain implements Initializable{
                 @Override
                 public void handle(MouseEvent click) {
                 	CatGMAnchorPane.requestFocus();
+                	ListOfConCatGroup.getSelectionModel().clearSelection();
                 }
         	});
         }
-        
-        if(rectangle!=null) {
-        	/*
-        	rectangle.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent click) {
-                	rectangle.setVisible(false);
-                	CategoryManagerPanelLabelFour.setText(
-                            			"Phrases relating to the category are below.");
-                	//removes the items in the list and reverts to the categories
-            	ListAtBottomOfCategoryManager.getItems().clear();
-            	for(int x=0;x<Brain.listOfCategoriesAndTheirPhrases.length;x++) {
-            		if(Brain.listOfCategoriesAndTheirPhrases[x][0].equals(
-            				AltCategoryManagerPanelLabelTwo.getText())) {
-            			//found the correct category and going through list
-            			for(int y=1; y<Brain.listOfCategoriesAndTheirPhrases[x].length;y++) {
-            				ListAtBottomOfCategoryManager.getItems().add(
-            						Brain.listOfCategoriesAndTheirPhrases[x][y]);        				
-            			}
-            		}
-            	}
-            	
-            	
-                }
-        	
 
-                	
-            });
-        	*/
+        if(catSearchTextfield!=null) {
         	
-        }		
+        	
+        	catSearchTextfield.setOnKeyTyped(e->{
+        		ListView<String> searchCatList;
+        		for(int x=0; x<ListOfCategories.getItems().size();x++) {
+        			if(ListOfCategories.getItems().get(x).contains(
+        					catSearchTextfield.getText())) {
+        				//ListOfCategories.getItems().get(x).
+        			}
+        		}
+        		
+        	});
+        	
+        }
+        
+        
+        if(hoverInfoText!=null) {
+        	/*
+        	 * You can double click a group of connected categories to instantly enter it.
+        	 */
+        	Tooltip t = new Tooltip("You can double click a group of connected" +"\n"
+        			+ "categories to instantly enter it. You can also drag" + "\n"
+        			+ "a category from the list of categories to an applicable" + "\n"
+        			+ "drop-down to instantly enter it.");
+        	
+        	t.setShowDuration(new Duration(50000.0));
+        	t.setHideOnEscape(true);
+    		t.setAutoHide(true);
+    		Tooltip.install(hoverInfoText, t);
+        	
+        }
 	}
 
 }

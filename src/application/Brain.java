@@ -38,7 +38,7 @@ public class Brain{
 	protected static String[] listOfStatuses = {"Any","Normal", "WILD!"};
 
 	//how are you doing how 
-	//the above line doesnt work in code fix it
+	//the above line doesn't work in code fix it
     
     //need to write the stuff below
     protected static String response = "";
@@ -76,7 +76,8 @@ public class Brain{
 		respondToUser();
 
 		//remove this for sure later
-		if(UIUnderstanding!=null&&UIUnderstanding[0].equals("OpenWindow(ControlPanel.fxml)")) {
+		if(UIUnderstanding!=null&&
+				UIUnderstanding[0].equals("OpenWindow(ControlPanel.fxml)")) {
 			URL url = new File("fxmls\\ControlPanel.fxml").toURI().toURL();
 			Parent root = FXMLLoader.load(url);
 			Stage stage = new Stage();
@@ -173,7 +174,7 @@ public class Brain{
 										FullList[outerIndex][0];
 								understandingCntr++;
 								numberOfSkippedWords = backwardCounter;//UIByWord.length-
-								System.out.println("the number of words we know is:" +
+								sopln("the number of words we know is:" +
 										numberOfSkippedWords);
 								isFound = true;
 								innerIndex = FullList
@@ -260,24 +261,24 @@ public class Brain{
 			}
 		}
 		}
-		}else if(doesStrContainArr(UI,elementaryFunctions)){//doesStrContainNonDigitsOrLetters(UI)&&
+		}else if(doesStrContainArr(UI,elementaryFunctions)){
 			resultingUnderstanding[0]=solveExpression(UI);
 		}else {
-			System.out.println("We dont know how to deal with whatever that is yet :(");
+			sopln("We dont know how to deal with whatever that is yet :(");
 		}
 		
 		if(resultingUnderstanding!=null) {
-		System.out.println("The understanding of UI is as follows:");
+		sopln("The understanding of UI is as follows:");
 		resultingUnderstanding = removeNullInArray(resultingUnderstanding);
 		for(int x = 0; x<resultingUnderstanding.length;x++) {
-			System.out.println(resultingUnderstanding[x]);
+			sopln(resultingUnderstanding[x]);
 		}
 		}
 		unknownStrings = removeNullInArray(unknownStrings);
 		if(unknownStrings!=null) {
-			System.out.println("The unknown parts of UI is as follows:");
+			sopln("The unknown parts of UI is as follows:");
 			for(int x = 0; x<unknownStrings.length;x++) {
-				System.out.println(unknownStrings[x]);
+				sopln(unknownStrings[x]);
 			}	
 		}
 		
@@ -288,7 +289,7 @@ public class Brain{
 		identifySentenceStructure(UI);//comprehending the string
 		organizeSentStructArr();//used to reduce clutter in this method
 		String response = responseCenter(shortSentenceStructArr);
-		if(!response.equals(""))System.out.println("Response formed, that being:" + response);
+		if(!response.equals(""))sopln("Response formed, that being:" + response);
 		*/
 		
 	}
@@ -491,11 +492,14 @@ public class Brain{
 		String[] tempStringArr=null;
 		String[] excludedFileNameList = {
 				"keywords.txt","filelist.txt","categorygrouping.txt","inputresponsegrouping.txt"
-				,"commands.txt"};//i know this is hardcoded im trying to make a manager for it
+				,"commands.txt", "commandsgrouping.txt"};
+		//i know this is hardcoded im trying to make a manager for it
 		String line = "";
 		String tempString="";
+		String groupTitle = "";
 		int tempCtr = 0;
 		int indexCtr=0;
+		int groupNum = 0;
 		Boolean validFile=false;
 		File file;
 		Scanner sc;
@@ -511,7 +515,7 @@ public class Brain{
         File dir = new File(directory);
         String[] children = dir.list();
         if (children == null||children.length==0) {
-        	System.out.println("THE PHRASE FILES ARE GONE!!!");
+        	sopln("THE PHRASE FILES ARE GONE!!!");
         }else {
         	//finding fileNameList length
         	for(int x=0, z=0; x<children.length;x++) {
@@ -581,7 +585,7 @@ public class Brain{
 					
 				while(sc.hasNextLine()) {//first find phrase and fileName
 					line=sc.nextLine();
-		    		//System.out.println("tempString is: " + tempString);
+		    		//sopln("tempString is: " + tempString);
 					if(line.contains("|")) {
 						phraseList[z] = line.substring(0, line.indexOf('|'));
 						phraseFileNameList[z]=line.substring(0, line.indexOf('|'))
@@ -701,31 +705,46 @@ public class Brain{
     		file = new File(directory + "commandsgrouping.txt");
 			sc = new Scanner(file);
 			tempCtr=0;
-			tempInt = 0;
-			tempString = "";
+			//tempInt = 0;
+			//tempString = "";
+			groupTitle = "";
 			while(sc.hasNextLine()) {
 				indivComGrouping = new HashMap<>();
 				line = sc.nextLine();
+				//tempString = line.replace(":", "");
 				if(line.charAt(line.length()-1)==':') {
 					//assigning title of group of category
-					tempString = line.substring(0, line.length()-1);
+					groupTitle = line.substring(0, line.length()-1);
+					//tempCtr = 0;
+					groupNum = 0;
 				}else if(line.contains(",")) {
 					//tempArr = new String[countChars(line,',')+1];
 					tempArr = line.substring(line.indexOf("[")+1, line.lastIndexOf("]")).
 							split(",");
-					if(!tempString.equals("")&&tempArr!=null) {
+					if(!groupTitle.equals("")&&tempArr!=null) {
 						//line.substring(0,line.indexOf("[")) = the name of command
 						if(line.contains("(")&&line.contains(")")) {
 							tempArr = addStringToArr(tempArr,
 									line.substring(line.indexOf("("),line.length())
 									,tempArr.length);
 						}
-
-						indivComGrouping.put(line.substring(0,line.indexOf("[")), tempArr);
+						
+						//using tempString as the tell for whether a new groupTitle is read
+						if(groupNum==0) {
+							groupTitle = groupTitle.concat("["+groupNum + "]");
+						}else {
+							groupTitle = replaceLast(groupTitle,
+									"["+(groupNum-1)+"]","["+groupNum+"]");
+						}
+						groupNum++;
 						//not adding both groups as it should. overrites the first one fir some reason
 						//could do index counter at end of tempString like this
 						//groupName[0] = hashmap of all commands within this subgroup
-						totalCommandGrouping.put(tempString, indivComGrouping);
+						if(!totalCommandGrouping.containsKey(groupTitle)) {
+						indivComGrouping.put(line.substring(0,line.indexOf("["))
+								, tempArr);
+						totalCommandGrouping.put(groupTitle, indivComGrouping);
+						}
 					}
 				}
 			}
@@ -740,8 +759,18 @@ public class Brain{
             //assigning phrasesCommandsAndTheirCategoriesList
             phrasesCommandsAndTheirCategoriesList = 
             		stackArrays(commandFileList,phraseAndCategoryList);
-            
-            
+            sopln();
+            sopln("indiv grouping keysets are:"+indivComGrouping.keySet().toString());
+            sopln("totalCommandGrouping is:"+totalCommandGrouping.keySet().toString());
+            sopln("secondly," + 
+            totalCommandGrouping.get("Testing Command Group[0]").get("testingCommand1")
+            );
+            for(int x=0; x<totalCommandGrouping.get("Testing Command Group[0]").
+            		get("testingCommand1").length; x++) {
+            	sopln("uhh of" +"["+ x+ "]"+totalCommandGrouping.get
+            			("Testing Command Group[0]").get("testingCommand1")[x].toString());
+            }
+
             
             
             listOfCommands = commandList;
@@ -958,7 +987,7 @@ public class Brain{
 			CategoryManagerPanelLastActionInfo = lastActionInfo;
 			/*
 			 * 		really useful 
-			 *  System.out.println("action is:" + action + "\n" +
+			 *  sopln("action is:" + action + "\n" +
 				"location is:" + location + "\n" +
 				"string1 is:" + str1 + "\n" +
 				"string2 is:" + str2 + "\n");
@@ -974,7 +1003,7 @@ public class Brain{
 			File thisFile = new File(Brain.class.getName()+".java");
 			String directoryPath = thisFile.getAbsolutePath().replace(
 					thisFile.getName(), "");
-			//System.out.println("Directory being set, it is:" + directoryPath);
+			//sopln("Directory being set, it is:" + directoryPath);
 			directory = directoryPath + "phrases\\";
 			
 			File fxml = new File(directoryPath + "fxmls");
@@ -1145,7 +1174,7 @@ public class Brain{
 		
 		if(doesExpContainElementary(userInput)) {
 			response = solveExpression(userInput);
-			System.out.println("The result of '" +userInput+"' is:" + response);
+			sopln("The result of '" +userInput+"' is:" + response);
 		}
 		
 		*/
@@ -1185,7 +1214,7 @@ public class Brain{
 		 * 
 		 */
 		
-		System.out.println("Before cleaning:" + str);
+		sopln("Before cleaning:" + str);
 
 		String[] elementaryFunctions= {
 				"+","-","*","/","(",")",
@@ -1344,7 +1373,7 @@ public class Brain{
         	//checking for preemptive nonPemdas
         	for(int nopem = 0; nopem<nonPemdas.length;nopem++) {
         		removeParenth=true;
-        		//testing for premptive nonPemdas here
+        		//testing for preemptive nonPemdas here
             	if(strReducer.length()-lastParenthContent.length()-4-nonPemdas[nopem].length()>0
             			&&strReducer.substring(strReducer.length()-lastParenthContent.length()-4
             					-nonPemdas[nopem].length(), strReducer.length()-
@@ -1375,7 +1404,7 @@ public class Brain{
         	else {
         		strBuilder =  inBetwStr + "(" + lastParenthContent + strBuilder +")";
         	}
-        	//replacing to avoid infinite recurssion
+        	//replacing to avoid infinite recursion
         	
         	strReducer = replaceLast(strReducer,inBetwStr+"("+lastParenthContent+")", "");
         	
@@ -1418,7 +1447,7 @@ public class Brain{
                 			, iniaIndex = i; i<str.length();i++) {
                 		tempString = str.substring(i, i+1);
                 		if(!doesStrContainArr(tempString,digits)){
-                			System.out.println("Parenthesis needed to be add to str:"+
+                			sopln("Parenthesis needed to be add to str:"+
                 					str.substring(
                 					str.lastIndexOf(nonPemdas[y]+digits[x])+
                 					nonPemdas[y].length(), i));
@@ -1437,7 +1466,7 @@ public class Brain{
                 		}else if(i==str.length()-1-countChars(str.substring(
                 				str.lastIndexOf(nonPemdas[y]+tempString),
                 				str.length()),')')) {
-                 			System.out.println("Parenthesis needed to be add to str:"+
+                 			sopln("Parenthesis needed to be add to str:"+
                 					str.substring(
                 					str.lastIndexOf(nonPemdas[y]+digits[x])+
                 					nonPemdas[y].length(), i));
@@ -1468,7 +1497,7 @@ public class Brain{
         
         
 
-		System.out.println("After cleaning:" + str);
+		sopln("After cleaning:" + str);
 
 		return str;
 	}
@@ -1559,7 +1588,7 @@ public class Brain{
 		
 		
 		
-		System.out.println(lastPContent);		
+		sopln(lastPContent);		
 		
 		
 		return str;
@@ -1594,7 +1623,27 @@ public class Brain{
 	public static String[] getCommandGroupingValue(String str) {
 		return indivComGrouping.get(str);
 	}
+	
+	public static void sopln(String str) {
+		System.out.println(str);
 
+	}
+	
+	public static void sopln() {
+		System.out.println("");
+
+		
+	}
+	
+	public static void sop() {
+		System.out.print("");
+		
+	}
+	
+	public static void sop(String str) {
+		System.out.print(str);
+
+	}
 
 	
 }//useful for memory https://www.w3spoint.com/filereader-and-filewriter-in-java

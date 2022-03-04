@@ -12,9 +12,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 public class CatPhraseMPanelController extends Brain implements Initializable{
 	
@@ -32,6 +35,8 @@ public class CatPhraseMPanelController extends Brain implements Initializable{
 	AnchorPane CatPhraseMPAnchorPane;
 	@FXML
 	Rectangle Rectangle;
+	@FXML
+	Text hoverInfoText;
 	
 	@FXML
 	void deleteCategory() {
@@ -92,18 +97,19 @@ public class CatPhraseMPanelController extends Brain implements Initializable{
 
                 @Override
                 public void handle(MouseEvent click) {
-
                     if (click.getClickCount() == 2&&!ListOfCategories.getSelectionModel()
                             .getSelectedItem().equals("")) {
                     	//finding the phrases around the category 
                     	ListOfPhrases.getItems().clear();
+                    	CurrentCatLabel.setText(ListOfCategories.getSelectionModel()
+                            .getSelectedItem());
                     	for(int x=0;x<Brain.listOfCategoriesAndTheirPhrases.length;x++) {
                     		if(Brain.listOfCategoriesAndTheirPhrases[x][0].equals(
                     				CurrentCatLabel.getText())) {
                     			//found the correct category and going through list
                     			for(int y=1; y<Brain.listOfCategoriesAndTheirPhrases[x].length;y++) {
                     				ListOfPhrases.getItems().add(
-                    						Brain.listOfCategoriesAndTheirPhrases[x][y]);        				
+                    						Brain.listOfCategoriesAndTheirPhrases[x][y]);  
                     			}
                     		}
                     	}	
@@ -259,7 +265,20 @@ public class CatPhraseMPanelController extends Brain implements Initializable{
             	}
                 }	
             });
-        }		
+        }	
+        if(hoverInfoText!=null) {
+        	/*
+        	 * You can double click a group of connected categories to instantly enter it.
+        	 */
+        	Tooltip t = new Tooltip("You can double click a category to open"+"\n"
+        			+ "it's phrases below. You can also double click a" + "\n"
+        			+ "phrase to instantly enter it into the textbox.");
+        	t.setShowDuration(new Duration(50000.0));
+        	t.setHideOnEscape(true);
+    		t.setAutoHide(true);
+    		Tooltip.install(hoverInfoText, t);
+        	
+        }
 	}
 
 }
