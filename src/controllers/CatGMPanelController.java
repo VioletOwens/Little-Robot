@@ -4,6 +4,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import application.Brain;
+import javafx.collections.FXCollections;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -90,18 +92,18 @@ public class CatGMPanelController extends Brain implements Initializable{
                @Override
                public void handle(MouseEvent click) {
             	   try {
-                   ListOfCategories.setCursor(Cursor.DEFAULT);
-                   if(!click.getPickResult().getIntersectedNode().getId().equals(null)) {
-                	   if(click.getPickResult().getIntersectedNode().getId().equals(
-                     		  UICategoryComboBox.getId())) {
-                    	   UICategoryComboBox.getSelectionModel().select(
-                    			   ListOfCategories.getSelectionModel().getSelectedItem());
+            		   String clickedNode = click.getPickResult().getIntersectedNode().getId();
+            		   String selectedCatItem = ListOfCategories.getSelectionModel().getSelectedItem();
+            		   ListOfCategories.setCursor(Cursor.DEFAULT);
+                   if(!clickedNode.equals(null)) {
+                	   if(clickedNode.equals(UICategoryComboBox.getId())
+                			   &&UICategoryComboBox.getItems().contains(selectedCatItem)) {
+                    	   UICategoryComboBox.getSelectionModel().select(selectedCatItem);
                 		   ListOfCategories.getSelectionModel().clearSelection();
                 	   }
-                	   if(click.getPickResult().getIntersectedNode().getId().equals(
-                			   ResponseCategoryComboBox.getId())) {
-                		   ResponseCategoryComboBox.getSelectionModel().select(
-                    			   ListOfCategories.getSelectionModel().getSelectedItem());
+                	   if(clickedNode.equals(ResponseCategoryComboBox.getId())
+                			   &&ResponseCategoryComboBox.getItems().contains(selectedCatItem)) {
+                		   ResponseCategoryComboBox.getSelectionModel().select(selectedCatItem);
                 		   ListOfCategories.getSelectionModel().clearSelection();
                 	   }   
                    }
@@ -159,16 +161,22 @@ public class CatGMPanelController extends Brain implements Initializable{
 
         if(catSearchTextfield!=null) {
         	
-        	
-        	catSearchTextfield.setOnKeyTyped(e->{
-        		ListView<String> searchCatList;
-        		for(int x=0; x<ListOfCategories.getItems().size();x++) {
-        			if(ListOfCategories.getItems().get(x).contains(
-        					catSearchTextfield.getText())) {
-        				//ListOfCategories.getItems().get(x).
-        			}
+    		FilteredList<String> filteredCatList = new FilteredList<>(FXCollections.observableList(ListOfCategories.getItems()),b->true);
+        	catSearchTextfield.setOnKeyReleased(e->{
+        		String searchText  = catSearchTextfield.getText();
+        		if(searchText.equals(null)||searchText.equals("")) {
+        			filteredCatList.setPredicate(b->true);
+        		}else {
+        			filteredCatList.setPredicate(b->b.contains(searchText));
         		}
-        		
+        		if(filteredCatList.size()==0) {
+        			ListView<String> h = new ListView<String>();
+        			h.getItems().add(" ");
+        			System.out.println(h.getItems());
+            		ListOfCategories.setItems(h.getItems());
+        		}else {
+            		ListOfCategories.setItems(filteredCatList);
+        		}
         	});
         	
         }

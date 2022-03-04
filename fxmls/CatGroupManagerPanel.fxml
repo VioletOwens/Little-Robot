@@ -7,11 +7,10 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="460.0" prefWidth="541.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CatGMPanelController">
+<AnchorPane fx:id="CatGMAnchorPane" prefHeight="460.0" prefWidth="541.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CatGMPanelController">
    <children>
       <ComboBox fx:id="UICategoryComboBox" layoutX="128.0" layoutY="18.0" prefWidth="150.0" promptText="Select a category" />
       <ComboBox fx:id="CurrentStatusComboBox" layoutX="128.0" layoutY="61.0" prefWidth="150.0" promptText="Select a status" />
@@ -70,7 +69,6 @@
       </Text>
       <ListView fx:id="ListOfCategories" layoutX="302.0" layoutY="48.0" prefHeight="223.0" prefWidth="238.0" />
       <ListView fx:id="ListOfConCatGroup" layoutX="1.0" layoutY="311.0" prefHeight="166.0" prefWidth="547.0" />
-      <Rectangle fx:id="rectangle" arcHeight="1.0" arcWidth="1.0" fill="TRANSPARENT" height="362.0" stroke="TRANSPARENT" strokeType="INSIDE" visible="false" width="540.0" />
       <TextField fx:id="catSearchTextfield" layoutX="350.0" layoutY="23.0" prefHeight="25.0" prefWidth="190.0" promptText="Type to search categories" />
       <TextField fx:id="catGroupSearchTextfield" layoutX="321.0" layoutY="286.0" prefHeight="25.0" prefWidth="219.0" promptText="Type to search connected categories" />
    </children>
