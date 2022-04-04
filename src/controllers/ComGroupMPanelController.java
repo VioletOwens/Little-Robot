@@ -18,7 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-public class ComGroupMPanelController implements Initializable{
+public class ComGroupMPanelController extends Brain implements Initializable{
 	
 
 	@FXML
@@ -26,15 +26,17 @@ public class ComGroupMPanelController implements Initializable{
 	@FXML
 	ComboBox<String> CommandGroupGroupComboBox;
 	@FXML
+	ComboBox<String> CurrentCommandGroupComboBox;
+	@FXML
 	TextField CommandGTextField;
 	@FXML
 	ListView<String> ListOfTriggerPhrases;
 	@FXML
 	ComboBox<String> CommandGroupComComboBox;
 	@FXML
-	Text hoverInfoText;
+	Text HoverInfoText;
 	@FXML
-	Label currentCommandLabel;
+	Label CurrentCommandLabel;
 	
 	@FXML
 	void addPhrase() {
@@ -58,9 +60,10 @@ public class ComGroupMPanelController implements Initializable{
 		//CommandGroupGroupComboBox.getSelectionModel().getSelectedItem() is the groupName
 		//
 		//currentCommandLabel.getText() is the current command name
+		System.out.println(
 		Brain.totalCommandGrouping.get(CommandGroupGroupComboBox.
-    			getSelectionModel().getSelectedItem()).get(currentCommandLabel.getText());
-
+    			getSelectionModel().getSelectedItem()).get(CurrentCommandLabel.getText())
+		);
 
 	}
 	
@@ -128,11 +131,13 @@ public class ComGroupMPanelController implements Initializable{
 
                 	Set<String> str = Brain.totalCommandGrouping.get(CommandGroupGroupComboBox.
                 			getSelectionModel().getSelectedItem()).keySet();
-                	currentCommandLabel.setText((String)str.toArray()[0]);
+                	CurrentCommandLabel.setText((String)str.toArray()[0]);
+                	Brain.sopln(str);
+                	
                 	
                 	String[] newArr = 
                         	Brain.totalCommandGrouping.get(CommandGroupGroupComboBox.getSelectionModel()
-                            		.getSelectedItem()).get(currentCommandLabel.getText());
+                            		.getSelectedItem()).get(CurrentCommandLabel.getText());
                         	if(newArr[newArr.length-1].contains("(")&&newArr[newArr.length-1].
                         			contains(")")) {
                         		ListOfTriggerPhrases.getItems().addAll(Brain.subArr(newArr, 0, newArr.length-1));
@@ -144,11 +149,12 @@ public class ComGroupMPanelController implements Initializable{
 			);
         }
         
-        if(currentCommandLabel!=null) {
+        if(CurrentCommandLabel!=null) {
         	Set<String> str = Brain.totalCommandGrouping.get(CommandGroupGroupComboBox.
         			getSelectionModel().getSelectedItem()).keySet();
-        	currentCommandLabel.setText((String)str.toArray()[0]);
+        	CurrentCommandLabel.setText((String)str.toArray()[0]);
         	
+        	Brain.sopln(str);
         	/*
         	 * when a group is selected with no command (or tempCommand),
         	 * prompt the user to add the command in the command requirement manager
@@ -158,18 +164,8 @@ public class ComGroupMPanelController implements Initializable{
         	
         }
         
-        if(ListOfTriggerPhrases!=null) {
-        	String[] newArr = 
-        	Brain.totalCommandGrouping.get(CommandGroupGroupComboBox.getSelectionModel()
-            		.getSelectedItem()).get(currentCommandLabel.getText());
-        	if(newArr[newArr.length-1].contains("(")) {
-        		ListOfTriggerPhrases.getItems().addAll(Brain.subArr(newArr, 0, newArr.length-1));
-        	}else {
-        		ListOfTriggerPhrases.getItems().addAll(Brain.subArr(newArr, 0, newArr.length));
-        	}
-        }
         
-        if(hoverInfoText!=null) {
+        if(HoverInfoText!=null) {
         	Tooltip t = new Tooltip("Adding, Removing, and Editing of commands"+"\n"
         			+ "is done in the command requirement manager."+"\n"
         			+ "This manager is simply for organizations" + "\n"
@@ -178,7 +174,22 @@ public class ComGroupMPanelController implements Initializable{
         	t.setShowDuration(new Duration(50000.0));
         	t.setHideOnEscape(true);
     		t.setAutoHide(true);
-    		Tooltip.install(hoverInfoText, t);
+    		Tooltip.install(HoverInfoText, t);
         }   
+
+        if(ListOfTriggerPhrases!=null) {
+        	
+        	String[] newArr = 
+        	Brain.totalCommandGrouping.get(CommandGroupGroupComboBox.getSelectionModel()
+            		.getSelectedItem()).get(
+            				CurrentCommandLabel.getText());
+        	if(newArr[newArr.length-1].contains("(")) {
+        		ListOfTriggerPhrases.getItems().addAll(Brain.subArr(newArr, 0, newArr.length-1));
+        	}else {
+        		ListOfTriggerPhrases.getItems().addAll(Brain.subArr(newArr, 0, newArr.length));
+        	}
+        	
+        	
+        }
 	}
 }

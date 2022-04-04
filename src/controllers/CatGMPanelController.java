@@ -46,9 +46,9 @@ public class CatGMPanelController extends Brain implements Initializable {
 	@FXML
 	Text hoverInfoText;
 	@FXML
-	TextField catSearchTextfield;
+	TextField CatSearchTextfield;
 	@FXML
-	TextField catGroupSearchTextField;
+	TextField CatGroupSearchTextField;
 	
 	private Parent root;
 	private Scene scene;
@@ -86,6 +86,7 @@ public class CatGMPanelController extends Brain implements Initializable {
 		String builtString = "[" + UICatSelection + "]" + "[" + statusSelection + "]" + "[" + ResponseSelection + "]";
 		if(!UICatSelection.equals(" ")&&!ResponseSelection.equals(" ")&&
 				!statusSelection.equals(" ")&&Brain.isStringInFile("categorygrouping.txt", builtString)) {
+			
 			ListOfConCatGroup.getItems().remove(builtString);
 			Brain.removeFromFile("categorygrouping.txt", builtString);
 			newLastAction("remove",builtString);
@@ -224,11 +225,11 @@ public class CatGMPanelController extends Brain implements Initializable {
 			});
 		}
 
-		if (catSearchTextfield != null) {
+		if (CatSearchTextfield != null) {
 			FilteredList<String> filteredCatList = new FilteredList<>(
 					FXCollections.observableList(ListOfCategories.getItems()), b -> true);
-			catSearchTextfield.setOnKeyReleased(e -> {
-				String searchText = catSearchTextfield.getText();
+			CatSearchTextfield.setOnKeyReleased(e -> {
+				String searchText = CatSearchTextfield.getText();
 				if (searchText.equals(null) || searchText.equals("")) {
 					filteredCatList.setPredicate(b -> true);
 				} else {
@@ -244,11 +245,11 @@ public class CatGMPanelController extends Brain implements Initializable {
 			});
 		}
 
-		if (catGroupSearchTextField != null) {
+		if (CatGroupSearchTextField != null) {
 			FilteredList<String> filteredCatList = new FilteredList<>(
 					FXCollections.observableList(ListOfConCatGroup.getItems()), b -> true);
-			catGroupSearchTextField.setOnKeyReleased(e -> {
-				String searchText = catGroupSearchTextField.getText();
+			CatGroupSearchTextField.setOnKeyReleased(e -> {
+				String searchText = CatGroupSearchTextField.getText();
 				if (searchText.equals(null) || searchText.equals("")) {
 					filteredCatList.setPredicate(b -> true);
 				} else {

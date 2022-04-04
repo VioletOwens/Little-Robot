@@ -66,10 +66,11 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="currentCommandLabel" alignment="TOP_LEFT" layoutX="110.0" layoutY="90.0" prefHeight="43.0" prefWidth="152.0" text="currentCommandLabel" wrapText="true">
+      <Label fx:id="CurrentCommandLabel" alignment="TOP_LEFT" layoutX="110.0" layoutY="90.0" prefHeight="43.0" prefWidth="152.0" text="currentCommandLabel" wrapText="true">
          <font>
             <Font size="15.0" />
          </font>
       </Label>
+      <ComboBox fx:id="CurrentCommandGroupComboBox" layoutX="89.0" layoutY="120.0" prefHeight="25.0" prefWidth="200.0" />
    </children>
 </AnchorPane>

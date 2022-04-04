@@ -11,4 +11,3 @@ doing good|Positive Emotion
 doing well|Positive Emotion
 love|Strong Positive Emotion
 hate|Strong Negative Emotion
-wahoo|Unknown

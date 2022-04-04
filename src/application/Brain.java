@@ -26,7 +26,7 @@ public class Brain{
 	protected static String[] tempArr = {""};
 	protected static String tempString = "";
 	//used liberally, able to be used as a temporary string 
-	static protected String[] CategoryManagerPanelLastActionInfo = {""};
+	//static protected String[] CategoryManagerPanelLastActionInfo = {""};
 	
 	
 	//these need to be removed through code revision
@@ -61,12 +61,18 @@ public class Brain{
     protected static String[][] listOfCommandLinesByCategory = {{""}};
     protected static String[][] ListOfPhrasesCommandsAndTheirCategories = {{""}};
     protected static String[][] listOfCategoriesAndTheirPhrases = {{""}};
-    public static Map<String,String[]> indivComGrouping = new HashMap<>();
-    public static Map<String,Map<String,String[]>> totalCommandGrouping = 
+    protected static Map<String, Boolean> phraseFileValidity = new HashMap<>();
+    protected static Map<String, String[]> categoryFileGrouping = new HashMap<>();
+    protected static Map<String, String[]> categoryPhraseGrouping = new HashMap<>();
+    protected static Map<String,String[]> indivComGrouping = new HashMap<>();
+    protected static Map<String,Map<String,String[]>> totalCommandGrouping = 
     		new HashMap<>();//trying out this method of storing command information
-
+    protected static Map<String,Map<String,String[]>> commandGrouping = 
+    		new HashMap<>();
+    //THIS WONT WORK FOR COMMANDS! NEED A NEW STRUCTURE!!
     
 	public static void startUp(String input) throws IOException {
+		
 		setUI(input);
 		buildDirectory();
 		updateLists();
@@ -420,12 +426,18 @@ public class Brain{
 		String wholeFile = "";
         while(scanner.hasNextLine()) {
         	tempString = scanner.nextLine();
-        	if(!tempString.equals(str)) {
+        	if(!tempString.equals(str)&&!tempString.contains(str)) {
         	if(wholeFile.equals("")) {
         		wholeFile = tempString;
         	}else {
             	wholeFile = wholeFile + "\n" + tempString;
         	}
+        	}else if(tempString.contains(str)) {
+            	if(wholeFile.equals("")) {
+            		wholeFile = tempString.replace(str,"");
+            	}else {
+                	wholeFile = wholeFile + "\n" + tempString.replace(str,"");
+            	}
         	}
         }
 	    try {
@@ -469,7 +481,7 @@ public class Brain{
 		}
 		while(sc.hasNextLine()) {
 			line = sc.nextLine();
-			if(line.equals(str)) counter++;
+			if(line.contains(str)) counter++;
 		}
 		sc.close();
 		return counter;
@@ -490,7 +502,9 @@ public class Brain{
 		String[] phraseFileNameList = null;
 		String[][] phraseAndCategoryList = null;
 		String[] fileNameList = null;
-		String[] tempStringArr=null;
+		String[] tempArr=null;
+		String[] phraseArr = null;
+		String[] fileArr = null;
 		String[] excludedFileNameList = {
 				"keywords.txt","filelist.txt","categorygrouping.txt","inputresponsegrouping.txt"
 				,"commands.txt", "commandsgrouping.txt"};
@@ -498,6 +512,8 @@ public class Brain{
 		String line = "";
 		String tempString="";
 		String groupTitle = "";
+		String category = "";
+		String phrase = "";
 		int tempCtr = 0;
 		int indexCtr=0;
 		int groupNum = 0;
@@ -513,6 +529,17 @@ public class Brain{
 		//may as well include the corresponding phrase-fileName (for keywords.txt)
 		//may as well fix end of file, or append "unknown" if needed
 		//
+		
+		/*validPhraseFiles
+		 * setting hashmaps of files
+		 */
+		for(int x=0; x<excludedFileNameList.length;x++) {
+			if(phraseFileValidity.containsKey(excludedFileNameList[x])) {
+				phraseFileValidity.put(excludedFileNameList[x],false);
+			}
+		}
+		
+		
         File dir = new File(directory);
         String[] children = dir.list();
         if (children == null||children.length==0) {
@@ -541,6 +568,10 @@ public class Brain{
         				validFile=false;
         				break;
         			}
+        		}
+        		
+        		if(validFile&&!phraseFileValidity.containsKey(children[x])) {
+        			phraseFileValidity.put(children[x],true);
         		}
         		if(validFile) {
         			fileNameList[z] = children[x];
@@ -596,6 +627,46 @@ public class Brain{
 				}
 	            sc.close();
            }
+            /* Assigning categories and phrases to categoryPhraseGrouping
+             * also assigning categoryFileGrouping
+             * categoryArr
+             */
+            category="";
+            for(int fileIndex=0, z=0 , i=0; fileIndex<fileNameList.length;fileIndex++) {
+        		file = new File(directory + fileNameList[fileIndex]);
+				sc = new Scanner(file);
+				
+
+				
+				
+				while(sc.hasNextLine()) {
+					line = sc.nextLine();
+					category = line.substring(line.indexOf("|")+1, line.length());
+					phrase = line.substring(0, line.indexOf("|"));
+					
+					if(!categoryFileGrouping.containsKey(category)) {
+						fileArr = new String[1];
+						fileArr[0] = fileNameList[fileIndex];
+						categoryFileGrouping.put(category, fileArr);
+					}else if(!isStringInArr(categoryFileGrouping.get(category), fileNameList[fileIndex])){
+						fileArr = categoryFileGrouping.get(category);
+						categoryFileGrouping.remove(category);
+						categoryFileGrouping.put(category, concatStrToArr(fileArr,fileNameList[fileIndex]));
+					}
+					
+					 if(!categoryPhraseGrouping.containsKey(category)){
+				        phraseArr = new String[1];
+				        phraseArr[0] = phrase;
+						categoryPhraseGrouping.put(category, phraseArr);
+					}else if(!isStringInArr(categoryPhraseGrouping.get(category),phrase)){
+						phraseArr = categoryPhraseGrouping.get(category);
+						categoryPhraseGrouping.remove(category);
+						categoryPhraseGrouping.put(category, concatStrToArr(phraseArr,phrase));
+					}
+				}
+            }
+
+            
             
             //now reading and assigning info to commandFileList
             //first, need # of categories and # of phrases under each
@@ -659,8 +730,8 @@ public class Brain{
         	}
         	//the length of each will be the number of lines corresponding to that category 
         	//in the files plus one to accommodate the category name
-        	tempStringArr = new String[z+1];
-        	phraseAndCategoryList[x] = tempStringArr;
+        	tempArr = new String[z+1];
+        	phraseAndCategoryList[x] = tempArr;
         	phraseAndCategoryList[x][0]=categoryList[x];
         	}
             
@@ -745,11 +816,15 @@ public class Brain{
 						indivComGrouping.put(line.substring(0,line.indexOf("["))
 								, tempArr);
 						totalCommandGrouping.put(groupTitle, indivComGrouping);
+						commandGrouping.put(groupTitle, indivComGrouping);
+						
+						}else {
+							//commandGrouping.replace(e, e);
 						}
 					}
 				}
 			}
-			
+			//categoryPhraseGrouping needs to be filled with appropriate info.
 			
 			
 			
@@ -760,6 +835,7 @@ public class Brain{
             //assigning phrasesCommandsAndTheirCategoriesList
             phrasesCommandsAndTheirCategoriesList = 
             		stackArrays(commandFileList,phraseAndCategoryList);
+            /*
             sopln();
             sopln("indiv grouping keysets are:"+indivComGrouping.keySet().toString());
             sopln("totalCommandGrouping is:"+totalCommandGrouping.keySet().toString());
@@ -771,7 +847,7 @@ public class Brain{
             	sopln("uhh of" +"["+ x+ "]"+totalCommandGrouping.get
             			("Testing Command Group[0]").get("testingCommand1")[x].toString());
             }
-
+			*/
             
             
             listOfCommands = commandList;
@@ -788,6 +864,14 @@ public class Brain{
     		fullListOfFiles = children;
         }
 	}
+	
+	protected static void updateLists(String str) {
+		String[] removedTerminology = {"remove","removed","delete","deleted"};
+		String[] addedTerminology = {"add","added","create","created"};
+
+		
+	}
+	
 	
 	public static int numOfLinesInFile(String fileName) throws FileNotFoundException {
 		if(!fileName.contains(directory)) {
@@ -816,8 +900,7 @@ public class Brain{
 		return str;
 	}
 	
-	public static String toWholeFileAroundCategories(String fileName)
-			throws FileNotFoundException {
+	public static String toWholeFileAroundCategories(String fileName) throws FileNotFoundException {
 		if(!fileName.contains(directory)) {
 			fileName = directory + fileName;
 		}
@@ -969,14 +1052,14 @@ public class Brain{
 		}
 		return false;
 	}
-	
+	/*
 	public static void inputNewCategoryManagerPanelLastActionInfo(String action, String location,
 			String str) {
 		action = action.toLowerCase().trim();
 		String[] lastActionInfo = {action,location,str};
 		CategoryManagerPanelLastActionInfo = lastActionInfo;
 	}
-	
+	/*
 	public static void inputNewCategoryManagerPanelLastActionInfo(String action, String location,
 			String str1, String str2) {
 		action = action.toLowerCase().trim();
@@ -992,10 +1075,10 @@ public class Brain{
 				"location is:" + location + "\n" +
 				"string1 is:" + str1 + "\n" +
 				"string2 is:" + str2 + "\n");
-			 */
+			 
 		}
 	}
-	
+	*/
 	
 	public static void buildDirectory() throws IOException {
 		//this method is very versatile and wont create extra files if they already exist.
@@ -1075,6 +1158,17 @@ public class Brain{
 			tmpCtr++;
 		}
 		return stackedArr;
+	}
+	
+	
+	public static String[] concatStrToArr(String[] arr, String str) {
+		//This method concats a string to the end of a string array. 
+		String[] newArr = new String[arr.length+1];
+		for(int ctr = 0; ctr<arr.length; ctr++) {
+			newArr[ctr] = arr[ctr];	
+		}
+		newArr[arr.length] = str;
+		return newArr;
 	}
 	
 
@@ -1625,10 +1719,11 @@ public class Brain{
 		return indivComGrouping.get(str);
 	}
 	
-	public static void sopln(String str) {
-		System.out.println(str);
 
+	public static void sopln(Object obj) {
+			System.out.println(obj);
 	}
+	
 	
 	public static void sopln() {
 		System.out.println("");
@@ -1641,8 +1736,49 @@ public class Brain{
 		
 	}
 	
-	public static void sop(String str) {
-		System.out.print(str);
+	public static void sop(Object obj) {
+		System.out.print(obj);
+
+	}
+
+
+	public static boolean isStringInArr(String[] arr, String str) {
+		for(int arrInd=0; arrInd<arr.length;arrInd++) {
+			if(arr[arrInd].equals(str)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean isStringInArr(String str, String[] arr) {
+		return isStringInArr(arr, str);
+	}
+
+
+	public static String[] removeLastStrFromArr(String[] arr, String str) {
+		String[] newArr = new String[arr.length-1];
+		int numberOfStr = 0;
+		if(isStringInArr(arr,str)) {
+			for(int x=0; x<arr.length;x++) {
+				if(arr[x].equals(str)) {
+					numberOfStr++;
+				}	
+			}
+			for(int y=0; y<newArr.length;y++) {
+				if(arr[y].equals(str)) {
+					if(numberOfStr==1&&y+1!=arr.length) {
+						y++;
+					}else if(y+1==arr.length){
+						return newArr;
+					}
+					numberOfStr--;
+				}
+				newArr[y] = arr[y];
+			}
+			return newArr;
+		}else {
+			return arr;
+		}
 
 	}
 
