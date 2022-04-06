@@ -21,7 +21,9 @@ import javafx.stage.Stage;
 public class Brain{
 	
 	private static String userInput;
-	protected static String directory = "";
+	protected static String directory1 = "";
+	protected static String phraseDirectory = "";
+	protected static String dataDirectory = "";
 	protected static int tempInt=0;
 	protected static String[] tempArr = {""};
 	protected static String tempString = "";
@@ -302,13 +304,27 @@ public class Brain{
 	}
 		
 	public static String[] appendToArray(String[] arr, String str) {
-		for(int x=0;x<arr.length;x++) {
+		if(arr!=null&&arr.length!=0) {
+			String[] newArr = new String[arr.length+1];
+		if(arr[arr.length-1]==null) {
+			for(int x=0;x<arr.length;x++) {
 			if(arr[x]==null||arr[x]=="") {
 				arr[x]=str;
 				break;
 			}
 		}
+		}else {
+			for(int x=0;x<arr.length;x++) {
+				newArr[x] = arr[x];
+			}
+			newArr[newArr.length-1] = str;
+			arr = newArr;
+		}
 		return arr;
+	}else {
+		String[] newArr = {str};
+		return newArr;
+	}
 	}
 	
 	public static String[] removeNullInArray(String[] arr) {
@@ -363,8 +379,9 @@ public class Brain{
 	
 	
 	public static void appendToFile(String fileName, String str){
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		//only interacts with phraseDirectory
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		File file = new File (fileName); 
 		FileWriter output = null;
@@ -410,8 +427,9 @@ public class Brain{
 	}
 	
 	public static void removeFromFile(String fileName, String str) {
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		//only affects phrases
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		Scanner scanner = null;
 		 FileWriter output = null;
@@ -467,8 +485,8 @@ public class Brain{
 	}
 
 	public static int countNumberOfStringsInFile(String fileName, String str) {
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		int counter = 0;
 		File file = new File(fileName);
@@ -540,7 +558,7 @@ public class Brain{
 		}
 		
 		
-        File dir = new File(directory);
+        File dir = new File(phraseDirectory);
         String[] children = dir.list();
         if (children == null||children.length==0) {
         	sopln("THE PHRASE FILES ARE GONE!!!");
@@ -599,7 +617,7 @@ public class Brain{
         	}
 			//now finding List of phrases and its variation as well as categories
             for(int x=0, z=0 , i=0; x<fileNameList.length;x++) {
-            		file = new File(directory + fileNameList[x]);
+            		file = new File(phraseDirectory + fileNameList[x]);
 					sc = new Scanner(file);
 
 					//this further vets categories for any empty indexes
@@ -633,7 +651,7 @@ public class Brain{
              */
             category="";
             for(int fileIndex=0, z=0 , i=0; fileIndex<fileNameList.length;fileIndex++) {
-        		file = new File(directory + fileNameList[fileIndex]);
+        		file = new File(phraseDirectory + fileNameList[fileIndex]);
 				sc = new Scanner(file);
 				
 
@@ -675,7 +693,7 @@ public class Brain{
             indexCtr=0;
             commandFileList = new String[toWholeFileAroundCategories("commands.txt")
     		.split("\n").length][];
-    		file = new File(directory + "commands.txt");
+    		file = new File(dataDirectory + "commands.txt");
 			sc = new Scanner(file);
             while(sc.hasNextLine()) {
             	line=sc.nextLine();
@@ -716,7 +734,7 @@ public class Brain{
             for(int x=0, z=0; x<categoryList.length;x++) {
             	z=0;
         	for(int y=0; y<fileNameList.length;y++) {
-        		file = new File(directory + fileNameList[y]);
+        		file = new File(phraseDirectory + fileNameList[y]);
 				sc = new Scanner(file);
 				while(sc.hasNextLine()) {
 					line=sc.nextLine();
@@ -739,7 +757,7 @@ public class Brain{
             for(int x=0, z=0; x<categoryList.length;x++) {
             	z=0;
         	for(int y=0; y<fileNameList.length;y++) {
-        		file = new File(directory + fileNameList[y]);
+        		file = new File(phraseDirectory + fileNameList[y]);
 				sc = new Scanner(file);
 				while(sc.hasNextLine()) {
 					tempString=sc.nextLine();
@@ -754,7 +772,7 @@ public class Brain{
         	}
             }
 			sc.close();
-    		file = new File(directory + "commands.txt");
+    		file = new File(dataDirectory + "commands.txt");
 			sc = new Scanner(file);
 			tempCtr=0;
 			tempInt = 0;
@@ -774,7 +792,7 @@ public class Brain{
 			
 			//collecting list of command grouping in commandGrouping hashmap for first time!!
 			sc.close();
-    		file = new File(directory + "commandsgrouping.txt");
+    		file = new File(dataDirectory + "commandsgrouping.txt");
 			sc = new Scanner(file);
 			tempCtr=0;
 			//tempInt = 0;
@@ -874,8 +892,8 @@ public class Brain{
 	
 	
 	public static int numOfLinesInFile(String fileName) throws FileNotFoundException {
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		int counter = 0;
 		File file = new File(fileName);
@@ -901,8 +919,8 @@ public class Brain{
 	}
 	
 	public static String toWholeFileAroundCategories(String fileName) throws FileNotFoundException {
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		String superStringCategory= "";
 		String category = "";
@@ -926,8 +944,8 @@ public class Brain{
 	
 	public static String toWholeFileAroundPhrasesAndCategories(String fileName)
 			throws FileNotFoundException{
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		String superStringCategoryAndPhrase= "";
 		File file = new File(fileName);
@@ -945,8 +963,8 @@ public class Brain{
 	}
 	
 	public static String getWholeFileToString(String fileName) {
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		File file = new File (fileName); 
     	Scanner scanner = null;
@@ -970,8 +988,8 @@ public class Brain{
 	
 	public static void removeEmptySpaceFromFile(String fileName) throws IOException{
 	
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		File file = new File(fileName);
 		Scanner sc = new Scanner(file);
@@ -1033,8 +1051,8 @@ public class Brain{
 	
 	public static Boolean isStringInFile(String fileName, String str) {
 		//checks whether a string is equal to any line from given file
-		if(!fileName.contains(directory)) {
-			fileName = directory + fileName;
+		if(!fileName.contains(phraseDirectory)) {
+			fileName = phraseDirectory + fileName;
 		}
 		File file = new File(fileName);
 		Scanner sc = null;
@@ -1088,15 +1106,15 @@ public class Brain{
 			String directoryPath = thisFile.getAbsolutePath().replace(
 					thisFile.getName(), "");
 			//sopln("Directory being set, it is:" + directoryPath);
-			directory = directoryPath + "phrases\\";
-			
+			phraseDirectory = directoryPath + "txt files\\phrases\\";
+			dataDirectory = directoryPath + "txt files\\data\\";
 			File fxml = new File(directoryPath + "fxmls");
 			if(!fxml.exists()) {
 				fxml.mkdirs();
 			}
 			
-			File phrase = new File(directoryPath + "phrases");
-			File keywords = new File(directoryPath+"\\phrases\\keywords.txt");
+			File phrase = new File(directoryPath + "txt files\\phrases");
+			File keywords = new File(directoryPath+"txt files\\phrases\\keywords.txt");
 			if(!phrase.exists()) {
 				phrase.mkdirs();
 				keywords.createNewFile();
@@ -1234,10 +1252,10 @@ public class Brain{
 	public static int numOfLinesInFileOfCat(String fileName, String targetCategory)
 			throws FileNotFoundException {
 		File file;
-		if(fileName.contains(directory)) {
+		if(fileName.contains(phraseDirectory)) {
 			file = new File(fileName);
 		}else {
-			file = new File(directory + fileName);
+			file = new File(phraseDirectory + fileName);
 		}
 		int counter = 0;
 		Scanner sc = new Scanner(file);
@@ -1764,16 +1782,16 @@ public class Brain{
 					numberOfStr++;
 				}	
 			}
-			for(int y=0; y<newArr.length;y++) {
-				if(arr[y].equals(str)) {
-					if(numberOfStr==1&&y+1!=arr.length) {
-						y++;
-					}else if(y+1==arr.length){
+			for(int arrCtr=0, newArrCtr=0; arrCtr<arr.length;arrCtr++, newArrCtr++) {
+				if(arr[arrCtr].equals(str)) {
+					if(numberOfStr==1&&arrCtr+1!=arr.length) {
+						arrCtr++;
+					}else if(arrCtr+1==arr.length){
 						return newArr;
 					}
 					numberOfStr--;
 				}
-				newArr[y] = arr[y];
+				newArr[newArrCtr] = arr[arrCtr];
 			}
 			return newArr;
 		}else {
