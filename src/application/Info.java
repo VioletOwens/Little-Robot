@@ -8,6 +8,11 @@ public class Info extends Brain {
 	public static String itemNames = "";
 	// protected static List[] listOfLists = new List[1];
 	protected static Map<String, String[]> listOfMaps = new HashMap<>();
+	protected static Map<String, String[]> listOfCategoryNPhrases = new HashMap<>();
+	protected static Map<String, String[]> listOfCommandNTriggers = new HashMap<>();
+	protected static Map<String, String[]> listOfMathInfo = new HashMap<>();
+	protected static Map<String, String[]> listOfCommandGroups = new HashMap<>();
+	protected static Map<String, String[]> listCategoryLocations = new HashMap<>();
 	protected static Map<String, String[]> listOfLists = new HashMap<>();
 
 	/*
@@ -64,41 +69,47 @@ public class Info extends Brain {
 		for (int x = 0; x < arr.length; x++) {
 			str = str.concat("[" + x + "]" + arr[x] + ", ");
 		}
-		System.out.println("List '" + listName + "' contains: " +Brain.replaceLast(str, ", ", ""));
+		System.out.println("List '" + listName + "' contains: " + Brain.replaceLast(str, ", ", ""));
 	}
 
-	public void showListName() {
+	public void showListNames() {
 		String str = "";
 		for (String s : listOfLists.keySet()) {
 			str = str.concat(s + ", ");
 		}
 		System.out.println("List of listNames are: " + Brain.removeTrailingStr(str, ", "));
 	}
-	
+
+	public String[] returnListNames() {
+		String str = "";
+		for (String s : listOfLists.keySet()) {
+			str = str.concat(s + ",");
+		}
+		return Brain.removeTrailingStr(str, ",").split(",");
+	}
+
 	public List returnList(String str) {
-		return new List(str);		
+		return new List(str);
+	}
+
+	public String[] returnListContent(String str) {
+		return listOfLists.get(str);
 	}
 
 	public static void main(String[] args) {
-		Info newList = new Info();
-		newList.createList("List1");
-		newList.addItem("List1", "item1");
-		newList.addItem("List1", "item2");
-		newList.addItem("List1", "item3");
-		newList.showList("List1");
-		newList.showListName();
-		newList.removeItem("List1", "item2");
-		newList.showList("List1");
-
-		CTier command = new CTier();
-		command.addNode("root", "N/A", 0);
-		command.addNode("group1", "root", 1);
-		command.addNode("group2", "root", 1);
-		command.addNode("command1", "group2", 2);
-		command.addNode("command2", "group1", 2);
-		command.displayNode("command2");
-		command.addNode("Phrase 1", "command1", 3);
-		command.showTree();
+		/*
+		 * Info newList = new Info(); newList.createList("List1");
+		 * newList.addItem("List1", "item1"); newList.addItem("List1", "item2");
+		 * newList.addItem("List1", "item3"); newList.showList("List1");
+		 * newList.showListNames(); newList.removeItem("List1", "item2");
+		 * newList.showList("List1");
+		 * 
+		 * CTier command = new CTier(); command.addNode("root", "N/A", 0);
+		 * command.addNode("group1", "root", 1); command.addNode("group2", "root", 1);
+		 * command.addNode("command1", "group2", 2); command.addNode("command2",
+		 * "group1", 2); command.displayNode("command2"); command.addNode("Phrase 1",
+		 * "command1", 3); command.showTree();
+		 */
 	}
 }
 

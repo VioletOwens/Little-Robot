@@ -1,0 +1,6 @@
+elementaryFunctions:["+","-","*","/","(",")","π","^","ln","log","√","|","sqrt","abs","sin","cos","tan","arcsin","arccos","arctan",asin","acos","atan","sinh","cosh","tanh","arsinh","arcosh","artanh"]
+trig:["sin","cos","tan","arcsin","arccos","arctan","asin","acos","atan","sinh","cosh","tanh","arsinh","arcosh","artanh"]
+otherNonTrig:["ln","log","√","|","sqrt","abs"]
+pemdas:["(",")","^","*","/","+","-"]
+emdas:["^","*","/","+","-"]
+parenthesis:["(",")"]

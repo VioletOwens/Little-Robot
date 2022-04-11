@@ -62,7 +62,7 @@ public class CatPhraseMPanelController extends Brain implements Initializable {
 		.getText().equals("Select a source file for the category from the list below.")
 		 * 
 		 */
-        File dir = new File(directory);
+        File dir = new File(phraseDirectory);
         String[] fullFileList = dir.list();
 		if(!CatManagerTextField.getText().equals("")&&
 				!Brain.categoryPhraseGrouping.containsKey(CatManagerTextField.getText())
@@ -296,7 +296,7 @@ public class CatPhraseMPanelController extends Brain implements Initializable {
 						try {
 							if (selectedItem.equals("Double click here to add it under a new file.")) {
 								//case of new file being created (if need be)
-								File newFile = new File(Brain.directory + "tempfilename");
+								File newFile = new File(phraseDirectory + "tempfilename");
 								if (!newFile.exists()) {
 									newFile.createNewFile();
 								}
